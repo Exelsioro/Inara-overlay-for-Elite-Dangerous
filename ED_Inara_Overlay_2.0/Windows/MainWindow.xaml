@@ -13,23 +13,31 @@
         Topmost="True"
         ShowInTaskbar="False"
         ResizeMode="NoResize">
-    
+
     <!-- Main overlay container with semi-transparent background -->
-    <Border Background="#80000000" CornerRadius="5" Margin="5">
+    <Border Background="#30000000" CornerRadius="5" Margin="5">
         <Grid>
             <!-- Toggle Button -->
             <Button x:Name="ToggleButton" 
-                    Width="100" Height="100"
+                    Width="190" Height="67"
                     HorizontalAlignment="Center" 
                     VerticalAlignment="Center"
-                    Background="Gray"
-                    Foreground="White"
+                    Background="#30000000"
+                    Foreground="#FF4CAF50"
                     Content="Trade Routes"
                     FontWeight="Bold"
-                    FontSize="10"
+                    FontSize="30"
                     BorderThickness="2"
-                    BorderBrush="White"
-                    Click="ToggleButton_Click">
+                    BorderBrush="#FF4CAF50"
+                    Click="ToggleButton_Click" RenderTransformOrigin="0.5,0.5">
+                <Button.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="-7.5"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Button.RenderTransform>
                 <Button.Style>
                     <Style TargetType="Button">
                         <Setter Property="Template">
@@ -37,8 +45,8 @@
                                 <ControlTemplate TargetType="Button">
                                     <Border Background="{TemplateBinding Background}" 
                                             BorderBrush="{TemplateBinding BorderBrush}"
-                                            BorderThickness="{TemplateBinding BorderThickness}"
-                                            CornerRadius="10">
+                                            BorderThickness="0,2,0,2"
+                                            CornerRadius="0">
                                         <ContentPresenter HorizontalAlignment="Center" 
                                                         VerticalAlignment="Center"/>
                                     </Border>

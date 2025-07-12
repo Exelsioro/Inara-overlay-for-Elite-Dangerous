@@ -85,18 +85,16 @@
                               Style="{StaticResource BodyTextStyle}" 
                               VerticalAlignment="Center" Margin="0,5,10,5"/>
                     <ComboBox x:Name="MaxRouteDistanceComboBox" Grid.Row="1" Grid.Column="1" 
-                             Background="{StaticResource SecondaryBackgroundBrush}" 
-                             Foreground="{StaticResource PrimaryTextBrush}" 
-                             BorderBrush="{StaticResource BorderBrush}" 
-                             SelectedIndex="7" Padding="5" Margin="0,5,10,5">
-                        <ComboBoxItem Content="10 Ly"/>
-                        <ComboBoxItem Content="20 Ly"/>
-                        <ComboBoxItem Content="30 Ly"/>
-                        <ComboBoxItem Content="40 Ly"/>
-                        <ComboBoxItem Content="50 Ly"/>
-                        <ComboBoxItem Content="60 Ly"/>
-                        <ComboBoxItem Content="70 Ly"/>
-                        <ComboBoxItem Content="80 Ly"/>
+                             Style="{StaticResource ComboBoxStyle}"
+                             SelectedIndex="7" Margin="0,5,10,5">
+                        <ComboBoxItem Content="10 Ly" Style="{StaticResource ComboBoxItemStyle}"/>
+                        <ComboBoxItem Content="20 Ly" Style="{StaticResource ComboBoxItemStyle}"/>
+                        <ComboBoxItem Content="30 Ly" Style="{StaticResource ComboBoxItemStyle}"/>
+                        <ComboBoxItem Content="40 Ly" Style="{StaticResource ComboBoxItemStyle}"/>
+                        <ComboBoxItem Content="50 Ly" Style="{StaticResource ComboBoxItemStyle}"/>
+                        <ComboBoxItem Content="60 Ly" Style="{StaticResource ComboBoxItemStyle}"/>
+                        <ComboBoxItem Content="70 Ly" Style="{StaticResource ComboBoxItemStyle}"/>
+                        <ComboBoxItem Content="80 Ly" Style="{StaticResource ComboBoxItemStyle}"/>
                     </ComboBox>
 
                     <!-- Max Price Age -->
@@ -104,15 +102,13 @@
                               Style="{StaticResource BodyTextStyle}" 
                               VerticalAlignment="Center" Margin="0,5,10,5"/>
                     <ComboBox x:Name="MaxPriceAgeComboBox" Grid.Row="1" Grid.Column="3" 
-                             Background="{StaticResource SecondaryBackgroundBrush}" 
-                             Foreground="{StaticResource PrimaryTextBrush}" 
-                             BorderBrush="{StaticResource BorderBrush}" 
-                             SelectedIndex="4" Padding="5" Margin="0,5,0,5">
-                        <ComboBoxItem Content="8 hours"/>
-                        <ComboBoxItem Content="16 hours"/>
-                        <ComboBoxItem Content="1 day"/>
-                        <ComboBoxItem Content="2 days"/>
-                        <ComboBoxItem Content="3 days"/>
+                             Style="{StaticResource ComboBoxStyle}"
+                             SelectedIndex="4" Margin="0,5,0,5">
+                        <ComboBoxItem Content="8 hours" Style="{StaticResource ComboBoxItemStyle}"/>
+                        <ComboBoxItem Content="16 hours" Style="{StaticResource ComboBoxItemStyle}"/>
+                        <ComboBoxItem Content="1 day" Style="{StaticResource ComboBoxItemStyle}"/>
+                        <ComboBoxItem Content="2 days" Style="{StaticResource ComboBoxItemStyle}"/>
+                        <ComboBoxItem Content="3 days" Style="{StaticResource ComboBoxItemStyle}"/>
                     </ComboBox>
 
                     <!-- Checkboxes -->
@@ -166,122 +162,123 @@
                         <!-- Min Landing Pad -->
                         <TextBlock Grid.Row="0" Grid.Column="0" Text="Min. landing pad:" Foreground="White" VerticalAlignment="Center" Margin="0,5,10,5"/>
                         <ComboBox x:Name="MinLandingPadComboBox" Grid.Row="0" Grid.Column="1" 
-                                 Background="#FF2A2A2A" Foreground="White" BorderBrush="#FF404040" 
-                                 SelectedIndex="0" Padding="5" Margin="0,5,0,5">
-                            <ComboBoxItem Content="Small"/>
-                            <ComboBoxItem Content="Medium"/>
-                            <ComboBoxItem Content="Large"/>
+                                 Style="{StaticResource ComboBoxStyle}"
+                                 SelectedIndex="0" Margin="0,5,0,5">
+                            <ComboBoxItem Content="Small" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Medium" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Large" Style="{StaticResource ComboBoxItemStyle}"/>
                         </ComboBox>
 
                         <!-- Max Station Distance -->
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="Max. station distance:" Foreground="White" VerticalAlignment="Center" Margin="0,5,10,5"/>
-                        <ComboBox x:Name="MaxStationDistanceComboBox" Grid.Row="1" Grid.Column="1" 
-                                 Background="#FF2A2A2A" Foreground="White" BorderBrush="#FF404040" 
-                                 SelectedIndex="0" Padding="5" Margin="0,5,0,5">
-                            <ComboBoxItem Content="Any"/>
-                            <ComboBoxItem Content="100 Ls"/>
-                            <ComboBoxItem Content="500 Ls"/>
-                            <ComboBoxItem Content="1000 Ls"/>
-                            <ComboBoxItem Content="2000 Ls"/>
-                            <ComboBoxItem Content="5000 Ls"/>
-                            <ComboBoxItem Content="10000 Ls"/>
-                            <ComboBoxItem Content="15000 Ls"/>
-                            <ComboBoxItem Content="20000 Ls"/>
-                            <ComboBoxItem Content="25000 Ls"/>
-                            <ComboBoxItem Content="50000 Ls"/>
-                            <ComboBoxItem Content="100000 Ls"/>
+<ComboBox x:Name="MaxStationDistanceComboBox" Grid.Row="1" Grid.Column="1" 
+                                 Style="{StaticResource ComboBoxStyle}"
+                                 SelectedIndex="0" Margin="0,5,0,5">
+                        <ComboBoxItem Content="Any" Style="{StaticResource ComboBoxItemStyle}"/>
+                        <ComboBoxItem Content="100 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
+                        <ComboBoxItem Content="500 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
+                        <ComboBoxItem Content="1000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
+                        <ComboBoxItem Content="2000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
+                        <ComboBoxItem Content="5000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
+                        <ComboBoxItem Content="10000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
+                        <ComboBoxItem Content="15000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
+                        <ComboBoxItem Content="20000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
+                        <ComboBoxItem Content="25000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
+                        <ComboBoxItem Content="50000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
+                        <ComboBoxItem Content="100000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
                         </ComboBox>
 
                         <!-- Use Surface Stations -->
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="Use surface stations:" Foreground="White" VerticalAlignment="Center" Margin="0,5,10,5"/>
-                        <ComboBox x:Name="UseSurfaceStationsComboBox" Grid.Row="2" Grid.Column="1" 
-                                 Background="#FF2A2A2A" Foreground="White" BorderBrush="#FF404040" 
-                                 SelectedIndex="0" Padding="5" Margin="0,5,0,5">
-                            <ComboBoxItem Content="Yes (with Odyssey stations)"/>
-                            <ComboBoxItem Content="Yes (exclude Odyssey stations)"/>
-                            <ComboBoxItem Content="No"/>
+                                <ComboBox x:Name="UseSurfaceStationsComboBox" Grid.Row="2" Grid.Column="1" 
+                                 Style="{StaticResource ComboBoxStyle}"
+                                 SelectedIndex="0" Margin="0,5,0,5">
+                                <ComboBoxItem Content="Yes (with Odyssey stations)" Style="{StaticResource ComboBoxItemStyle}"/>
+                                <ComboBoxItem Content="Yes (with Odyssey stations)" Style="{StaticResource ComboBoxItemStyle}"/>
+                                <ComboBoxItem Content="Yes (exclude Odyssey stations)" Style="{StaticResource ComboBoxItemStyle}"/>
+                                <ComboBoxItem Content="No" Style="{StaticResource ComboBoxItemStyle}"/>
                         </ComboBox>
 
                         <!-- Source Station Power -->
                         <TextBlock Grid.Row="3" Grid.Column="0" Text="Source station Power:" Foreground="White" VerticalAlignment="Center" Margin="0,5,10,5"/>
                         <ComboBox x:Name="SourceStationPowerComboBox" Grid.Row="3" Grid.Column="1" 
-                                 Background="#FF2A2A2A" Foreground="White" BorderBrush="#FF404040" 
-                                 SelectedIndex="0" Padding="5" Margin="0,5,0,5">
-                            <ComboBoxItem Content="Any"/>
-                            <ComboBoxItem Content="Aisling Duval"/>
-                            <ComboBoxItem Content="Archon Delaine"/>
-                            <ComboBoxItem Content="Arissa Lavigny-Duval"/>
-                            <ComboBoxItem Content="Denton Patreus"/>
-                            <ComboBoxItem Content="Edmund Mahon"/>
-                            <ComboBoxItem Content="Felicia Winters"/>
-                            <ComboBoxItem Content="Jerome Archer"/>
-                            <ComboBoxItem Content="Li Yong-Rui"/>
-                            <ComboBoxItem Content="Nakato Kaine"/>
-                            <ComboBoxItem Content="Pranav Antal"/>
-                            <ComboBoxItem Content="Yuri Grom"/>
-                            <ComboBoxItem Content="Zemina Torval"/>
+                                 Style="{StaticResource ComboBoxStyle}"
+                                 SelectedIndex="0" Margin="0,5,0,5">
+                            <ComboBoxItem Content="Any" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Aisling Duval" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Archon Delaine" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Arissa Lavigny-Duval" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Denton Patreus" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Edmund Mahon" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Felicia Winters" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Jerome Archer" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Li Yong-Rui" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Nakato Kaine" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Pranav Antal" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Yuri Grom" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Zemina Torval" Style="{StaticResource ComboBoxItemStyle}"/>
                         </ComboBox>
 
                         <!-- Target Station Power -->
                         <TextBlock Grid.Row="4" Grid.Column="0" Text="Target station Power:" Foreground="White" VerticalAlignment="Center" Margin="0,5,10,5"/>
                         <ComboBox x:Name="TargetStationPowerComboBox" Grid.Row="4" Grid.Column="1" 
-                                 Background="#FF2A2A2A" Foreground="White" BorderBrush="#FF404040" 
-                                 SelectedIndex="0" Padding="5" Margin="0,5,0,5">
-                            <ComboBoxItem Content="Any"/>
-                            <ComboBoxItem Content="Aisling Duval"/>
-                            <ComboBoxItem Content="Archon Delaine"/>
-                            <ComboBoxItem Content="Arissa Lavigny-Duval"/>
-                            <ComboBoxItem Content="Denton Patreus"/>
-                            <ComboBoxItem Content="Edmund Mahon"/>
-                            <ComboBoxItem Content="Felicia Winters"/>
-                            <ComboBoxItem Content="Jerome Archer"/>
-                            <ComboBoxItem Content="Li Yong-Rui"/>
-                            <ComboBoxItem Content="Nakato Kaine"/>
-                            <ComboBoxItem Content="Pranav Antal"/>
-                            <ComboBoxItem Content="Yuri Grom"/>
-                            <ComboBoxItem Content="Zemina Torval"/>
+                                 Style="{StaticResource ComboBoxStyle}"
+                                 SelectedIndex="0" Margin="0,5,0,5">
+                            <ComboBoxItem Content="Any" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Aisling Duval" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Archon Delaine" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Arissa Lavigny-Duval" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Denton Patreus" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Edmund Mahon" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Felicia Winters" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Jerome Archer" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Li Yong-Rui" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Nakato Kaine" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Pranav Antal" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Yuri Grom" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Zemina Torval" Style="{StaticResource ComboBoxItemStyle}"/>
                         </ComboBox>
 
                         <!-- Min Supply -->
                         <TextBlock Grid.Row="5" Grid.Column="0" Text="Min. supply:" Foreground="White" VerticalAlignment="Center" Margin="0,5,10,5"/>
                         <ComboBox x:Name="MinSupplyComboBox" Grid.Row="5" Grid.Column="1" 
-                                 Background="#FF2A2A2A" Foreground="White" BorderBrush="#FF404040" 
-                                 SelectedIndex="0" Padding="5" Margin="0,5,0,5">
-                            <ComboBoxItem Content="Any"/>
-                            <ComboBoxItem Content="100 Units"/>
-                            <ComboBoxItem Content="500 Units"/>
-                            <ComboBoxItem Content="1,000 Units"/>
-                            <ComboBoxItem Content="2,500 Units"/>
-                            <ComboBoxItem Content="5,000 Units"/>
-                            <ComboBoxItem Content="10,000 Units"/>
-                            <ComboBoxItem Content="50,000 Units"/>
+                                 Style="{StaticResource ComboBoxStyle}"
+                                 SelectedIndex="0" Margin="0,5,0,5">
+                            <ComboBoxItem Content="Any" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="100 Units" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="500 Units" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="1,000 Units" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="2,500 Units" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="5,000 Units" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="10,000 Units" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="50,000 Units" Style="{StaticResource ComboBoxItemStyle}"/>
                         </ComboBox>
 
                         <!-- Min Demand -->
                         <TextBlock Grid.Row="6" Grid.Column="0" Text="Min. demand:" Foreground="White" VerticalAlignment="Center" Margin="0,5,10,5"/>
                         <ComboBox x:Name="MinDemandComboBox" Grid.Row="6" Grid.Column="1" 
-                                 Background="#FF2A2A2A" Foreground="White" BorderBrush="#FF404040" 
-                                 SelectedIndex="0" Padding="5" Margin="0,5,0,5">
-                            <ComboBoxItem Content="Any"/>
-                            <ComboBoxItem Content="100 Units or unlimited"/>
-                            <ComboBoxItem Content="500 Units or unlimited"/>
-                            <ComboBoxItem Content="1,000 Units or unlimited"/>
-                            <ComboBoxItem Content="2,500 Units or unlimited"/>
-                            <ComboBoxItem Content="5,000 Units or unlimited"/>
-                            <ComboBoxItem Content="10,000 Units or unlimited"/>
-                            <ComboBoxItem Content="50,000 Units or unlimited"/>
+                                 Style="{StaticResource ComboBoxStyle}"
+                                 SelectedIndex="0" Margin="0,5,0,5">
+                            <ComboBoxItem Content="Any" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="100 Units or unlimited" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="500 Units or unlimited" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="1,000 Units or unlimited" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="2,500 Units or unlimited" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="5,000 Units or unlimited" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="10,000 Units or unlimited" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="50,000 Units or unlimited" Style="{StaticResource ComboBoxItemStyle}"/>
                         </ComboBox>
 
                         <!-- Order By -->
                         <TextBlock Grid.Row="7" Grid.Column="0" Text="Order by:" Foreground="White" VerticalAlignment="Center" Margin="0,5,10,5"/>
                         <ComboBox x:Name="OrderByComboBox" Grid.Row="7" Grid.Column="1" 
-                                 Background="#FF2A2A2A" Foreground="White" BorderBrush="#FF404040" 
-                                 SelectedIndex="4" Padding="5" Margin="0,5,0,5">
-                            <ComboBoxItem Content="Best profit"/>
-                            <ComboBoxItem Content="Best profit per hour (estimate)"/>
-                            <ComboBoxItem Content="Last update"/>
-                            <ComboBoxItem Content="Route distance"/>
-                            <ComboBoxItem Content="Distance"/>
+                                 Style="{StaticResource ComboBoxStyle}"
+                                 SelectedIndex="4" Margin="0,5,0,5">
+                            <ComboBoxItem Content="Best profit" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Best profit per hour (estimate)" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Last update" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Route distance" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Distance" Style="{StaticResource ComboBoxItemStyle}"/>
                         </ComboBox>
 
                     </Grid>

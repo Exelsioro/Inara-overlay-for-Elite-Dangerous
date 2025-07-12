@@ -364,9 +364,9 @@ namespace ED_Inara_Overlay_2._0
 
         private void UpdateToggleButtonState()
         {
-            ToggleButton.Background = isToggleActive ? 
-                new SolidColorBrush(Color.FromRgb(76, 175, 80)) : // Green when active
-                new SolidColorBrush(Color.FromRgb(128, 128, 128)); // Gray when inactive
+            ToggleButton.Background = isToggleActive ?
+                new SolidColorBrush(Color.FromArgb(20, 128, 128, 128)) : 
+                new SolidColorBrush(Color.FromArgb(20, 20, 20, 0)); 
         }
 
         public void OnTradeRouteWindowClosed()
