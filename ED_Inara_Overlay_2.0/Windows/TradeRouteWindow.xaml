@@ -7,14 +7,15 @@
         xmlns:local="clr-namespace:ED_Inara_Overlay_2._0.Windows"
         mc:Ignorable="d"
         Title="Trade Route Search" 
-        Height="650" Width="320"
+        Width="420"
+        SizeToContent="Height"
         WindowStyle="None" 
         AllowsTransparency="True" 
         Background="Transparent"
         Topmost="True"
         ShowInTaskbar="False"
         ShowActivated="False"
-        ResizeMode="CanResize">
+        ResizeMode="NoResize">
     
     <!-- Main container with dark background -->
     <Border Style="{StaticResource WindowBorderStyle}" Background="#E61E1E1E">

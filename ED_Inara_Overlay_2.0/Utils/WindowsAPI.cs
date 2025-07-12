@@ -172,8 +172,9 @@ namespace ED_Inara_Overlay_2._0.Utils
             {
                 uint exStyle = GetWindowLong(helper.Handle, GWL_EXSTYLE);
                 // Remove WS_EX_TOPMOST from global setup - will be set conditionally
+                // Removed WS_EX_NOACTIVATE to allow window activation for combo box dropdowns
                 SetWindowLong(helper.Handle, GWL_EXSTYLE, 
-                    exStyle | WS_EX_LAYERED | WS_EX_NOACTIVATE);
+                    exStyle | WS_EX_LAYERED);
             }
         }
 

@@ -217,13 +217,13 @@ namespace ED_Inara_Overlay_2._0.Windows
             if (AdditionalFiltersGroupBox.Visibility == Visibility.Collapsed)
             {
                 AdditionalFiltersGroupBox.Visibility = Visibility.Visible;
-                ShowFiltersButton.Content = "Hide Additional Filters";
+                ShowFiltersButton.Content = "▲ Hide Additional Filters";
                 Logger.Logger.Info("Additional filters shown");
             }
             else
             {
                 AdditionalFiltersGroupBox.Visibility = Visibility.Collapsed;
-                ShowFiltersButton.Content = "Show Additional Filters";
+                ShowFiltersButton.Content = "▼ Show Additional Filters";
                 Logger.Logger.Info("Additional filters hidden");
             }
         }
