@@ -1,11 +1,4 @@
 # ED Inara Overlay 2.0 - Comprehensive Regression Test
-# ====================================================
-# This test verifies that all existing functionality remains unchanged:
-# 1. Manual hide/show shortcuts (focus behavior)
-# 2. Window drag/resize behavior
-# 3. Settings persistence
-# 4. CPU usage of timer loop
-# 5. Tray icon controls (if implemented)
 
 Write-Host "ED Inara Overlay 2.0 - Comprehensive Regression Test" -ForegroundColor Green
 Write-Host "====================================================" -ForegroundColor Green

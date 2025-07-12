@@ -58,12 +58,8 @@ namespace ED_Inara_Overlay_2._0
             Logger.Logger.Info("MainWindow initialization complete - starting hidden");
         }
 
-        /// <summary>
-        /// Attempts to find the target process with retry mechanism for initialization timing
-        /// </summary>
         private void FindTargetProcessWithRetry(string processName)
         {
-            // Try once immediately first
             var process = WindowsAPI.FindProcessByName(processName);
             if (process != null)
             {
@@ -81,7 +77,6 @@ namespace ED_Inara_Overlay_2._0
                 Logger.Logger.Info($"Target process {processName} not found initially");
             }
             
-            // If not found immediately, set up a retry timer (non-blocking)
             SetupRetryTimer(processName);
         }
         
@@ -90,9 +85,6 @@ namespace ED_Inara_Overlay_2._0
         private string retryProcessName = "";
         private const int maxRetryAttempts = 20; // 10 seconds with 500ms intervals
         
-        /// <summary>
-        /// Sets up a non-blocking retry timer to find the target process
-        /// </summary>
         private void SetupRetryTimer(string processName)
         {
             retryProcessName = processName;
@@ -258,26 +250,19 @@ namespace ED_Inara_Overlay_2._0
                 
                 if (currentState == OverlayState.ForceShow)
                 {
-                    // In ForceShow state, always show if target is visible (no additional checks needed)
-                    // shouldBeVisible already contains the correct value
-                    // Set topmost when target or overlay has focus
                     shouldBeTopmost = targetHasFocus || overlayHasFocus;
                 }
                 else if (currentState == OverlayState.Auto)
                 {
-                    // In Auto state, apply focus checks
                     shouldBeVisible = shouldBeVisible && (targetHasFocus || overlayHasFocus);
-                    // Set topmost when target or overlay has focus
                     shouldBeTopmost = targetHasFocus || overlayHasFocus;
                 }
                 
-                // Apply topmost state using WindowInteropHelper
                 if (this.IsVisible && this.IsLoaded)
                 {
                     WindowsAPI.SetTopmost(this, shouldBeTopmost);
                 }
                 
-                // Legacy forceVisible flag support
                 if (forceVisible && targetVisible && !targetMinimized)
                 {
                     shouldBeVisible = true;
@@ -291,14 +276,12 @@ namespace ED_Inara_Overlay_2._0
                     this.WindowState = WindowState.Normal;
                     this.Show();
                     
-                    // Reset forceVisible flag after successful show
                     if (forceVisible)
                     {
                         forceVisible = false;
                         Logger.Logger.Info("Resetting forceVisible flag after successful show");
                     }
                     
-                    // Restore child windows to their previous state if they were active
                     if (isToggleActive && tradeRouteWindow != null && !tradeRouteWindow.IsVisible)
                     {
                         tradeRouteWindow.Show();
@@ -315,7 +298,6 @@ namespace ED_Inara_Overlay_2._0
                     this.Hide();
                     this.Visibility = Visibility.Hidden;
                     
-                    // Hide child windows but preserve their state
                     if (tradeRouteWindow != null && tradeRouteWindow.IsVisible)
                     {
                         tradeRouteWindow.Hide();
@@ -327,10 +309,8 @@ namespace ED_Inara_Overlay_2._0
                     }
                 }
                 
-                // State machine transition from ForceShow to Auto after showing once and focus change
                 if (currentState == OverlayState.ForceShow && this.IsVisible)
                 {
-                    // Check if focus has changed (target lost focus or overlay gained focus)
                     if (!targetHasFocus || overlayHasFocus)
                     {
                         currentState = OverlayState.Auto;

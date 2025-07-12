@@ -1,12 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using static System.Collections.Specialized.BitVector32;
-using System.Xml;
 using HtmlAgilityPack;
 using Logger;
 
@@ -16,116 +12,31 @@ namespace InaraTools
     {
         #region Selector Constants
 
-        /// <summary>
-        /// XPath selector for trade route boxes containing route information
-        /// </summary>
         public const string RouteBoxSelector = "//div[@class='mainblock traderoutebox']";
-
-        /// <summary>
-        /// XPath selector for station links within route boxes
-        /// </summary>
         public const string StationLinkSelector = ".//a[contains(@href,'/elite/station-market/')]";
-
-        /// <summary>
-        /// XPath selector for commodity links
-        /// </summary>
         public const string CommodityLinkSelector = ".//a[contains(@href,'/elite/commodity/')]";
-
-        /// <summary>
-        /// XPath selector for station distance (Ls from star)
-        /// </summary>
         public const string StationDistanceSelector = ".//div[contains(@class,'itempairvalue')][contains(text(),'Ls')]";
-
-        /// <summary>
-        /// XPath selector for route distance (Ly between systems)
-        /// </summary>
         public const string RouteDistanceSelector = ".//div[text()='Route distance']/following-sibling::div";
-
-        /// <summary>
-        /// XPath selector for system distance (distance from current location)
-        /// </summary>
         public const string SystemDistanceSelector = ".//div[text()='Distance']/following-sibling::div";
-
-        /// <summary>
-        /// XPath selector for last updated timestamp
-        /// </summary>
         public const string UpdatedSelector = ".//div[text()='Updated']/following-sibling::div";
-
-        /// <summary>
-        /// XPath selector for profit per unit
-        /// </summary>
         public const string ProfitPerUnitSelector = ".//div[@class='traderouteboxprofit']//span[contains(@class,'biggest')]";
-
-        /// <summary>
-        /// XPath selector for station icons
-        /// </summary>
         public const string StationIconSelector = ".//div[contains(@class,'stationicon')]";
-
-        /// <summary>
-        /// XPath selector for supply/demand icons
-        /// </summary>
         public const string SupplyDemandIconSelector = ".//div[contains(@class,'supplydemandicon')]";
-
-        /// <summary>
-        /// XPath selector for black market indicator
-        /// </summary>
         public const string BlackMarketSelector = ".//div[contains(@class,'blackmarketicon')]";
-
-        /// <summary>
-        /// XPath selector for "From" label in trade route sections
-        /// </summary>
         public const string FromLabelXPath = ".//div[contains(@class,'itempairlabel')][text()='From']";
-
-        /// <summary>
-        /// XPath selector for "To" label in trade route sections
-        /// </summary>
         public const string ToLabelXPath = ".//div[contains(@class,'itempairlabel')][text()='To']";
-
-        /// <summary>
-        /// XPath selector for buy section on the right side of trade route box
-        /// </summary>
         public const string BuySectionXPath = ".//div[@class='traderouteboxtoright']";
-
-        /// <summary>
-        /// XPath selector for sell section on the left side of trade route box
-        /// </summary>
         public const string SellSectionXPath = ".//div[@class='traderouteboxfromleft']";
-
-        /// <summary>
-        /// XPath selector for trade route subsection containers
-        /// </summary>
         public const string RouteSubsectionXPath = ".//div[contains(@class,'traderoute-subsection')]";
-
-        /// <summary>
-        /// XPath selector for profit section in trade route boxes
-        /// </summary>
         public const string ProfitSectionXPath = ".//div[@class='traderouteboxprofit']";
-
-        /// <summary>
-        /// XPath selector for item pair containers (label-value pairs)
-        /// </summary>
         public const string ItemPairContainerXPath = ".//div[contains(@class,'itempaircontainer')]";
-
-        /// <summary>
-        /// XPath selector for item pair labels
-        /// </summary>
         public const string ItemPairLabelXPath = ".//div[contains(@class,'itempairlabel')]";
-
-        /// <summary>
-        /// XPath selector for item pair values
-        /// </summary>
         public const string ItemPairValueXPath = ".//div[contains(@class,'itempairvalue')]";
 
         #endregion
 
         #region HTML Node Finding Methods
 
-        /// <summary>
-        /// Finds the first HTML node within the given container that has a class containing the specified text.
-        /// </summary>
-        /// <param name="container">The container node to search within</param>
-        /// <param name="classContains">The text that should be contained in the class attribute</param>
-        /// <returns>The first matching HtmlNode, or null if not found</returns>
         public static HtmlNode? Find(HtmlNode container, string classContains)
         {
             if (container == null)
@@ -156,11 +67,6 @@ namespace InaraTools
 
         #region Text Cleaning and Parsing Methods
 
-        /// <summary>
-        /// Cleans numeric text by removing common formatting characters and extracting numbers.
-        /// </summary>
-        /// <param name="text">The text to clean</param>
-        /// <returns>Cleaned numeric text, or empty string if input is null/empty</returns>
         public static string CleanNumber(string text)
         {
             if (string.IsNullOrWhiteSpace(text))

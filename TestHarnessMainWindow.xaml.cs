@@ -14,23 +14,15 @@ namespace OverlayTestHarness
 {
     public partial class TestHarnessMainWindow : Window
     {
-        // Mock target window
         private Form? mockTargetWindow;
         private IntPtr mockTargetHandle;
         private uint mockTargetProcessId;
-        
-        // Overlay instance
         private MainWindow? overlayWindow;
-        
-        // Automation
         private DispatcherTimer? focusAutomationTimer;
         private bool automationRunning = false;
         private bool focusToggleState = false;
-        
-        // UI Automation
         private AutomationElement? targetAutomationElement;
         
-        // Win32 API for focus manipulation
         [DllImport("user32.dll")]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
         
@@ -47,12 +39,8 @@ namespace OverlayTestHarness
         {
             InitializeComponent();
             
-            // Wire up slider event
             IntervalSlider.ValueChanged += IntervalSlider_ValueChanged;
-            
             LogMessage("Test Harness initialized. Ready to create mock target window.");
-            
-            // Auto-scroll log to bottom
             LogTextBox.TextChanged += (s, e) => LogScrollViewer.ScrollToBottom();
         }
 
@@ -60,7 +48,6 @@ namespace OverlayTestHarness
         {
             IntervalText.Text = $"{(int)e.NewValue}s";
             
-            // Update timer interval if automation is running
             if (focusAutomationTimer != null && automationRunning)
             {
                 focusAutomationTimer.Interval = TimeSpan.FromSeconds(e.NewValue);
