@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35828.75 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ED_Inara_Overlay_2.0", "ED_Inara_Overlay_2.0.csproj", "{49339430-98A2-4096-B69F-4BFD45CB1D61}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InaraTools", "..\InaraTools\InaraTools.csproj", "{E75D412E-1ED6-4763-8EBF-66959A05ECC3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logger", "..\Logger\Logger.csproj", "{EB20B7BB-61EF-4BA2-A6F2-1A179A5A3D99}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{49339430-98A2-4096-B69F-4BFD45CB1D61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49339430-98A2-4096-B69F-4BFD45CB1D61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49339430-98A2-4096-B69F-4BFD45CB1D61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49339430-98A2-4096-B69F-4BFD45CB1D61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E75D412E-1ED6-4763-8EBF-66959A05ECC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E75D412E-1ED6-4763-8EBF-66959A05ECC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E75D412E-1ED6-4763-8EBF-66959A05ECC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E75D412E-1ED6-4763-8EBF-66959A05ECC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB20B7BB-61EF-4BA2-A6F2-1A179A5A3D99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB20B7BB-61EF-4BA2-A6F2-1A179A5A3D99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB20B7BB-61EF-4BA2-A6F2-1A179A5A3D99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB20B7BB-61EF-4BA2-A6F2-1A179A5A3D99}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {963E6F4D-66C5-48D4-A84D-6E39CE61F098}
+	EndGlobalSection
+EndGlobal
