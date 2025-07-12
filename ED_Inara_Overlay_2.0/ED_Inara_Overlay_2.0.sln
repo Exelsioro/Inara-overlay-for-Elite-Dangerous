@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logger", "..\Logger\Logger.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverlayTestHarness", "..\Testing\OverlayTestHarness.csproj", "{48410110-B9DF-4EA8-BC24-6D7D297CE3B7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinimalTestHarness", "..\Testing\MinimalTestHarness.csproj", "{A2A0C4A4-709D-5ECB-B025-30E16F823E97}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockTargetApp", "..\Testing\MockTargetApp\MockTargetApp.csproj", "{6EBEC953-BA7F-01D6-7E4B-FEC5EBB13EF9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{48410110-B9DF-4EA8-BC24-6D7D297CE3B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48410110-B9DF-4EA8-BC24-6D7D297CE3B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48410110-B9DF-4EA8-BC24-6D7D297CE3B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2A0C4A4-709D-5ECB-B025-30E16F823E97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2A0C4A4-709D-5ECB-B025-30E16F823E97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2A0C4A4-709D-5ECB-B025-30E16F823E97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2A0C4A4-709D-5ECB-B025-30E16F823E97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EBEC953-BA7F-01D6-7E4B-FEC5EBB13EF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EBEC953-BA7F-01D6-7E4B-FEC5EBB13EF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EBEC953-BA7F-01D6-7E4B-FEC5EBB13EF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EBEC953-BA7F-01D6-7E4B-FEC5EBB13EF9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

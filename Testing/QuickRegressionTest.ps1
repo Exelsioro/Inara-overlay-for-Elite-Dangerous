@@ -6,7 +6,7 @@ Write-Host "=============================================" -ForegroundColor Gree
 Write-Host ""
 
 # Configuration
-$AppPath = "bin\Debug\net8.0-windows\ED_Inara_Overlay_2.0.exe"
+$AppPath = "..\ED_Inara_Overlay_2.0\bin\Debug\net8.0-windows\ED_Inara_Overlay_2.0.exe"
 $TestsPassed = 0
 $TestsTotal = 0
 

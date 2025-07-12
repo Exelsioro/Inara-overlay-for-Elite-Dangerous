@@ -17,7 +17,6 @@ namespace MinimalTestHarness
             try
             {
                 // Initialize logger
-                Logger.Logger.Initialize("MinimalTestHarness", "logs");
                 Logger.Logger.Info("Minimal Test Harness Starting");
                 
                 // Start a notepad process to serve as our test target
@@ -33,7 +32,7 @@ namespace MinimalTestHarness
                     Console.WriteLine("Starting overlay targeting notepad...");
                     
                     // Create and show the overlay
-                    var overlay = new MainWindow("notepad");
+                    var overlay = new ED_Inara_Overlay_2._0.MainWindow("notepad");
                     
                     // Start WPF application
                     var app = new System.Windows.Application();

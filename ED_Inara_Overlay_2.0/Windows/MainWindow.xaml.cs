@@ -33,7 +33,7 @@ namespace ED_Inara_Overlay_2._0
         private bool forceVisible = false; // Flag to ensure visibility after target detection
         private OverlayState currentState = OverlayState.Waiting;
 
-        public MainWindow(string processName = "notepad", Process foundProcess = null)
+        public MainWindow(string processName = "notepad", Process? foundProcess = null)
         {
             InitializeComponent();
             

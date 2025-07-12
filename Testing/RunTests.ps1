@@ -6,7 +6,7 @@ Write-Host "===================================" -ForegroundColor Green
 Write-Host ""
 
 # Set paths
-$AppPath = "bin\Debug\net8.0-windows\ED_Inara_Overlay_2.0.exe"
+$AppPath = "..\ED_Inara_Overlay_2.0\bin\Debug\net8.0-windows\ED_Inara_Overlay_2.0.exe"
 $MockTargetPath = "..\MockTargetApp\bin\Debug\net8.0-windows\MockTargetApp.exe"
 
 # Check if files exist

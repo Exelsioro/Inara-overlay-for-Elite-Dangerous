@@ -24,7 +24,7 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host ""
     
     # Run the application
-    & "D:\Projects\ED_Inara_Overlay_2.0\ED_Inara_Overlay_2.0\bin\Debug\net8.0-windows\ED_Inara_Overlay_2.0.exe"
+    & "..\ED_Inara_Overlay_2.0\bin\Debug\net8.0-windows\ED_Inara_Overlay_2.0.exe"
     
 } else {
     Write-Host "Build failed! Check the error messages above." -ForegroundColor Red

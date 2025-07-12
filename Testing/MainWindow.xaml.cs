@@ -78,7 +78,7 @@ namespace OverlayTestHarness
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Automation failed: " + ex.Message);
+                    System.Windows.MessageBox.Show("Automation failed: " + ex.Message);
                 }
             }
         }

@@ -9,7 +9,7 @@ echo 3. Change focus to Notepad - overlay should hide
 echo 4. Return focus to mock target - overlay should reappear
 echo.
 
-set "APP_PATH=%~dp0bin\Debug\net8.0-windows\ED_Inara_Overlay_2.0.exe"
+set "APP_PATH=%~dp0..\ED_Inara_Overlay_2.0\bin\Debug\net8.0-windows\ED_Inara_Overlay_2.0.exe"
 set "MOCK_TARGET_NAME=MockTargetApp"
 
 echo Checking if required files exist...
@@ -42,7 +42,7 @@ echo.
 
 REM Compile the mock target app
 echo Compiling MockTargetApp...
-csc /target:winexe /reference:System.Windows.Forms.dll /reference:System.Drawing.dll /out:MockTargetApp.exe ../MockTargetApp.cs
+csc /target:winexe /reference:System.Windows.Forms.dll /reference:System.Drawing.dll /out:MockTargetApp.exe MockTargetApp.cs
 
 if not exist "MockTargetApp.exe" (
     echo ERROR: Failed to compile MockTargetApp.exe

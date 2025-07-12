@@ -7,7 +7,7 @@ Write-Host "=================================================" -ForegroundColor 
 Write-Host ""
 
 # Configuration
-$AppPath = Join-Path $PSScriptRoot "bin\Debug\net8.0-windows\ED_Inara_Overlay_2.0.exe"
+$AppPath = "..\ED_Inara_Overlay_2.0\bin\Debug\net8.0-windows\ED_Inara_Overlay_2.0.exe"
 $TestResults = @()
 
 # Function to add test result

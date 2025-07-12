@@ -7,7 +7,7 @@ Write-Host "==================================================" -ForegroundColor
 Write-Host ""
 
 # Configuration
-$AppPath = Join-Path $PSScriptRoot "bin\Debug\net8.0-windows\ED_Inara_Overlay_2.0.exe"
+$AppPath = "..\ED_Inara_Overlay_2.0\bin\Debug\net8.0-windows\ED_Inara_Overlay_2.0.exe"
 $MockTargetPath = Join-Path $PSScriptRoot "..\MockTargetApp\bin\Debug\net8.0-windows\MockTargetApp.exe"
 $MockTargetName = "MockTargetApp"
 

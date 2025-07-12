@@ -93,14 +93,6 @@ namespace MockTargetApp
             Application.Run(mainForm);
         }
 
-        [STAThread]
-        public static void Main()
-        {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            
-            var app = new MockTargetApp();
-            app.Run();
-        }
+        // Main method removed - using Program.cs instead
     }
 }
