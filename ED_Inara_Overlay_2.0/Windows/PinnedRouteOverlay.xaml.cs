@@ -159,22 +159,6 @@ namespace ED_Inara_Overlay_2._0.Windows
             }
         }
 
-        private void EnsureOverlayVisibility()
-        {
-            if (this.IsLoaded && this.IsVisible)
-            {
-                var windowHelper = new WindowInteropHelper(this);
-                if (windowHelper.Handle != IntPtr.Zero)
-                {
-                    // Ensure the overlay stays topmost
-                    WindowsAPI.SetWindowPos(windowHelper.Handle, WindowsAPI.HWND_TOPMOST,
-                        0, 0, 0, 0,
-                        WindowsAPI.SWP_NOMOVE | WindowsAPI.SWP_NOSIZE |
-                        WindowsAPI.SWP_NOACTIVATE | WindowsAPI.SWP_SHOWWINDOW);
-                }
-            }
-        }
-
         private int CalculateRequiredHeight()
         {
             // Default minimum height when no content

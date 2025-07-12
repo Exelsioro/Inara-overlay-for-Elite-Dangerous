@@ -7,9 +7,7 @@ public class TradeLeg
         public Commodity SellCommodity { get; set; } = new Commodity();
         public Commodity BuyCommodity { get; set; } = new Commodity();
         public int ProfitPerUnit { get; set; }
-        public int ToStationDistance { get; set; }
         public string LastUpdate { get; set; } = "";
-        public int ProfitPerTrip(int cargoCapacity) => ProfitPerUnit * cargoCapacity;
     }
 
     public class TradeRoute
@@ -23,15 +21,10 @@ public class TradeLeg
         public TradeLeg? SecondRoute { get; set; }
         public double RouteDistance { get; set; }
 
-        public double TotalProfitPerHour { get; set; }
         public string LastUpdate { get; set; } = "";    
-        public int TotalProfitPerUnit => IsRoundTrip && SecondRoute != null ? FirstRoute.ProfitPerUnit + SecondRoute.ProfitPerUnit : FirstRoute.ProfitPerUnit;
         public int TotalProfitPerTrip { get; set; }
         public double TotalRouteDistance => IsRoundTrip && SecondRoute != null ? RouteDistance * 2 : RouteDistance;
 
-        // Aliases for compatibility
-        public Station? BuyStation { get => CardHeader.FromStation; set => CardHeader.FromStation = value ?? new Station(); }
-        public Station? SellStation { get => CardHeader.ToStation; set => CardHeader.ToStation = value ?? new Station(); }
     }
 
     public class CardHeader
@@ -60,8 +53,6 @@ public class Station
         public string Supply { get; set; } = "";
         public string Demand { get; set; } = "";
         
-        // New properties
-        public string IconKey { get; set; } = "";
         public bool IsOdysseyOnly { get; set; }
     }
     public class TradeRouteSearchParams

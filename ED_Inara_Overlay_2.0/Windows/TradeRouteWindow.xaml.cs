@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using InaraTools;
-using Logger;
-using ED_Inara_Overlay_2._0.ViewModels;
 using ED_Inara_Overlay_2._0.Utils;
 
 namespace ED_Inara_Overlay_2._0.Windows
@@ -348,14 +343,6 @@ namespace ED_Inara_Overlay_2._0.Windows
             updateTimer?.Stop();
         }
 
-        //private string GetComboBoxIndex(ComboBox comboBox)
-        //{
-        //    if (comboBox?.SelectedItem is ComboBoxItem selectedItem)
-        //    {
-        //        return selectedItem.TabIndex.ToString() ?? "";
-        //    }
-        //    return "";
-        //}
         private int GetComboBoxIndex(ComboBox comboBox)
         {
             if (comboBox?.SelectedItem is ComboBoxItem selectedItem)

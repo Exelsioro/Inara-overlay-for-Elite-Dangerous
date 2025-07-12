@@ -6,9 +6,11 @@ using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Threading;
 using System.Windows.Forms;
+using System.Drawing;
 using ED_Inara_Overlay_2._0;
 using ED_Inara_Overlay_2._0.Utils;
 using Application = System.Windows.Application;
+using WinForms = System.Windows.Forms;
 
 namespace OverlayTestHarness
 {
@@ -110,7 +112,7 @@ namespace OverlayTestHarness
             }
         }
 
-        private void StartOverlayButton_Click(object sender, RoutedEventArgs e)
+        private async void StartOverlayButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -121,10 +123,6 @@ namespace OverlayTestHarness
                 }
                 
                 LogMessage("Starting overlay application...");
-                
-                // Create overlay window instance that targets our mock window
-                // We'll use a custom process name that we can simulate
-                var mockProcessName = "MockEliteDangerous";
                 
                 // Start a new process to simulate the target (using notepad as a simple example)
                 var processInfo = new ProcessStartInfo

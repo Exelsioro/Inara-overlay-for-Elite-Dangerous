@@ -5,6 +5,7 @@ using System.Windows.Automation;
 using System.Windows.Forms;
 using System.Drawing;
 using Application = System.Windows.Application;
+using WinForms = System.Windows.Forms;
 
 namespace OverlayTestHarness
 {

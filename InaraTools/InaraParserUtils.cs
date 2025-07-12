@@ -10,61 +10,6 @@ namespace InaraTools
 {
     public static class InaraParserUtils
     {
-        #region Selector Constants
-
-        public const string RouteBoxSelector = "//div[@class='mainblock traderoutebox']";
-        public const string StationLinkSelector = ".//a[contains(@href,'/elite/station-market/')]";
-        public const string CommodityLinkSelector = ".//a[contains(@href,'/elite/commodity/')]";
-        public const string StationDistanceSelector = ".//div[contains(@class,'itempairvalue')][contains(text(),'Ls')]";
-        public const string RouteDistanceSelector = ".//div[text()='Route distance']/following-sibling::div";
-        public const string SystemDistanceSelector = ".//div[text()='Distance']/following-sibling::div";
-        public const string UpdatedSelector = ".//div[text()='Updated']/following-sibling::div";
-        public const string ProfitPerUnitSelector = ".//div[@class='traderouteboxprofit']//span[contains(@class,'biggest')]";
-        public const string StationIconSelector = ".//div[contains(@class,'stationicon')]";
-        public const string SupplyDemandIconSelector = ".//div[contains(@class,'supplydemandicon')]";
-        public const string BlackMarketSelector = ".//div[contains(@class,'blackmarketicon')]";
-        public const string FromLabelXPath = ".//div[contains(@class,'itempairlabel')][text()='From']";
-        public const string ToLabelXPath = ".//div[contains(@class,'itempairlabel')][text()='To']";
-        public const string BuySectionXPath = ".//div[@class='traderouteboxtoright']";
-        public const string SellSectionXPath = ".//div[@class='traderouteboxfromleft']";
-        public const string RouteSubsectionXPath = ".//div[contains(@class,'traderoute-subsection')]";
-        public const string ProfitSectionXPath = ".//div[@class='traderouteboxprofit']";
-        public const string ItemPairContainerXPath = ".//div[contains(@class,'itempaircontainer')]";
-        public const string ItemPairLabelXPath = ".//div[contains(@class,'itempairlabel')]";
-        public const string ItemPairValueXPath = ".//div[contains(@class,'itempairvalue')]";
-
-        #endregion
-
-        #region HTML Node Finding Methods
-
-        public static HtmlNode? Find(HtmlNode container, string classContains)
-        {
-            if (container == null)
-            {
-                Logger.Logger.Warning($"InaraParserUtils.Find: Container node is null");
-                return null;
-            }
-
-            if (string.IsNullOrWhiteSpace(classContains))
-            {
-                Logger.Logger.Warning($"InaraParserUtils.Find: classContains parameter is null or empty");
-                return null;
-            }
-
-            try
-            {
-                var selector = $".//*[contains(@class,'{classContains}')]";
-                return container.SelectSingleNode(selector);
-            }
-            catch (Exception ex)
-            {
-                Logger.Logger.Warning($"InaraParserUtils.Find: Failed to find node with class containing '{classContains}': {ex.Message}");
-                return null;
-            }
-        }
-
-        #endregion
-
         #region Text Cleaning and Parsing Methods
 
         public static string CleanNumber(string text)
@@ -238,67 +183,6 @@ namespace InaraTools
 
         #endregion
 
-        #region Station Name Extraction
-
-        /// <summary>
-        /// Extracts station name from an HTML node, with failsafe error handling.
-        /// Returns null only after logging critical extraction failure with class and outerHtml snippet.
-        /// Looks for text content in anchor tags or direct text content.
-        /// </summary>
-        /// <param name="node">The HTML node to extract station name from</param>
-        /// <returns>Extracted station name, or null if extraction fails</returns>
-        public static string? ExtractStationName(HtmlNode node)
-        {
-            if (node == null)
-            {
-                Logger.Logger.LogCriticalExtractionFailure("ExtractStationName", "<null>", "<null>", "Input node is null");
-                return null;
-            }
-
-            try
-            {
-                // First try to find an anchor tag within the node
-                var anchorNode = node.SelectSingleNode(".//a");
-                if (anchorNode != null)
-                {
-                    var anchorText = anchorNode.InnerText?.Trim();
-                    if (!string.IsNullOrEmpty(anchorText))
-                    {
-                        return anchorText;
-                    }
-                }
-
-                // If no anchor found, try direct text content
-                var directText = node.InnerText?.Trim();
-                if (!string.IsNullOrEmpty(directText))
-                {
-                    return directText;
-                }
-
-                // Try getting text from title attribute
-                var titleText = node.GetAttributeValue("title", "")?.Trim();
-                if (!string.IsNullOrEmpty(titleText))
-                {
-                    return titleText;
-                }
-
-                // Log critical extraction failure with context before returning null
-                var nodeClass = node.GetAttributeValue("class", "<no-class>");
-                var outerHtml = node.OuterHtml ?? "<no-html>";
-                Logger.Logger.LogCriticalExtractionFailure("ExtractStationName", nodeClass, outerHtml, "No station name found in any extraction method");
-                return null;
-            }
-            catch (Exception ex)
-            {
-                var nodeClass = node?.GetAttributeValue("class", "<no-class>") ?? "<exception-getting-class>";
-                var outerHtml = node?.OuterHtml ?? "<exception-getting-html>";
-                Logger.Logger.LogCriticalExtractionFailure("ExtractStationName", nodeClass, outerHtml, $"Exception: {ex.Message}");
-                return null;
-            }
-        }
-
-        #endregion
-
         #region Helper Methods
 
         /// <summary>
@@ -325,32 +209,6 @@ namespace InaraTools
         #endregion
 
         #region Trade Route Parsing
-
-        /// <summary>
-        /// Parses trade routes from an HTML string containing Inara trade route data.
-        /// </summary>
-        /// <param name="htmlContent">The HTML content to parse</param>
-        /// <returns>List of parsed trade routes, or empty list if parsing fails</returns>
-        public static List<TradeRoute> ParseTradeRoutes(string htmlContent)
-        {
-            if (string.IsNullOrWhiteSpace(htmlContent))
-            {
-                Logger.Logger.Warning("InaraParserUtils.ParseTradeRoutes: HTML content is null or empty");
-                return new List<TradeRoute>();
-            }
-
-            try
-            {
-                var doc = new HtmlAgilityPack.HtmlDocument();
-                doc.LoadHtml(htmlContent);
-                return ParseTradeRoutes(doc);
-            }
-            catch (Exception ex)
-            {
-                Logger.Logger.Warning($"InaraParserUtils.ParseTradeRoutes: Failed to parse HTML content: {ex.Message}");
-                return new List<TradeRoute>();
-            }
-        }
 
         /// <summary>
         /// Parses trade routes from an HtmlDocument containing Inara trade route data.
@@ -547,8 +405,6 @@ namespace InaraTools
             }
         }
 
-
-
         /// <summary>
         /// Parses station information from a station link, extracting name, system, and distance data.
         /// </summary>
@@ -603,7 +459,6 @@ namespace InaraTools
                 if (stationIcon != null)
                 {
                     var iconStyle = GetSafeAttribute(stationIcon, "style");
-                    station.StationIconKey = ExtractIconPosition(iconStyle);
                     station.StationType = GetStationTypeFromIcon(station.StationIconKey);
                 }
 
@@ -714,7 +569,6 @@ namespace InaraTools
             return commodity;
         }
 
-
         /// <summary>
         /// Parses supply and demand information from a specific subsection.
         /// </summary>
@@ -806,7 +660,6 @@ namespace InaraTools
                 Logger.Logger.Warning($"ParseRouteInformation: Exception: {ex.Message}");
             }
         }
-
         public static void ParseRouteDistance(HtmlNode routeBox, TradeRoute route)
         {
             // Parse route distance
@@ -831,28 +684,6 @@ namespace InaraTools
                     route.TotalProfitPerTrip = ParseInt(match.Groups[1].Value);
                     }
                 }
-        }
-
-
-
-        /// <summary>
-        /// Extracts icon position from a style attribute.
-        /// </summary>
-        public static string ExtractIconPosition(string styleAttribute)
-        {
-            try
-            {
-                var match = Regex.Match(styleAttribute, @"background-position:\s*(-?\d+)px\s+(-?\d+)px");
-                if (match.Success)
-                {
-                    return $"{match.Groups[1].Value},{match.Groups[2].Value}";
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Logger.Warning($"ExtractIconPosition: Exception: {ex.Message}");
-            }
-            return "";
         }
 
         /// <summary>

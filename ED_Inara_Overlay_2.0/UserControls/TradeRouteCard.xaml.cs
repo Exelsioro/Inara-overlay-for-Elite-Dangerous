@@ -9,10 +9,6 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Media.Effects;
 using InaraTools;
 using ED_Inara_Overlay_2._0.Utils;
 
@@ -74,73 +70,6 @@ namespace ED_Inara_Overlay_2._0.UserControls
                 ContentStackPanel.Children.Add(CreateEliteDangerousSpacer());
                 ContentStackPanel.Children.Add(BuildEliteDangerousLegSection(tradeRoute.SecondRoute, tradeRoute.CardHeader.ToStation, tradeRoute.CardHeader.FromStation, "RETURN ROUTE", false));
             }
-        }
-
-        private UIElement BuildLegSection(TradeLeg leg, Station fromStation, Station toStation, double routeDistance, bool isBuyFirst)
-        {
-            var grid = new Grid();
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-
-            // Create station header with proper station names
-            var header = BuildStationHeader(leg, fromStation, toStation, routeDistance);
-            Grid.SetRow(header, 0);
-            grid.Children.Add(header);
-
-            var subHeader = BuildStationSubHeader(routeDistance);
-            Grid.SetRow(subHeader, 1);
-            grid.Children.Add(subHeader);
-
-            // Commodity and profit info
-            var infoGrid = new Grid();
-            infoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            infoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            infoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            infoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            infoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-
-            // Commodity
-            var commodityBlock = UIHelpers.CreateBodyText($"Commodity: \n{leg.BuyCommodity.Name}");
-            Grid.SetColumn(commodityBlock, 0);
-            infoGrid.Children.Add(commodityBlock);
-
-            // Price
-            var priceBlock = UIHelpers.CreateBodyText($" Buy for: {leg.BuyCommodity.Price} \n Sell for: {leg.SellCommodity.Price}");
-            Grid.SetColumn(priceBlock, 1);
-            infoGrid.Children.Add(priceBlock);
-
-            // Supply/Demand
-            var supplyDemandBlock = UIHelpers.CreateBodyText($"Supply: {leg.BuyCommodity.Supply} \nDemand: {leg.SellCommodity.Demand}");
-            Grid.SetColumn(supplyDemandBlock, 2);
-            infoGrid.Children.Add(supplyDemandBlock);
-
-
-            // Profit per unit
-            var profitBlock = UIHelpers.CreateSuccessText($"Profit: {leg.SellCommodity.Price - leg.BuyCommodity.Price:N0} Cr");
-            Grid.SetColumn(profitBlock, 3);
-            infoGrid.Children.Add(profitBlock);
-
-            Grid.SetRow(infoGrid, 2);
-            grid.Children.Add(infoGrid);
-
-            return grid;
-        }
-
-        private UIElement BuildStationHeader(TradeLeg leg, Station from, Station to, double distance)
-        {
-            return UIHelpers.CreateHeaderText($"From {from.System}, station {from.Name}({from.DistanceFromStar}Ls) to system {to.System}, {to.Name}({to.DistanceFromStar}Ls).");
-        }
-        private UIElement BuildStationSubHeader(double distance)
-        {
-            return UIHelpers.CreateSubHeaderText($"Route distance: {distance:F2} Ly");
-        }
-
-        private UIElement BuildSummary(TradeRoute tradeRoute)
-        {
-            var summaryText = UIHelpers.CreateBodyText($"Total Profit: {tradeRoute.TotalProfitPerTrip:N0} Cr, Distance: {tradeRoute.TotalRouteDistance:F2} Ly, Last Update: {tradeRoute.LastUpdate}");
-            summaryText.Margin = new Thickness(0, 10, 0, 0);
-            return summaryText;
         }
 
         #region Elite Dangerous Inspired UI Methods

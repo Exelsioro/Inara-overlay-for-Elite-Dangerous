@@ -1,15 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using System.Windows.Threading;
 using System.Windows.Interop;
 using InaraTools;
 using Logger;
 using ED_Inara_Overlay_2._0.Utils;
-using ED_Inara_Overlay_2._0.ViewModels;
 using ED_Inara_Overlay_2._0.UserControls;
 
 namespace ED_Inara_Overlay_2._0.Windows
@@ -162,23 +157,6 @@ namespace ED_Inara_Overlay_2._0.Windows
                 Logger.Logger.Info("ResultsOverlayWindow update timer stopped");
             }
         }
-
-        private void EnsureOverlayVisibility()
-        {
-            if (this.IsLoaded && this.IsVisible)
-            {
-                var windowHelper = new WindowInteropHelper(this);
-                if (windowHelper.Handle != IntPtr.Zero)
-                {
-                    // Ensure the overlay stays topmost
-                    WindowsAPI.SetWindowPos(windowHelper.Handle, WindowsAPI.HWND_TOPMOST,
-                        0, 0, 0, 0,
-                        WindowsAPI.SWP_NOMOVE | WindowsAPI.SWP_NOSIZE |
-                        WindowsAPI.SWP_NOACTIVATE | WindowsAPI.SWP_SHOWWINDOW);
-                }
-            }
-        }
-
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             Logger.Logger.Info("Results overlay close button clicked");

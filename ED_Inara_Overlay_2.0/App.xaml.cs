@@ -1,5 +1,4 @@
-using System.Configuration;
-using System.Data;
+using System;
 using System.Windows;
 using ED_Inara_Overlay_2._0.Windows;
 using ED_Inara_Overlay_2._0.Utils;

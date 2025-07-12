@@ -12,7 +12,7 @@ namespace MockTargetApp
         private Form mainForm;
         private Button button1;
         private Label statusLabel;
-        private Timer timer;
+        private System.Windows.Forms.Timer timer;
 
         public MockTargetApp()
         {
@@ -56,7 +56,7 @@ namespace MockTargetApp
             mainForm.Controls.Add(button1);
 
             // Set up timer for some activity
-            timer = new Timer();
+            timer = new System.Windows.Forms.Timer();
             timer.Interval = 2000; // 2 seconds
             timer.Tick += Timer_Tick;
             timer.Start();
