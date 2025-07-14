@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Theme Name="BlueAccent">
+  <!-- Only override ComboBox colors - all other colors will use defaults -->
+  <Color Key="ComboBoxAccentColor" Value="#FF0078D4"/>
+  <Color Key="ComboBoxHoverColor" Value="#FF106EBE"/>
+  <Color Key="ComboBoxActiveColor" Value="#FF005A9E"/>
+  
+  <!-- Override some action button colors -->
+  <Color Key="PrimaryActionButtonBackgroundColor" Value="#FF0078D4"/>
+  <Color Key="SecondaryActionButtonBackgroundColor" Value="#FF106EBE"/>
+  
+  <!-- Header text color -->
+  <Color Key="HeaderTextColor" Value="#FF0078D4"/>
+  
+  <!-- This unknown key will be ignored -->
+  <Color Key="UnknownColor" Value="#FFFF0000"/>
+</Theme>

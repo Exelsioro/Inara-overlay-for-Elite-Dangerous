@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Theme Name="Default">
+  <!-- Background Colors -->
+  <Color Key="PrimaryBackgroundColor" Value="#FF1E1E1E"/>
+  <Color Key="SecondaryBackgroundColor" Value="#FF2A2A2A"/>
+  <Color Key="CardBackgroundColor" Value="#FF2A2A2A"/>
+  <Color Key="HighlightBackgroundColor" Value="#FF3A3A3A"/>
+  
+  <!-- Border Colors -->
+  <Color Key="BorderColor" Value="#FF404040"/>
+  <Color Key="AccentBorderColor" Value="#FF606060"/>
+  <Color Key="SuccessBorderColor" Value="#FF90EE90"/>
+  
+  <!-- Text Colors -->
+  <Color Key="PrimaryTextColor" Value="#FFFFFFFF"/>
+  <Color Key="SecondaryTextColor" Value="#FFE0E0E0"/>
+  <Color Key="MutedTextColor" Value="#FFB0B0B0"/>
+  <Color Key="SuccessTextColor" Value="#FF90EE90"/>
+  <Color Key="ErrorTextColor" Value="#FFFF6B6B"/>
+  <Color Key="WarningTextColor" Value="#FFFFB347"/>
+  
+  <!-- Overlay and Transparency Colors -->
+  <Color Key="OverlayBackgroundColor" Value="#44000000"/>
+  <Color Key="ContentOverlayBackgroundColor" Value="#33000000"/>
+  <Color Key="CloseButtonBackgroundColor" Value="#FFCC4444"/>
+  <Color Key="PrimaryActionButtonBackgroundColor" Value="#FF4CAF50"/>
+  <Color Key="SecondaryActionButtonBackgroundColor" Value="#FF2196F3"/>
+  
+  <!-- ScrollBar Colors -->
+  <Color Key="ScrollBarBackgroundColor" Value="#22ffffff"/>
+  <Color Key="ScrollBarBorderColor" Value="#44ffffff"/>
+  <Color Key="ScrollBarForegroundColor" Value="#66ffffff"/>
+  <Color Key="ScrollBarThumbBackgroundColor" Value="#88007acc"/>
+  <Color Key="ScrollBarThumbBorderColor" Value="#aa007acc"/>
+  
+  <!-- ComboBox Colors -->
+  <Color Key="ComboBoxAccentColor" Value="#FF4CAF50"/>
+  <Color Key="ComboBoxHoverColor" Value="#FF66BB6A"/>
+  <Color Key="ComboBoxActiveColor" Value="#FF81C784"/>
+</Theme>

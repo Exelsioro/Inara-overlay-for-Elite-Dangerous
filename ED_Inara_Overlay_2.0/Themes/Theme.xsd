@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://schemas.edinara.com/theme"
+           xmlns:tns="http://schemas.edinara.com/theme"
+           elementFormDefault="qualified">
+
+  <!-- Root Theme element -->
+  <xs:element name="Theme" type="tns:ThemeType"/>
+
+  <!-- Theme complex type -->
+  <xs:complexType name="ThemeType">
+    <xs:sequence>
+      <xs:element name="Color" type="tns:ColorType" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Name" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <!-- Color element type -->
+  <xs:complexType name="ColorType">
+    <xs:attribute name="Key" type="xs:string" use="required"/>
+    <xs:attribute name="Value" type="tns:ColorValueType" use="required"/>
+  </xs:complexType>
+
+  <!-- Color value pattern (hex ARGB format) -->
+  <xs:simpleType name="ColorValueType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="#[0-9A-Fa-f]{8}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>
