@@ -2,7 +2,6 @@ using System;
 using System.Windows;
 using ED_Inara_Overlay_2._0.Windows;
 using ED_Inara_Overlay_2._0.Utils;
-using ED_Inara_Overlay_2._0.Utils.Themes;
 
 namespace ED_Inara_Overlay_2._0
 {
@@ -18,10 +17,6 @@ namespace ED_Inara_Overlay_2._0
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-
-            // Initialize and apply theme
-            InitializeTheme();
-
             // Get target process from command line args or default to notepad
             if (e.Args.Length > 0)
             {
@@ -112,20 +107,6 @@ namespace ED_Inara_Overlay_2._0
             }
         }
 
-        private void InitializeTheme()
-        {
-            try
-            {
-                // Load theme from configuration or use default
-                ThemeManager.LoadThemeFromConfig();
-                Logger.Logger.Info("Theme system initialized successfully");
-            }
-            catch (Exception ex)
-            {
-                Logger.Logger.Error($"Failed to initialize theme: {ex.Message}");
-                // Continue with default theme if theme loading fails
-            }
-        }
 
         protected override void OnExit(ExitEventArgs e)
         {

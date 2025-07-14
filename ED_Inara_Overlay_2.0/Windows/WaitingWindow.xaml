@@ -27,7 +27,7 @@
         </StackPanel>
 
         <!-- Main Content -->
-        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="248" Width="426">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Height="248" Width="426" Margin="0,43,0,0" Grid.RowSpan="3">
             <!-- Animated Loading Spinner -->
             <Grid Width="48" Height="48" Margin="0,0,0,20">
                 <!-- Background Circle -->
@@ -35,7 +35,7 @@
                          Stroke="#404040" 
                          StrokeThickness="3" 
                          Fill="Transparent"/>
-                
+
                 <!-- Animated Arc -->
                 <Ellipse Width="44" Height="44" 
                          Stroke="#00B4FF" 
@@ -61,7 +61,7 @@
                         </EventTrigger>
                     </Ellipse.Triggers>
                 </Ellipse>
-                
+
                 <!-- Center Icon -->
                 <Ellipse Width="12" Height="12" 
                          Fill="#00B4FF" 
@@ -115,43 +115,85 @@
             <TextBlock Text=" for target process..." FontSize="11" Foreground="#808080"/>
         </StackPanel>
 
-        <!-- Close Button -->
-        <Button Grid.Row="3" 
-                x:Name="CloseButton"
-                Content="Exit Overlay" 
-                Width="120" 
-                HorizontalAlignment="Center"
-                Background="#FF4444" 
-                Foreground="White" 
-                BorderThickness="0" 
-                FontSize="12"
-                FontWeight="Bold"
-                Cursor="Hand"
-                Click="CloseButton_Click" Margin="0,10,0,-33">
-            <Button.Style>
-                <Style TargetType="Button">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="Button">
-                                <Border Background="{TemplateBinding Background}" 
-                                        CornerRadius="4" 
-                                        BorderThickness="0">
-                                    <ContentPresenter HorizontalAlignment="Center" 
-                                                    VerticalAlignment="Center"/>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#FF6666"/>
-                                    </Trigger>
-                                    <Trigger Property="IsPressed" Value="True">
-                                        <Setter Property="Background" Value="#CC3333"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </Button.Style>
-        </Button>
+        <!-- Button Panel -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+            <!-- Settings Button -->
+            <Button x:Name="SettingsButton"
+                    Content="Settings"
+                    Width="120"
+                    Height="32"
+                    Background="#0078D7"
+                    Foreground="White"
+                    BorderThickness="0"
+                    FontSize="12"
+                    FontWeight="Bold"
+                    Cursor="Hand"
+                    Margin="0,0,10,0"
+                    Click="SettingsButton_Click">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" 
+                                            CornerRadius="4" 
+                                            BorderThickness="0">
+                                        <ContentPresenter HorizontalAlignment="Center" 
+                                                        VerticalAlignment="Center"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#106EBE"/>
+                                        </Trigger>
+                                        <Trigger Property="IsPressed" Value="True">
+                                            <Setter Property="Background" Value="#005A9E"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Button.Style>
+            </Button>
+
+            <!-- Close Button -->
+            <Button x:Name="CloseButton"
+                    Content="Exit Overlay" 
+                    Width="120" 
+                    Height="32"
+                    Background="#FF4444" 
+                    Foreground="White" 
+                    BorderThickness="0" 
+                    FontSize="12"
+                    FontWeight="Bold"
+                    Cursor="Hand"
+                    Margin="10,0,0,0"
+                    Click="CloseButton_Click">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" 
+                                            CornerRadius="4" 
+                                            BorderThickness="0">
+                                        <ContentPresenter HorizontalAlignment="Center" 
+                                                        VerticalAlignment="Center"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#FF6666"/>
+                                        </Trigger>
+                                        <Trigger Property="IsPressed" Value="True">
+                                            <Setter Property="Background" Value="#CC3333"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </StackPanel>
     </Grid>
 </Window>

@@ -121,7 +121,7 @@ namespace ED_Inara_Overlay_2._0.Windows
             
             StatusText.Text = $"Waiting for target application{dots}";
         }
-
+        
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             Logger.Logger.Info("User clicked Exit Overlay button in WaitingWindow");
@@ -138,6 +138,11 @@ namespace ED_Inara_Overlay_2._0.Windows
             
             // Close the application
             Application.Current.Shutdown();
+        }
+
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
         protected override void OnClosed(EventArgs e)
