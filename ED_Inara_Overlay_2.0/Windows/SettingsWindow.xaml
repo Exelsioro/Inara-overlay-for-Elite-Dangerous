@@ -40,7 +40,7 @@
                                FontSize="12" Margin="0,0,0,5"/>
                     <ComboBox x:Name="ThemeComboBox" Height="35" Margin="0,0,0,15"
                               SelectionChanged="ThemeComboBox_SelectionChanged"
-                              Style="{StaticResource ComboBoxStyle}">
+                              Style="{DynamicResource ComboBoxStyle}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -92,7 +92,7 @@
                                Foreground="{DynamicResource PrimaryTextBrush}" Margin="0,0,0,15"/>
                     
                     <!-- Preview Content -->
-                    <ScrollViewer Height="400" Style="{StaticResource CustomScrollViewerStyle}">
+                    <ScrollViewer Height="400" Style="{DynamicResource CustomScrollViewerStyle}">
                         <StackPanel>
                             <!-- Sample UI Elements -->
                             <Border Background="{DynamicResource HighlightBackgroundBrush}" 
@@ -159,7 +159,7 @@
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
             <Button x:Name="ApplyButton" Content="Apply Theme" Height="35" Width="100" 
                     Margin="0,0,10,0" Background="{DynamicResource PrimaryBrush}" 
-                    Foreground="White" BorderThickness="0" FontWeight="Bold" 
+                    Foreground="{DynamicResource SecondaryTextBrush}" BorderThickness="0" FontWeight="Bold" 
                     Click="ApplyButton_Click"/>
             <Button x:Name="CloseButton" Content="Close" Height="35" Width="80" 
                     Background="{DynamicResource SecondaryBackgroundBrush}" 

@@ -7,32 +7,30 @@
     <Color x:Key="SecondaryBackgroundColor">#FF2A2A2A</Color>
     <Color x:Key="HighlightBackgroundColor">#FF3A3A3A</Color>
     <Color x:Key="BorderColor">#FF404040</Color>
-
     <Color x:Key="ButtonBackground">#FF404040</Color>
     <Color x:Key="PrimaryColor">#FF8000</Color>
     <Color x:Key="PrimaryTextColor">#FF8000</Color>
     <Color x:Key="AccentColor">#FFCC00</Color>
     <Color x:Key="SuccessColor">#00FF00</Color>
     <Color x:Key="FailureColor">#FF0000</Color>
-
-    <Color x:Key="SecondaryTextColor">#404040</Color>
+    <Color x:Key="SecondaryTextColor">White</Color>
     <Color x:Key="MutedTextColor">#FFB0B0B0</Color>
     
     <!-- Brush Resources -->
-    <SolidColorBrush x:Key="PrimaryBackgroundBrush" Color="{StaticResource PrimaryBackgroundColor}"/>
-    <SolidColorBrush x:Key="SecondaryBackgroundBrush" Color="{StaticResource SecondaryBackgroundColor}"/>
-    <SolidColorBrush x:Key="HighlightBackgroundBrush" Color="{StaticResource HighlightBackgroundColor}"/>
-    <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}"/>
+    <SolidColorBrush x:Key="PrimaryBackgroundBrush" Color="{DynamicResource PrimaryBackgroundColor}"/>
+    <SolidColorBrush x:Key="SecondaryBackgroundBrush" Color="{DynamicResource SecondaryBackgroundColor}"/>
+    <SolidColorBrush x:Key="HighlightBackgroundBrush" Color="{DynamicResource HighlightBackgroundColor}"/>
+    <SolidColorBrush x:Key="BorderBrush" Color="{DynamicResource BorderColor}"/>
 
-    <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="{StaticResource ButtonBackground}"/>
-    <SolidColorBrush x:Key="PrimaryTextBrush" Color="{StaticResource PrimaryTextColor}"/>
-    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryTextColor}"/>
-    <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
-    <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColor}"/>
-    <SolidColorBrush x:Key="FailureBrush" Color="{StaticResource FailureColor}"/>
-    
-    <SolidColorBrush x:Key="SecondaryTextBrush" Color="{StaticResource SecondaryTextColor}"/>
-    <SolidColorBrush x:Key="MutedTextBrush" Color="{StaticResource MutedTextColor}"/>
+    <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="{DynamicResource ButtonBackground}"/>
+    <SolidColorBrush x:Key="PrimaryTextBrush" Color="{DynamicResource PrimaryTextColor}"/>
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{DynamicResource PrimaryTextColor}"/>
+    <SolidColorBrush x:Key="AccentBrush" Color="{DynamicResource AccentColor}"/>
+    <SolidColorBrush x:Key="SuccessBrush" Color="{DynamicResource SuccessColor}"/>
+    <SolidColorBrush x:Key="FailureBrush" Color="{DynamicResource FailureColor}"/>
+
+    <SolidColorBrush x:Key="SecondaryTextBrush" Color="{DynamicResource SecondaryTextColor}"/>
+    <SolidColorBrush x:Key="MutedTextBrush" Color="{DynamicResource MutedTextColor}"/>
     
     <!-- Font Size Resources -->
     <sys:Double x:Key="HeaderFontSize" xmlns:sys="clr-namespace:System;assembly=mscorlib">16</sys:Double>
@@ -48,6 +46,26 @@
         <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
     </Style>
 
+    <Style x:Key="GroupBoxStyle" TargetType="GroupBox">
+        <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Margin" Value="0,0,0,15"/>
+    </Style>
+
+    <Style x:Key="CheckBoxStyle" TargetType="CheckBox">
+        <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+    </Style>
+    
+    <Style x:Key="TextBoxStyle" TargetType="TextBox">
+        <Setter Property="Background" Value="{StaticResource SecondaryBackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Padding" Value="5"/>
+        <Setter Property="Margin" Value="0,0,0,5"/>
+    </Style>
+    
     <Style x:Key="BodyTextStyle" TargetType="TextBlock">
         <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}"/>
         <Setter Property="FontSize" Value="{StaticResource BodyFontSize}"/>
@@ -67,7 +85,26 @@
         <Setter Property="Margin" Value="5"/>
         <Setter Property="Padding" Value="10"/>
     </Style>
-    
+
+    <Style x:Key="ComboboxBorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource PrimaryBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="5"/>
+    </Style>
+
+    <Style x:Key="ComboboxItemBorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource PrimaryBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="5"/>
+    </Style>
+
+
+    <Style x:Key="ToggleButtonStyle" TargetType="ToggleButton">
+        <Setter Property="Background" Value="{StaticResource PrimaryBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+    </Style>
     <!-- Shadow Effects -->
     <DropShadowEffect x:Key="CardShadowEffect" 
                       Color="#FF000000" 
@@ -96,14 +133,12 @@
                                       Focusable="False"
                                       IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                       ClickMode="Press"
-                                      Background="{TemplateBinding Background}"
-                                      BorderBrush="{TemplateBinding BorderBrush}"
+                                      Style="{StaticResource ToggleButtonStyle}"
                                       BorderThickness="{TemplateBinding BorderThickness}">
                             <ToggleButton.Template>
                                 <ControlTemplate TargetType="ToggleButton">
                                     <Border Name="Border" 
-                                            Background="{TemplateBinding Background}" 
-                                            BorderBrush="{TemplateBinding BorderBrush}" 
+                                            Style="{StaticResource ComboboxBorderStyle}"
                                             BorderThickness="{TemplateBinding BorderThickness}"
                                             CornerRadius="4">
                                         <Grid>
@@ -113,7 +148,7 @@
                                             </Grid.ColumnDefinitions>
                                             <Path Grid.Column="1"
                                                   Name="Arrow"
-                                                  Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                                  Fill="{DynamicResource AccentBrush}"
                                                   HorizontalAlignment="Center"
                                                   VerticalAlignment="Center"
                                                   Data="M 0 0 L 4 4 L 8 0 Z"
@@ -140,18 +175,16 @@
                                Placement="Bottom"
                                IsOpen="{TemplateBinding IsDropDownOpen}"
                                AllowsTransparency="True"
-                               Focusable="False"
+                               Focusable="False" 
+                               Style="{DynamicResource ComboBoxPopupStyle}"
                                PopupAnimation="Slide">
                             <Grid Name="DropDown"
                                   SnapsToDevicePixels="True"
                                   MinWidth="{TemplateBinding ActualWidth}"
                                   MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                                <Border Name="DropDownBorder"
-                                        Background="{StaticResource SecondaryBackgroundBrush}"
-                                        BorderBrush="{StaticResource AccentBrush}"
+                                <Border Name="DropDownBorder" Style="{StaticResource ComboboxBorderStyle}"
                                         BorderThickness="2"
-                                        CornerRadius="4"
-                                        Effect="{StaticResource CardShadowEffect}">
+                                        CornerRadius="4">
                                     <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
                                         <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained"/>
                                     </ScrollViewer>
@@ -160,27 +193,49 @@
                         </Popup>
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="ToggleButton" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+                        <!--<Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ToggleButton" Property="BorderBrush" Value="{StaticResource ComboBoxHoverBrush}"/>
                             <Setter TargetName="ToggleButton" Property="Background" Value="{StaticResource HighlightBackgroundBrush}"/>
-                        </Trigger>
-                        <Trigger Property="IsDropDownOpen" Value="True">
-                            <Setter TargetName="ToggleButton" Property="BorderBrush" Value="#FF81C784"/>
+                        </Trigger>-->
+                        <!--<Trigger Property="IsDropDownOpen" Value="True">
+                            <Setter TargetName="ToggleButton" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Foreground" Value="{StaticResource MutedTextBrush}"/>
                             <Setter TargetName="ToggleButton" Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
                             <Setter TargetName="ToggleButton" Property="Background" Value="{StaticResource BorderBrush}"/>
-                        </Trigger>
+                        </Trigger>-->
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
     
+    <Style x:Key="ComboBoxPopupStyle" TargetType="Popup">
+        <Setter Property="AllowsTransparency" Value="True"/>
+        <Setter Property="PopupAnimation" Value="Slide"/>
+        <Setter Property="Placement" Value="Bottom"/>
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="Child">
+            <Setter.Value>
+                <Grid Name="DropDown"
+                    SnapsToDevicePixels="True"
+                    MinWidth="{Binding PlacementTarget.ActualWidth, RelativeSource={RelativeSource AncestorType=Popup}}">
+                    <Border Name="DropDownBorder"
+                        Style="{DynamicResource ComboboxBorderStyle}"
+                        BorderThickness="2"
+                        CornerRadius="4">
+                        <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
+                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained"/>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
+            </Setter.Value>
+        </Setter>
+    </Style>
     <!-- ComboBoxItem Style for Max Route Distance -->
     <Style x:Key="ComboBoxItemStyle" TargetType="ComboBoxItem">
-        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Background" Value="{StaticResource PrimaryBackgroundBrush}"/>
         <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}"/>
         <Setter Property="Padding" Value="8,6"/>
         <Setter Property="FontWeight" Value="Normal"/>
@@ -188,19 +243,19 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ComboBoxItem">
                     <Border Name="Border" 
-                            Background="{TemplateBinding Background}" 
+                            Style="{StaticResource ComboboxItemBorderStyle}"
                             Padding="{TemplateBinding Padding}">
                         <ContentPresenter/>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
+                        <!--<Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="Border" Property="Background" Value="{StaticResource PrimaryBrush}"/>
-                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="Foreground" Value="{StaticResource SecondaryTextBrush}"/>
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
                             <Setter TargetName="Border" Property="Background" Value="{StaticResource PrimaryBrush}"/>
-                            <Setter Property="Foreground" Value="White"/>
-                        </Trigger>
+                            <Setter Property="Foreground" Value="{StaticResource SecondaryTextBrush}"/>
+                        </Trigger>-->
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
