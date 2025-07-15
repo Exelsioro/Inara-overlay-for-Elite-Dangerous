@@ -46,7 +46,7 @@
             </Grid>
 
             <!-- Basic Search Parameters -->
-            <GroupBox Grid.Row="1" Header="Basic Parameters" Foreground="White" BorderBrush="#FF404040" Margin="0,0,0,10">
+            <GroupBox Grid.Row="1" Header="Basic Parameters" Foreground="{StaticResource AccentBrush}" BorderBrush="#FF404040" Margin="0,0,0,10">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -126,8 +126,8 @@
             <!-- Show Additional Filters Button -->
             <Button x:Name="ShowFiltersButton" Grid.Row="2" 
                    Content="Show Additional Filters" 
-                   Background="#FF404040" 
-                   Foreground="White" 
+                   Background="{StaticResource ButtonBackgroundBrush}" 
+                   Foreground="{StaticResource PrimaryTextBrush}"
                    FontWeight="Bold" 
                    Padding="10,5" 
                    Margin="0,0,0,10"
@@ -295,23 +295,23 @@
                 
                 <Button x:Name="SearchButton" Grid.Column="0" 
                        Content="Search Trade Routes" 
-                       Background="#FF4CAF50" 
-                       Foreground="White" 
+                       Background="{StaticResource SecondaryTextBrush}" 
+                       Foreground="{StaticResource PrimaryTextBrush}" 
                        FontWeight="Bold" 
                        Padding="10,5" 
                        Click="SearchButton_Click"/>
                        
                 <Button x:Name="TestDataButton" Grid.Column="2" 
                        Content="Load Test Data" 
-                       Background="#FF2196F3" 
-                       Foreground="White" 
+                       Background="{StaticResource SecondaryTextBrush}" 
+                       Foreground="{StaticResource PrimaryTextBrush}" 
                        FontWeight="Bold" 
                        Padding="10,5" 
                        Click="TestDataButton_Click"/>
             </Grid>
 
             <!-- Status Bar -->
-            <StatusBar Grid.Row="5" Background="#FF2A2A2A" Foreground="White" Height="25">
+            <StatusBar Grid.Row="5" Background="#FF2A2A2A" Foreground="{StaticResource AccentBrush}" Height="25">
                 <StatusBarItem>
                     <TextBlock x:Name="StatusText" Text="Ready to search..."/>
                 </StatusBarItem>

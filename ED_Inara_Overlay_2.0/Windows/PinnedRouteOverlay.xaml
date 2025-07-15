@@ -15,84 +15,6 @@
         HorizontalAlignment="Center"
         VerticalAlignment="Top">
 
-    <!-- Resource Dictionary for custom ScrollViewer style -->
-    <Window.Resources>
-        <ResourceDictionary>
-            <!-- Custom ScrollBar Style -->
-            <Style x:Key="CustomScrollBarStyle" TargetType="ScrollBar">
-                <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="Width" Value="12"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="ScrollBar">
-                            <Grid>
-                                <Border Background="{TemplateBinding Background}" 
-                                        CornerRadius="6" 
-                                        Opacity="0.3"/>
-                                <Track Name="PART_Track" IsDirectionReversed="True">
-                                    <Track.Thumb>
-                                        <Thumb>
-                                            <Thumb.Style>
-                                                <Style TargetType="Thumb">
-                                                    <Setter Property="Background" Value="#FF4A90E2"/>
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="Thumb">
-                                                                <Border Background="{TemplateBinding Background}" 
-                                                                        CornerRadius="6" 
-                                                                        Opacity="0.6"/>
-                                                                <ControlTemplate.Triggers>
-                                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                                        <Setter Property="Opacity" Value="0.8"/>
-                                                                    </Trigger>
-                                                                    <Trigger Property="IsDragging" Value="True">
-                                                                        <Setter Property="Opacity" Value="1.0"/>
-                                                                    </Trigger>
-                                                                </ControlTemplate.Triggers>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                </Style>
-                                            </Thumb.Style>
-                                        </Thumb>
-                                    </Track.Thumb>
-                                </Track>
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            
-            <!-- Custom ScrollViewer Style -->
-            <Style x:Key="CustomScrollViewerStyle" TargetType="ScrollViewer">
-                <Setter Property="Background" Value="#11000000"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="ScrollViewer">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <ScrollContentPresenter Grid.Column="0" 
-                                                        Content="{TemplateBinding Content}"
-                                                        ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                        CanContentScroll="{TemplateBinding CanContentScroll}"/>
-                                <ScrollBar Name="PART_VerticalScrollBar"
-                                           Grid.Column="1"
-                                           Style="{StaticResource CustomScrollBarStyle}"
-                                           Value="{TemplateBinding VerticalOffset}"
-                                           Maximum="{TemplateBinding ScrollableHeight}"
-                                           ViewportSize="{TemplateBinding ViewportHeight}"
-                                           Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"/>
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-        </ResourceDictionary>
-    </Window.Resources>
-
     <!-- Main content area -->
     <Grid>
         <!-- Pinned route card container -->
@@ -101,40 +23,37 @@
                 BorderThickness="0"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch">
-            
+
             <!-- ScrollViewer to enable vertical scrolling -->
             <ScrollViewer Style="{StaticResource CustomScrollViewerStyle}"
                          VerticalScrollBarVisibility="Auto"
                          HorizontalScrollBarVisibility="Disabled"
                          HorizontalAlignment="Stretch"
                          VerticalAlignment="Stretch">
-                
+
                 <!-- Dynamic content container for the pinned card -->
                 <StackPanel x:Name="PinnedRouteContainer"
                            Orientation="Vertical"
                            HorizontalAlignment="Stretch"
                            VerticalAlignment="Top">
-                    
+
                     <!-- Pinned route card will be added here programmatically -->
-                    
+
                 </StackPanel>
             </ScrollViewer>
         </Border>
-        
+
         <!-- Close button positioned at top-right -->
         <Button x:Name="CloseButton"
-                Content="✕"
-                Width="24" Height="24"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Margin="0,-5,-5,0"
+                Content="Unpin"
+                Margin="280,0,280,0"
                 Background="#88FF0000"
                 Foreground="White"
                 BorderBrush="Transparent"
                 FontSize="12"
                 FontWeight="Bold"
                 Cursor="Hand"
-                Click="CloseButton_Click">
+                Click="CloseButton_Click" Height="20" VerticalAlignment="Top">
             <Button.Style>
                 <Style TargetType="Button">
                     <Setter Property="Template">
@@ -143,7 +62,7 @@
                                 <Border Background="{TemplateBinding Background}"
                                         BorderBrush="{TemplateBinding BorderBrush}"
                                         BorderThickness="{TemplateBinding BorderThickness}"
-                                        CornerRadius="12">
+>
                                     <ContentPresenter HorizontalAlignment="Center" 
                                                       VerticalAlignment="Center"/>
                                 </Border>

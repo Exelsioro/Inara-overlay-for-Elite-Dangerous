@@ -23,12 +23,12 @@
                     HorizontalAlignment="Center" 
                     VerticalAlignment="Center"
                     Background="#30000000"
-                    Foreground="#FF4CAF50"
+                    Foreground="{StaticResource PrimaryTextBrush}" 
                     Content="Trade Routes"
                     FontWeight="Bold"
                     FontSize="30"
                     BorderThickness="2"
-                    BorderBrush="#FF4CAF50"
+                    BorderBrush="{StaticResource PrimaryTextBrush}" 
                     Click="ToggleButton_Click" RenderTransformOrigin="0.5,0.5">
                 <Button.RenderTransform>
                     <TransformGroup>

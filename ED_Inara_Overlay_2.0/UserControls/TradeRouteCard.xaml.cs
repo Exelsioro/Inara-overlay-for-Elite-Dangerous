@@ -123,7 +123,7 @@ namespace ED_Inara_Overlay_2._0.UserControls
             var border = new Border
             {
                 Background = new SolidColorBrush(Color.FromArgb(180, 0x35, 0x35, 0x35)),
-                BorderBrush = new SolidColorBrush(Color.FromRgb(0x00, 0xB4, 0xFF)),
+                BorderBrush = (SolidColorBrush)Application.Current.Resources["PrimaryBrush"],
                 BorderThickness = new Thickness(0, 0, 0, 2),
                 Padding = new Thickness(6, 3, 6, 3),
                 Margin = new Thickness(0, 0, 0, 6)
@@ -132,7 +132,7 @@ namespace ED_Inara_Overlay_2._0.UserControls
             var textBlock = new TextBlock
             {
                 Text = title,
-                Foreground = new SolidColorBrush(Color.FromRgb(0x00, 0xB4, 0xFF)),
+                Foreground = (SolidColorBrush)Application.Current.Resources["PrimaryTextBrush"],
                 FontSize = 11,
                 FontWeight = FontWeights.Bold,
                 FontFamily = new FontFamily("Segoe UI")
@@ -168,7 +168,7 @@ namespace ED_Inara_Overlay_2._0.UserControls
             var arrow = new TextBlock
             {
                 Text = "→",
-                Foreground = new SolidColorBrush(Color.FromRgb(0x00, 0xB4, 0xFF)),
+                Foreground = (SolidColorBrush)Application.Current.Resources["AccentBrush"],
                 FontSize = 16,
                 FontWeight = FontWeights.Bold,
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -198,7 +198,7 @@ namespace ED_Inara_Overlay_2._0.UserControls
             var labelText = new TextBlock
             {
                 Text = label,
-                Foreground = new SolidColorBrush(Color.FromRgb(0x80, 0x80, 0x80)),
+                Foreground = (SolidColorBrush)Application.Current.Resources["PrimaryTextBrush"],
                 FontSize = 9,
                 FontWeight = FontWeights.Bold,
                 FontFamily = new FontFamily("Segoe UI")
@@ -222,7 +222,7 @@ namespace ED_Inara_Overlay_2._0.UserControls
             var stationText = new TextBlock
             {
                 Text = $"{station.Name}",
-                Foreground = new SolidColorBrush(Color.FromRgb(0xE0, 0xE0, 0xE0)),
+                Foreground = (SolidColorBrush)Application.Current.Resources["PrimaryTextBrush"],
                 FontSize = 10,
                 FontFamily = new FontFamily("Segoe UI"),
                 VerticalAlignment = VerticalAlignment.Center,
@@ -236,7 +236,7 @@ namespace ED_Inara_Overlay_2._0.UserControls
             var distanceText = new TextBlock
             {
                 Text = $"{station.DistanceFromStar:F0} LS",
-                Foreground = new SolidColorBrush(Color.FromRgb(0xCA, 0xCA, 0xCA)),
+                Foreground = (SolidColorBrush)Application.Current.Resources["PrimaryTextBrush"],
                 FontSize = 10,
                 FontFamily = new FontFamily("Segoe UI"),
                 VerticalAlignment = VerticalAlignment.Center,
@@ -333,7 +333,7 @@ namespace ED_Inara_Overlay_2._0.UserControls
             var labelText = new TextBlock
             {
                 Text = label,
-                Foreground = new SolidColorBrush(Color.FromRgb(0x80, 0x80, 0x80)),
+                Foreground = (SolidColorBrush)Application.Current.Resources["PrimaryTextBrush"],
                 FontSize = 9,
                 FontWeight = FontWeights.Bold,
                 FontFamily = new FontFamily("Segoe UI")
@@ -356,6 +356,7 @@ namespace ED_Inara_Overlay_2._0.UserControls
 
         private UIElement CreateEliteDangerousSpacer()
         {
+
             var border = new Border
             {
                 Height = 2,

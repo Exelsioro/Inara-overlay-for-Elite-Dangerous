@@ -16,13 +16,13 @@
             HorizontalAlignment="Stretch"
             Padding="0"
             Effect="{DynamicResource CardShadowEffect}">
-        
+
         <!-- Inner highlight border -->
         <Border BorderBrush="#FF606060" 
                 BorderThickness="1" 
                 CornerRadius="0" 
                 Margin="2">
-            
+
             <!-- Content area -->
             <Grid>
                 <Grid.RowDefinitions>
@@ -30,7 +30,7 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                
+
                 <!-- Header strip -->
                 <Border Grid.Row="0" 
                         Background="#882D2D2D"
@@ -43,49 +43,49 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        
+
                         <!-- Route type indicator -->
                         <TextBlock x:Name="RouteTypeLabel" 
                                  Grid.Column="0"
                                  Text="TRADE ROUTE"
-                                 Foreground="#FF00B4FF"
+                                 Foreground="{StaticResource PrimaryTextBrush}" 
                                  FontSize="10"
                                  FontWeight="Bold"
                                  FontFamily="Segoe UI"
                                  VerticalAlignment="Center"/>
-                        
+
                         <!-- Distance indicator -->
                         <StackPanel Grid.Column="1" 
                                   Orientation="Horizontal" 
                                   VerticalAlignment="Center"
                                   Margin="0,0,8,0">
                             <TextBlock Text="📍" 
-                                     Foreground="#FF00B4FF" 
+                                     Foreground="{StaticResource AccentBrush}" 
                                      FontSize="10" 
                                      Margin="0,0,4,0"/>
                             <TextBlock x:Name="DistanceLabel" 
                                      Text="0.0 LY"
-                                     Foreground="#FFCACACA"
+                                     Foreground="{StaticResource AccentBrush}" 
                                      FontSize="10"
                                      FontFamily="Segoe UI"
                                      VerticalAlignment="Center"/>
                         </StackPanel>
-                        
+
                         <!-- Pin Route Button -->
                         <Button x:Name="PinRouteButton"
-                              Grid.Column="2"
+                              Grid.Column="1"
                               Content="📌 PIN"
-                              Foreground="#FF00B4FF"
+                              Foreground="{StaticResource AccentBrush}" 
                               Background="Transparent"
-                              BorderBrush="#FF00B4FF"
+                              BorderBrush="{StaticResource AccentBrush}"
                               BorderThickness="1"
                               FontSize="9"
                               FontWeight="Bold"
                               FontFamily="Segoe UI"
                               Padding="6,2"
-                              VerticalAlignment="Center"
+                              VerticalAlignment="Bottom"
                               Cursor="Hand"
-                              Click="PinRouteButton_Click">
+                              Click="PinRouteButton_Click" Grid.ColumnSpan="2" Margin="51,0,0,0">
                             <Button.Style>
                                 <Style TargetType="Button">
                                     <Setter Property="Template">
@@ -112,18 +112,18 @@
                         </Button>
                     </Grid>
                 </Border>
-                
+
                 <!-- Main content -->
                 <StackPanel x:Name="ContentStackPanel"
                            Grid.Row="1"
                            Orientation="Vertical"
                            HorizontalAlignment="Stretch"
                            Margin="8">
-                    
+
                     <!-- Dynamic content will be populated via code-behind -->
-                    
+
                 </StackPanel>
-                
+
                 <!-- Footer strip -->
                 <Border Grid.Row="2" 
                         Background="#882D2D2D"
@@ -135,7 +135,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        
+
                         <!-- Last update info -->
                         <TextBlock x:Name="LastUpdateLabel" 
                                  Grid.Column="0"
@@ -144,12 +144,12 @@
                                  FontSize="9"
                                  FontFamily="Segoe UI"
                                  VerticalAlignment="Center"/>
-                        
+
                         <!-- Total profit -->
                         <TextBlock x:Name="TotalProfitLabel" 
                                  Grid.Column="1"
                                  Text="0 CR"
-                                 Foreground="#FF00FF00"
+                                 Foreground="{StaticResource SuccessBrush}" 
                                  FontSize="12"
                                  FontWeight="Bold"
                                  FontFamily="Segoe UI"
