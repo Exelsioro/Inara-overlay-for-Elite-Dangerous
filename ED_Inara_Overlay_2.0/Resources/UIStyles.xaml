@@ -87,23 +87,23 @@
     </Style>
 
     <Style x:Key="ComboboxBorderStyle" TargetType="Border">
-        <Setter Property="Background" Value="{StaticResource PrimaryBackgroundBrush}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource PrimaryBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="5"/>
     </Style>
 
     <Style x:Key="ComboboxItemBorderStyle" TargetType="Border">
-        <Setter Property="Background" Value="{StaticResource PrimaryBackgroundBrush}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource PrimaryBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="CornerRadius" Value="5"/>
     </Style>
 
 
     <Style x:Key="ToggleButtonStyle" TargetType="ToggleButton">
-        <Setter Property="Background" Value="{StaticResource PrimaryBackgroundBrush}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource PrimaryBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
     </Style>
     <!-- Shadow Effects -->
     <DropShadowEffect x:Key="CardShadowEffect" 
@@ -118,7 +118,7 @@
     <Style x:Key="ComboBoxStyle" TargetType="ComboBox">
         <Setter Property="Background" Value="{StaticResource SecondaryBackgroundBrush}"/>
         <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+        <!--<Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>-->
         <Setter Property="BorderThickness" Value="2"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="FontSize" Value="12"/>
@@ -128,17 +128,19 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ComboBox">
                     <Grid>
+                        <Border x:Name="Border"
+                                Style="{DynamicResource ComboboxBorderStyle}"/>
                         <ToggleButton Name="ToggleButton" 
                                       Grid.Column="2" 
                                       Focusable="False"
                                       IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                       ClickMode="Press"
-                                      Style="{StaticResource ToggleButtonStyle}"
+                                      Style="{DynamicResource ToggleButtonStyle}"
                                       BorderThickness="{TemplateBinding BorderThickness}">
                             <ToggleButton.Template>
                                 <ControlTemplate TargetType="ToggleButton">
                                     <Border Name="Border" 
-                                            Style="{StaticResource ComboboxBorderStyle}"
+                                            Style="{DynamicResource ComboboxBorderStyle}"
                                             BorderThickness="{TemplateBinding BorderThickness}"
                                             CornerRadius="4">
                                         <Grid>
@@ -176,13 +178,12 @@
                                IsOpen="{TemplateBinding IsDropDownOpen}"
                                AllowsTransparency="True"
                                Focusable="False" 
-                               Style="{DynamicResource ComboBoxPopupStyle}"
                                PopupAnimation="Slide">
                             <Grid Name="DropDown"
                                   SnapsToDevicePixels="True"
                                   MinWidth="{TemplateBinding ActualWidth}"
                                   MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                                <Border Name="DropDownBorder" Style="{StaticResource ComboboxBorderStyle}"
+                                <Border Name="DropDownBorder" Style="{DynamicResource ComboboxBorderStyle}"
                                         BorderThickness="2"
                                         CornerRadius="4">
                                     <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
@@ -211,7 +212,7 @@
         </Setter>
     </Style>
     
-    <Style x:Key="ComboBoxPopupStyle" TargetType="Popup">
+    <!--<Style x:Key="ComboBoxPopupStyle" TargetType="Popup">
         <Setter Property="AllowsTransparency" Value="True"/>
         <Setter Property="PopupAnimation" Value="Slide"/>
         <Setter Property="Placement" Value="Bottom"/>
@@ -224,7 +225,8 @@
                     <Border Name="DropDownBorder"
                         Style="{DynamicResource ComboboxBorderStyle}"
                         BorderThickness="2"
-                        CornerRadius="4">
+                        CornerRadius="4"
+                        Effect="{StaticResource CardShadowEffect}">
                         <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
                             <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained"/>
                         </ScrollViewer>
@@ -232,7 +234,7 @@
                 </Grid>
             </Setter.Value>
         </Setter>
-    </Style>
+    </Style>-->
     <!-- ComboBoxItem Style for Max Route Distance -->
     <Style x:Key="ComboBoxItemStyle" TargetType="ComboBoxItem">
         <Setter Property="Background" Value="{StaticResource PrimaryBackgroundBrush}"/>
