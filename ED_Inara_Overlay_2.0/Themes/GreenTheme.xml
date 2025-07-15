@@ -5,7 +5,7 @@
     <Color Key="SecondaryBackgroundColor" Value="#FF2A3E2A" Description="Secondary background color"/>
     <Color Key="HighlightBackgroundColor" Value="#FF3A4E3A" Description="Highlight background color"/>
     <Color Key="BorderColor" Value="#FF405040" Description="Border color"/>
-    <Color Key="ButtonBackground" Value="#FF405040" Description="Button background color"/>
+    <Color Key="ButtonBackgroundColor" Value="#FF405040" Description="Button background color"/>
     <Color Key="PrimaryColor" Value="#FF00FF80" Description="Primary accent color"/>
     <Color Key="AccentColor" Value="#FF00FFCC" Description="Accent color"/>
     <Color Key="SuccessColor" Value="#FF00FF00" Description="Success color"/>

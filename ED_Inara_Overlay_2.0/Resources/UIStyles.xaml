@@ -7,7 +7,7 @@
     <Color x:Key="SecondaryBackgroundColor">#FF2A2A2A</Color>
     <Color x:Key="HighlightBackgroundColor">#FF3A3A3A</Color>
     <Color x:Key="BorderColor">#FF404040</Color>
-    <Color x:Key="ButtonBackground">#FF404040</Color>
+    <Color x:Key="ButtonBackgroundColor">#FF404040</Color>
     <Color x:Key="PrimaryColor">#FF8000</Color>
     <Color x:Key="PrimaryTextColor">#FF8000</Color>
     <Color x:Key="AccentColor">#FFCC00</Color>
@@ -17,20 +17,19 @@
     <Color x:Key="MutedTextColor">#FFB0B0B0</Color>
     
     <!-- Brush Resources -->
-    <SolidColorBrush x:Key="PrimaryBackgroundBrush" Color="{DynamicResource PrimaryBackgroundColor}"/>
+    <SolidColorBrush x:Key="PrimaryBackgroundColorBrush" Color="{DynamicResource PrimaryBackgroundColor}"/>
     <SolidColorBrush x:Key="SecondaryBackgroundBrush" Color="{DynamicResource SecondaryBackgroundColor}"/>
     <SolidColorBrush x:Key="HighlightBackgroundBrush" Color="{DynamicResource HighlightBackgroundColor}"/>
     <SolidColorBrush x:Key="BorderBrush" Color="{DynamicResource BorderColor}"/>
 
-    <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="{DynamicResource ButtonBackground}"/>
-    <SolidColorBrush x:Key="PrimaryTextBrush" Color="{DynamicResource PrimaryTextColor}"/>
-    <SolidColorBrush x:Key="PrimaryBrush" Color="{DynamicResource PrimaryTextColor}"/>
-    <SolidColorBrush x:Key="AccentBrush" Color="{DynamicResource AccentColor}"/>
-    <SolidColorBrush x:Key="SuccessBrush" Color="{DynamicResource SuccessColor}"/>
-    <SolidColorBrush x:Key="FailureBrush" Color="{DynamicResource FailureColor}"/>
+    <SolidColorBrush x:Key="ButtonBackgroundColorBrush" Color="{DynamicResource ButtonBackgroundColor}"/>
+    <SolidColorBrush x:Key="PrimaryTextColorBrush" Color="{DynamicResource PrimaryTextColor}"/>
+    <SolidColorBrush x:Key="AccentColorBrush" Color="{DynamicResource AccentColor}"/>
+    <SolidColorBrush x:Key="SuccessColorBrush" Color="{DynamicResource SuccessColor}"/>
+    <SolidColorBrush x:Key="FailureColorBrush" Color="{DynamicResource FailureColor}"/>
 
-    <SolidColorBrush x:Key="SecondaryTextBrush" Color="{DynamicResource SecondaryTextColor}"/>
-    <SolidColorBrush x:Key="MutedTextBrush" Color="{DynamicResource MutedTextColor}"/>
+    <SolidColorBrush x:Key="SecondaryTextColorBrush" Color="{DynamicResource SecondaryTextColor}"/>
+    <SolidColorBrush x:Key="MutedTextColorBrush" Color="{DynamicResource MutedTextColor}"/>
     
     <!-- Font Size Resources -->
     <sys:Double x:Key="HeaderFontSize" xmlns:sys="clr-namespace:System;assembly=mscorlib">16</sys:Double>
@@ -38,7 +37,7 @@
     
     <!-- TextBlock Styles -->
     <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
-        <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource PrimaryTextColorBrush}"/>
         <Setter Property="FontSize" Value="{StaticResource HeaderFontSize}"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="Margin" Value="0,0,0,5"/>
@@ -47,19 +46,19 @@
     </Style>
 
     <Style x:Key="GroupBoxStyle" TargetType="GroupBox">
-        <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource AccentColorBrush}"/>
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="Margin" Value="0,0,0,15"/>
     </Style>
 
     <Style x:Key="CheckBoxStyle" TargetType="CheckBox">
-        <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource AccentColorBrush}"/>
     </Style>
     
     <Style x:Key="TextBoxStyle" TargetType="TextBox">
         <Setter Property="Background" Value="{StaticResource SecondaryBackgroundBrush}"/>
-        <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource PrimaryTextColorBrush}"/>
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="Padding" Value="5"/>
@@ -67,7 +66,7 @@
     </Style>
     
     <Style x:Key="BodyTextStyle" TargetType="TextBlock">
-        <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource PrimaryTextColorBrush}"/>
         <Setter Property="FontSize" Value="{StaticResource BodyFontSize}"/>
         <Setter Property="FontWeight" Value="Normal"/>
         <Setter Property="Margin" Value="0,0,0,2"/>
@@ -78,7 +77,7 @@
     <!-- Border Styles -->
     
     <Style x:Key="WindowBorderStyle" TargetType="Border">
-        <Setter Property="Background" Value="{StaticResource PrimaryBackgroundBrush}"/>
+        <Setter Property="Background" Value="{StaticResource PrimaryBackgroundColorBrush}"/>
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="5"/>
@@ -87,23 +86,23 @@
     </Style>
 
     <Style x:Key="ComboboxBorderStyle" TargetType="Border">
-        <Setter Property="Background" Value="{DynamicResource PrimaryBackgroundBrush}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource PrimaryBackgroundColorBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentColorBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="5"/>
     </Style>
 
     <Style x:Key="ComboboxItemBorderStyle" TargetType="Border">
-        <Setter Property="Background" Value="{DynamicResource PrimaryBackgroundBrush}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource PrimaryBackgroundColorBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentColorBrush}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="CornerRadius" Value="5"/>
     </Style>
 
 
     <Style x:Key="ToggleButtonStyle" TargetType="ToggleButton">
-        <Setter Property="Background" Value="{DynamicResource PrimaryBackgroundBrush}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource PrimaryBackgroundColorBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentColorBrush}"/>
     </Style>
     <!-- Shadow Effects -->
     <DropShadowEffect x:Key="CardShadowEffect" 
@@ -116,8 +115,8 @@
     
     <!-- Custom ComboBox Style for Max Route Distance -->
     <Style x:Key="ComboBoxStyle" TargetType="ComboBox">
-        <Setter Property="Background" Value="{StaticResource SecondaryBackgroundBrush}"/>
-        <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource SecondaryBackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColorBrush}"/>
         <!--<Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>-->
         <Setter Property="BorderThickness" Value="2"/>
         <Setter Property="FontWeight" Value="Bold"/>
@@ -150,7 +149,7 @@
                                             </Grid.ColumnDefinitions>
                                             <Path Grid.Column="1"
                                                   Name="Arrow"
-                                                  Fill="{DynamicResource AccentBrush}"
+                                                  Fill="{DynamicResource AccentColorBrush}"
                                                   HorizontalAlignment="Center"
                                                   VerticalAlignment="Center"
                                                   Data="M 0 0 L 4 4 L 8 0 Z"
@@ -237,8 +236,8 @@
     </Style>-->
     <!-- ComboBoxItem Style for Max Route Distance -->
     <Style x:Key="ComboBoxItemStyle" TargetType="ComboBoxItem">
-        <Setter Property="Background" Value="{StaticResource PrimaryBackgroundBrush}"/>
-        <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}"/>
+        <Setter Property="Background" Value="{StaticResource PrimaryBackgroundColorBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource PrimaryTextColorBrush}"/>
         <Setter Property="Padding" Value="8,6"/>
         <Setter Property="FontWeight" Value="Normal"/>
         <Setter Property="Template">
@@ -278,7 +277,7 @@
                                 <Thumb>
                                     <Thumb.Style>
                                         <Style TargetType="Thumb">
-                                            <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+                                            <Setter Property="Background" Value="{StaticResource PrimaryTextColorBrush}"/>
                                             <Setter Property="Template">
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="Thumb">

@@ -46,7 +46,7 @@
             </Grid>
 
             <!-- Basic Search Parameters -->
-            <GroupBox Grid.Row="1" Header="Basic Parameters" Foreground="{StaticResource AccentBrush}" BorderBrush="#FF404040" Margin="0,0,0,10">
+            <GroupBox Grid.Row="1" Header="Basic Parameters" Foreground="{StaticResource AccentColorBrush}" BorderBrush="#FF404040" Margin="0,0,0,10">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -66,7 +66,7 @@
                               VerticalAlignment="Center" Margin="0,5,10,5"/>
                     <TextBox x:Name="NearStarSystemTextBox" Grid.Row="0" Grid.Column="1" 
                             Background="{StaticResource SecondaryBackgroundBrush}" 
-                            Foreground="{StaticResource PrimaryTextBrush}" 
+                            Foreground="{StaticResource PrimaryTextColorBrush}" 
                             BorderBrush="{StaticResource BorderBrush}" 
                             Text="Sol" Padding="5" Margin="0,5,10,5"/>
 
@@ -76,7 +76,7 @@
                               VerticalAlignment="Center" Margin="0,5,10,5"/>
                     <TextBox x:Name="CargoCapacityTextBox" Grid.Row="0" Grid.Column="3" 
                             Background="{StaticResource SecondaryBackgroundBrush}" 
-                            Foreground="{StaticResource PrimaryTextBrush}" 
+                            Foreground="{StaticResource PrimaryTextColorBrush}" 
                             BorderBrush="{StaticResource BorderBrush}" 
                             Text="720" Padding="5" Margin="0,5,0,5"/>
 
@@ -114,11 +114,11 @@
                     <!-- Checkboxes -->
                     <CheckBox x:Name="IncludeRoundTripsCheckBox" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
                              Content="Include round trips" 
-                             Foreground="{StaticResource PrimaryTextBrush}" 
+                             Foreground="{StaticResource PrimaryTextColorBrush}" 
                              IsChecked="True" Margin="0,5,10,5"/>
                     <CheckBox x:Name="DisplayPowerplayBonusesCheckBox" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2"
                              Content="Display Powerplay bonuses" 
-                             Foreground="{StaticResource PrimaryTextBrush}" 
+                             Foreground="{StaticResource PrimaryTextColorBrush}" 
                              Margin="0,5,0,5"/>
                 </Grid>
             </GroupBox>
@@ -126,8 +126,8 @@
             <!-- Show Additional Filters Button -->
             <Button x:Name="ShowFiltersButton" Grid.Row="2" 
                    Content="Show Additional Filters" 
-                   Background="{StaticResource ButtonBackgroundBrush}" 
-                   Foreground="{StaticResource PrimaryTextBrush}"
+                   Background="{StaticResource ButtonBackgroundColorBrush}" 
+                   Foreground="{StaticResource PrimaryTextColorBrush}"
                    FontWeight="Bold" 
                    Padding="10,5" 
                    Margin="0,0,0,10"
@@ -295,23 +295,23 @@
                 
                 <Button x:Name="SearchButton" Grid.Column="0" 
                        Content="Search Trade Routes" 
-                       Background="{StaticResource SecondaryTextBrush}" 
-                       Foreground="{StaticResource PrimaryTextBrush}" 
+                       Background="{StaticResource SecondaryTextColorBrush}" 
+                       Foreground="{StaticResource PrimaryTextColorBrush}" 
                        FontWeight="Bold" 
                        Padding="10,5" 
                        Click="SearchButton_Click"/>
                        
                 <Button x:Name="TestDataButton" Grid.Column="2" 
                        Content="Load Test Data" 
-                       Background="{StaticResource SecondaryTextBrush}" 
-                       Foreground="{StaticResource PrimaryTextBrush}" 
+                       Background="{StaticResource SecondaryTextColorBrush}" 
+                       Foreground="{StaticResource PrimaryTextColorBrush}" 
                        FontWeight="Bold" 
                        Padding="10,5" 
                        Click="TestDataButton_Click"/>
             </Grid>
 
             <!-- Status Bar -->
-            <StatusBar Grid.Row="5" Background="#FF2A2A2A" Foreground="{StaticResource AccentBrush}" Height="25">
+            <StatusBar Grid.Row="5" Background="#FF2A2A2A" Foreground="{StaticResource AccentColorBrush}" Height="25">
                 <StatusBarItem>
                     <TextBlock x:Name="StatusText" Text="Ready to search..."/>
                 </StatusBarItem>

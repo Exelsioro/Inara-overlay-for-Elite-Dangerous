@@ -5,7 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         mc:Ignorable="d"
         Title="ED Inara Overlay 2.0 - Settings" Height="700" Width="900"
-        Background="{DynamicResource PrimaryBackgroundBrush}"
+        Background="{DynamicResource PrimaryBackgroundColorBrush}"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResize">
 
@@ -18,7 +18,7 @@
 
         <!-- Header -->
         <TextBlock Grid.Row="0" Text="Settings" FontSize="24" FontWeight="Bold" 
-                   Foreground="{DynamicResource PrimaryTextBrush}" Margin="0,0,0,20"/>
+                   Foreground="{DynamicResource PrimaryTextColorBrush}" Margin="0,0,0,20"/>
 
         <!-- Main Content -->
         <Grid Grid.Row="1">
@@ -33,10 +33,10 @@
                     CornerRadius="5" Padding="15" Margin="0,0,10,0">
                 <StackPanel>
                     <TextBlock Text="Theme Selection" FontSize="18" FontWeight="Bold" 
-                               Foreground="{DynamicResource PrimaryTextBrush}" Margin="0,0,0,15"/>
+                               Foreground="{DynamicResource PrimaryTextColorBrush}" Margin="0,0,0,15"/>
                     
                     <!-- Theme ComboBox -->
-                    <TextBlock Text="Current Theme:" Foreground="{DynamicResource SecondaryTextBrush}" 
+                    <TextBlock Text="Current Theme:" Foreground="{DynamicResource SecondaryTextColorBrush}" 
                                FontSize="12" Margin="0,0,0,5"/>
                     <ComboBox x:Name="ThemeComboBox" Height="35" Margin="0,0,0,15"
                               SelectionChanged="ThemeComboBox_SelectionChanged"
@@ -44,33 +44,33 @@
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="0,0,5,0"/>
-                                    <TextBlock Text="{Binding Description}" Foreground="{DynamicResource MutedTextBrush}" FontSize="10"/>
+                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="0,0,5,0" Foreground="{DynamicResource PrimaryTextColorBrush}"/>
+                                    <TextBlock Text="{Binding Description}" Foreground="{DynamicResource MutedTextColorBrush}" FontSize="10"/>
                                 </StackPanel>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
 
                     <!-- Theme Info -->
-                    <TextBlock Text="Theme Information:" Foreground="{DynamicResource SecondaryTextBrush}" 
+                    <TextBlock Text="Theme Information:" Foreground="{DynamicResource SecondaryTextColorBrush}" 
                                FontSize="12" Margin="0,0,0,5"/>
                     <Border Background="{DynamicResource HighlightBackgroundBrush}" 
                             BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" 
                             CornerRadius="3" Padding="10" Margin="0,0,0,15">
                         <StackPanel>
                             <TextBlock x:Name="ThemeNameText" Text="Theme Name" 
-                                       Foreground="{DynamicResource PrimaryTextBrush}" FontWeight="Bold"/>
+                                       Foreground="{DynamicResource PrimaryTextColorBrush}" FontWeight="Bold"/>
                             <TextBlock x:Name="ThemeDescriptionText" Text="Theme Description" 
-                                       Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" 
+                                       Foreground="{DynamicResource MutedTextColorBrush}" TextWrapping="Wrap" 
                                        FontSize="11" Margin="0,2,0,0"/>
                             <TextBlock x:Name="ThemeAuthorText" Text="Author" 
-                                       Foreground="{DynamicResource SecondaryTextBrush}" FontSize="10" 
+                                       Foreground="{DynamicResource SecondaryTextColorBrush}" FontSize="10" 
                                        Margin="0,5,0,0"/>
                         </StackPanel>
                     </Border>
 
                     <!-- Theme Actions -->
-                    <TextBlock Text="Theme Actions:" Foreground="{DynamicResource SecondaryTextBrush}" 
+                    <TextBlock Text="Theme Actions:" Foreground="{DynamicResource SecondaryTextColorBrush}" 
                                FontSize="12" Margin="0,0,0,5"/>
                     <StackPanel>
                         <Button x:Name="ImportThemeButton" Content="Import Theme" Height="30" 
@@ -89,7 +89,7 @@
                     CornerRadius="5" Padding="15" Margin="10,0,0,0">
                 <StackPanel>
                     <TextBlock Text="Theme Preview" FontSize="18" FontWeight="Bold" 
-                               Foreground="{DynamicResource PrimaryTextBrush}" Margin="0,0,0,15"/>
+                               Foreground="{DynamicResource PrimaryTextColorBrush}" Margin="0,0,0,15"/>
                     
                     <!-- Preview Content -->
                     <ScrollViewer Height="400" Style="{DynamicResource CustomScrollViewerStyle}">
@@ -100,35 +100,35 @@
                                     CornerRadius="5" Padding="15" Margin="0,0,0,10">
                                 <StackPanel>
                                     <TextBlock Text="Sample Header" FontSize="16" FontWeight="Bold" 
-                                               Foreground="{DynamicResource PrimaryTextBrush}" Margin="0,0,0,5"/>
+                                               Foreground="{DynamicResource PrimaryTextColorBrush}" Margin="0,0,0,5"/>
                                     <TextBlock Text="This is sample body text to show how the theme looks with different text styles." 
-                                               Foreground="{DynamicResource SecondaryTextBrush}" TextWrapping="Wrap" 
+                                               Foreground="{DynamicResource SecondaryTextColorBrush}" TextWrapping="Wrap" 
                                                Margin="0,0,0,10"/>
                                     
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                         <Button Content="Primary Button" Height="25" Width="100" 
-                                                Margin="0,0,10,0" Background="{DynamicResource PrimaryBrush}" 
+                                                Margin="0,0,10,0" Background="{DynamicResource PrimaryTextColorBrush}" 
                                                 Foreground="White" BorderThickness="0"/>
                                         <Button Content="Secondary" Height="25" Width="80" 
-                                                Background="{DynamicResource AccentBrush}" 
+                                                Background="{DynamicResource AccentColorBrush}" 
                                                 Foreground="Black" BorderThickness="0"/>
                                     </StackPanel>
                                     
                                     <TextBlock Text="Success Message" 
-                                               Foreground="{DynamicResource SuccessBrush}" 
+                                               Foreground="{DynamicResource SuccessColorBrush}" 
                                                FontWeight="Bold" Margin="0,0,0,2"/>
                                     <TextBlock Text="Error Message" 
-                                               Foreground="{DynamicResource FailureBrush}" 
+                                               Foreground="{DynamicResource FailureColorBrush}" 
                                                FontWeight="Bold" Margin="0,0,0,2"/>
                                     <TextBlock Text="Muted Text" 
-                                               Foreground="{DynamicResource MutedTextBrush}" 
+                                               Foreground="{DynamicResource MutedTextColorBrush}" 
                                                FontSize="10"/>
                                 </StackPanel>
                             </Border>
 
                             <!-- Color Swatches -->
                             <TextBlock Text="Color Swatches:" FontSize="14" FontWeight="Bold" 
-                                       Foreground="{DynamicResource PrimaryTextBrush}" Margin="0,0,0,5"/>
+                                       Foreground="{DynamicResource PrimaryTextColorBrush}" Margin="0,0,0,5"/>
                             <Grid x:Name="ColorSwatchGrid" Margin="0,0,0,10">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
@@ -141,8 +141,8 @@
                             
                             <!-- Theme Details -->
                             <TextBlock Text="Theme Details:" FontSize="14" FontWeight="Bold" 
-                                       Foreground="{DynamicResource PrimaryTextBrush}" Margin="0,10,0,5"/>
-                            <Border Background="{DynamicResource PrimaryBackgroundBrush}" 
+                                       Foreground="{DynamicResource PrimaryTextColorBrush}" Margin="0,10,0,5"/>
+                            <Border Background="{DynamicResource PrimaryBackgroundColorBrush}" 
                                     BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" 
                                     CornerRadius="3" Padding="10">
                                 <StackPanel x:Name="ThemeDetailsPanel">
@@ -158,12 +158,12 @@
         <!-- Bottom Panel - Action Buttons -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
             <Button x:Name="ApplyButton" Content="Apply Theme" Height="35" Width="100" 
-                    Margin="0,0,10,0" Background="{DynamicResource PrimaryBrush}" 
-                    Foreground="{DynamicResource SecondaryTextBrush}" BorderThickness="0" FontWeight="Bold" 
+                    Margin="0,0,10,0" Background="{DynamicResource PrimaryTextColorBrush}" 
+                    Foreground="{DynamicResource SecondaryTextColorBrush}" BorderThickness="0" FontWeight="Bold" 
                     Click="ApplyButton_Click"/>
             <Button x:Name="CloseButton" Content="Close" Height="35" Width="80" 
                     Background="{DynamicResource SecondaryBackgroundBrush}" 
-                    Foreground="{DynamicResource PrimaryTextBrush}" 
+                    Foreground="{DynamicResource PrimaryTextColorBrush}" 
                     BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" 
                     Click="CloseButton_Click"/>
         </StackPanel>
