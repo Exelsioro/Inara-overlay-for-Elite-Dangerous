@@ -15,7 +15,6 @@ namespace ED_Inara_Overlay_2._0.Windows
         private bool disposed;
         private IntPtr targetWindow;
         private uint targetProcessId;
-        private bool _isReopeningDropdown = false;
 
         public TradeRouteWindow(Window owner)
         {

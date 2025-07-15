@@ -20,7 +20,7 @@
 
     
     <!-- Main container with dark background and transparency -->
-    <Border Style="{StaticResource WindowBorderStyle}">
+    <Border Background="#44000000" CornerRadius="5" Margin="5" BorderBrush="#FF404040" BorderThickness="1">
         <Grid Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -31,7 +31,9 @@
             <Grid Grid.Row="0" Margin="0,0,0,10">
                 <TextBlock x:Name="TitleLabel" 
                           Text="Trade Route Results" 
-                          Style="{StaticResource HeaderTextStyle}"
+                          Foreground="{StaticResource PrimaryTextBrush}"
+                          FontSize="16" 
+                          FontWeight="Bold" 
                           HorizontalAlignment="Left"/>
                 <Button x:Name="CloseButton" 
                        Content="✕" 
@@ -51,7 +53,7 @@
                    BorderThickness="1" 
                    CornerRadius="3">
                 <ScrollViewer x:Name="ResultsScrollViewer" 
-                             Style="{DynamicResource CustomScrollViewerStyle}"
+                             Style="{StaticResource CustomScrollViewerStyle}"
                              VerticalScrollBarVisibility="Auto" 
                              HorizontalScrollBarVisibility="Disabled"
                              Background="Transparent">

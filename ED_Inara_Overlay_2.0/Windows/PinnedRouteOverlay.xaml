@@ -25,7 +25,7 @@
                 VerticalAlignment="Stretch">
 
             <!-- ScrollViewer to enable vertical scrolling -->
-            <ScrollViewer Style="{DynamicResource CustomScrollViewerStyle}"
+            <ScrollViewer Style="{StaticResource CustomScrollViewerStyle}"
                          VerticalScrollBarVisibility="Auto"
                          HorizontalScrollBarVisibility="Disabled"
                          HorizontalAlignment="Stretch"
