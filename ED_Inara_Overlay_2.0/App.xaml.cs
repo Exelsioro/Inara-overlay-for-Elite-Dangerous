@@ -2,6 +2,7 @@ using System;
 using System.Windows;
 using ED_Inara_Overlay_2._0.Windows;
 using ED_Inara_Overlay_2._0.Utils;
+using ED_Inara_Overlay_2._0.Services;
 
 namespace ED_Inara_Overlay_2._0
 {
@@ -24,6 +25,22 @@ namespace ED_Inara_Overlay_2._0
             }
 
             Logger.Logger.Info($"Application starting with target process: {targetProcessName}");
+
+            // Initialize theme system
+            try
+            {
+                ThemeManager.Instance.LoadAvailableThemes();
+                if (ThemeManager.Instance.AvailableThemes.Count > 0)
+                {
+                    // Apply the first available theme (Default)
+                    ThemeManager.Instance.ApplyTheme(ThemeManager.Instance.AvailableThemes[0]);
+                    Logger.Logger.Info("Theme system initialized successfully");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Logger.Error($"Error initializing theme system: {ex.Message}");
+            }
 
             // Check if target process is already running
             var existingProcess = WindowsAPI.FindProcessByName(targetProcessName);

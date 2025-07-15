@@ -140,9 +140,10 @@ namespace ED_Inara_Overlay_2._0.Windows
             Application.Current.Shutdown();
         }
 
-        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-
+            var settingsWindow = new SettingsWindow();
+            settingsWindow.ShowDialog();
         }
 
         protected override void OnClosed(EventArgs e)

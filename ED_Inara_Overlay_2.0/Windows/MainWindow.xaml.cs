@@ -8,6 +8,7 @@ using System.Windows.Interop;
 using System.Collections.Generic;
 using ED_Inara_Overlay_2._0.Utils;
 using ED_Inara_Overlay_2._0.Windows;
+using ED_Inara_Overlay_2._0.Services;
 using System.Diagnostics;
 using InaraTools;
 
@@ -54,6 +55,9 @@ namespace ED_Inara_Overlay_2._0
             }
             SetupOverlay();
             SetupUpdateTimer();
+            
+            // Listen for theme changes
+            ThemeManager.Instance.ThemeApplied += OnThemeApplied;
             
             Logger.Logger.Info("MainWindow initialization complete - starting hidden");
         }
@@ -654,8 +658,26 @@ namespace ED_Inara_Overlay_2._0
             // Close all child windows properly
             CloseAllOverlayWindows();
             
+            // Unsubscribe from theme changes
+            ThemeManager.Instance.ThemeApplied -= OnThemeApplied;
+            
             Logger.Logger.Info("MainWindow closed and all resources cleaned up");
             base.OnClosed(e);
+        }
+
+        /// <summary>
+        /// Handles theme change events
+        /// </summary>
+        private void OnThemeApplied(object? sender, ThemeAppliedEventArgs e)
+        {
+            Logger.Logger.Info($"Theme changed to: {e.Theme.Name}");
+            
+            // Update toggle button colors based on the new theme
+            UpdateToggleButtonState();
+            
+            // The UI should update automatically through DynamicResource bindings
+            // but we can force a refresh here if needed
+            this.InvalidateVisual();
         }
     }
 }
