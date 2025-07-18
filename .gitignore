@@ -80,3 +80,4 @@ git_setup.bat
 # Installer distribution files
 dist/*
 !dist/.gitkeep
+!dist/README.md
