@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Theme Name="A Default Orange" Description="Default Orange Elite Dangerous theme" Author="ED Inara Overlay Team" Version="1.0">
+  <Colors>
+    <Color Key="PrimaryBackgroundColor" Value="#B31E1E1E" Description="Primary background color"/>
+    <Color Key="SecondaryBackgroundColor" Value="#B32A2A2A" Description="Secondary background color"/>
+    <Color Key="HighlightBackgroundColor" Value="#FF3A3A3A" Description="Highlight background color"/>
+    <Color Key="BorderColor" Value="#FF404040" Description="Border color"/>
+    <Color Key="ButtonBackgroundColor" Value="#FF404040" Description="Button background color"/>
+    <Color Key="PrimaryColor" Value="#FF8000" Description="Primary accent color"/>
+    <Color Key="AccentColor" Value="#FFCC00" Description="Accent color"/>
+    <Color Key="SuccessColor" Value="#00FF00" Description="Success color"/>
+    <Color Key="FailureColor" Value="#FF0000" Description="Failure color"/>
+    <Color Key="SecondaryTextColor" Value="#404040" Description="Secondary text color"/>
+    <Color Key="MutedTextColor" Value="#FFB0B0B0" Description="Muted text color"/>
+    <Color Key="PrimaryTextColor" Value="#FF8000" Description="Primary text color"/>
+  </Colors>
+  <Fonts>
+    <Font Key="HeaderFont" Family="Segoe UI" Size="16" Weight="Bold" Description="Header font"/>
+    <Font Key="BodyFont" Family="Segoe UI" Size="12" Weight="Normal" Description="Body font"/>
+    <Font Key="ButtonFont" Family="Segoe UI" Size="12" Weight="Bold" Description="Button font"/>
+  </Fonts>
+  <Dimensions>
+    <Dimension Key="HeaderFontSize" Value="16" Description="Header font size"/>
+    <Dimension Key="BodyFontSize" Value="12" Description="Body font size"/>
+    <Dimension Key="ButtonHeight" Value="32" Description="Button height"/>
+    <Dimension Key="BorderRadius" Value="4" Description="Border radius"/>
+  </Dimensions>
+</Theme>

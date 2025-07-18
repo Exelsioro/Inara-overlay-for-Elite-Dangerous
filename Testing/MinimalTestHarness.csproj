@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <AssemblyName>MinimalTestHarness</AssemblyName>
+    <RootNamespace>MinimalTestHarness</RootNamespace>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ED_Inara_Overlay\ED_Inara_Overlay.csproj" />
+    <ProjectReference Include="..\Logger\Logger.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="MockTargetApp.cs" />
+    <Compile Remove="MockTargetApp\Program.cs" />
+    <Compile Remove="MockTargetApp\**\*.cs" />
+    <Compile Remove="TestHarnessApp.xaml.cs" />
+    <Compile Remove="TestHarnessMainWindow.xaml.cs" />
+    <Compile Remove="MainWindow.xaml.cs" />
+    <Compile Remove="SimpleTestHarness\**\*.cs" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Page Remove="TestHarnessApp.xaml" />
+    <Page Remove="TestHarnessMainWindow.xaml" />
+    <Page Remove="MainWindow.xaml" />
+  </ItemGroup>
+
+</Project>
