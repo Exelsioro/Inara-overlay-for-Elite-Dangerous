@@ -1,0 +1,12 @@
+# Ignore installer executables - these will be added via GitHub releases
+*.exe
+
+# Ignore temporary files
+*.tmp
+*.temp
+*.log
+
+# Keep documentation and setup files
+!README.md
+!.gitignore
+!.gitkeep

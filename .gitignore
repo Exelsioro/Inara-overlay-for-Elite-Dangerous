@@ -81,3 +81,6 @@ git_setup.bat
 dist/*
 !dist/.gitkeep
 !dist/README.md
+!dist/.gitignore
+# Ignore git repository in dist folder
+dist/.git/
