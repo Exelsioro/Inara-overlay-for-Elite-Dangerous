@@ -2,7 +2,16 @@
 
 A .NET 8 WPF overlay application for Elite Dangerous that provides trade route information from INARA.
 
-## Features
+## 🖥️ System Requirements
+
+- **Operating System**: Windows 10 1607+ or Windows 11
+- **Framework**: .NET 8.0 Desktop Runtime (automatically checked by installer)
+- **Memory**: 100MB RAM (typical usage)
+- **Storage**: 50MB disk space
+- **Target Game**: Elite Dangerous (any version)
+- **Architecture**: 64-bit (x64) recommended
+
+## ✨ Features
 
 - **Smart Overlay System**: Automatically attaches to Elite Dangerous window
 - **Focus-Aware**: Shows/hides based on target window focus and state
@@ -118,6 +127,21 @@ ED_Inara_Overlay/
 
 ## Installation
 
+### 🚀 Quick Install (Recommended)
+
+1. **Download the Installer**: Get the latest `ED_Inara_Overlay_Setup.exe` from the [Releases](../../releases) page
+2. **Run the Installer**: Double-click the installer and follow the setup wizard
+3. **Launch the Application**: Find "Elite Dangerous Inara Overlay" in your Start Menu
+
+**The installer will:**
+- ✅ Check for .NET 8.0 Desktop Runtime (and prompt to install if missing)
+- ✅ Install the application to Program Files
+- ✅ Create Start Menu and Desktop shortcuts
+- ✅ Set up file associations
+- ✅ Create user data directory for settings
+
+### 🛠️ Manual Build & Install
+
 1. Clone the repository
 2. Open the solution in Visual Studio 2022
 3. Build the solution
@@ -177,6 +201,76 @@ dotnet run --project OverlayTestHarness.csproj
 dotnet run --project MockTargetApp/MockTargetApp.csproj
 ```
 
+### 📦 Creating Installers
+
+This project includes a complete installer build system using Inno Setup:
+
+#### Prerequisites for Building Installers
+1. **Install Inno Setup 6**: Download from [https://jrsoftware.org/isdl.php](https://jrsoftware.org/isdl.php)
+2. **Build the Application**: Ensure the application is built in Release mode
+
+#### Automated Installer Creation
+```powershell
+# Build application and create installer (recommended)
+.\build_installer.ps1
+
+# Or skip build if already built
+.\build_installer.ps1 -SkipBuild
+
+# Or only build the application
+.\build_installer.ps1 -SkipInstaller
+```
+
+#### Manual Installer Creation
+1. Open Inno Setup Compiler
+2. Open `installer.iss`
+3. Click Build (F9) or Compile → Compile
+4. Installer will be created in `dist/` folder
+
+#### Installer Features
+- **Automatic .NET 8 Detection**: Checks for required runtime and prompts for download
+- **Complete File Packaging**: Includes all executables, libraries, themes, and documentation
+- **Registry Integration**: Sets up file associations and Windows integration
+- **Start Menu & Desktop Icons**: Creates shortcuts for easy access
+- **Clean Uninstaller**: Removes all files and user data when uninstalling
+- **Version Management**: Supports upgrades and maintains user settings
+
+#### Build Output
+- **Location**: `dist/ED_Inara_Overlay_Setup_1.0.0.exe`
+- **Size**: ~5-10 MB (depending on dependencies)
+- **Compatibility**: Windows 10 1607+ (required for .NET 8)
+
+### 🏗️ Build System
+
+The project includes multiple build methods:
+
+#### PowerShell Build Scripts
+```powershell
+# Main build script (builds app + creates installer)
+.\build_installer.ps1
+
+# Legacy build script (app only)
+.\build.ps1
+
+# Batch file alternative
+.\build.bat
+```
+
+#### Manual dotnet Commands
+```bash
+# Clean build
+dotnet clean ED_Inara_Overlay/ED_Inara_Overlay.sln
+dotnet build ED_Inara_Overlay/ED_Inara_Overlay.sln --configuration Release
+
+# Publish self-contained (optional)
+dotnet publish ED_Inara_Overlay/ED_Inara_Overlay.csproj -c Release --self-contained
+```
+
+#### Build Artifacts
+- **Application**: `ED_Inara_Overlay/bin/Release/net8.0-windows/`
+- **Installer**: `dist/ED_Inara_Overlay_Setup_*.exe`
+- **Build Logs**: Console output with detailed progress
+
 ### Repository Migration Notes
 
 This repository was unified from multiple separate repositories to improve:
@@ -184,6 +278,7 @@ This repository was unified from multiple separate repositories to improve:
 - **Build Consistency**: Single solution file manages all projects
 - **Development Workflow**: Easier to develop and test cross-component features
 - **Version Control**: Unified versioning and release management
+- **Installer Integration**: Complete build-to-distribution pipeline
 
 **Previous Structure**: Components were in separate repositories with individual build processes
 **Current Structure**: All components unified under a single repository with shared build infrastructure
