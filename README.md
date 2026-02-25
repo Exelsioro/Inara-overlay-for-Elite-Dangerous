@@ -16,7 +16,6 @@ A .NET 8 WPF overlay for Elite Dangerous that displays trade routes sourced from
 - Pinned route overlay
 - Global hotkey: `Ctrl+5`
 - Theme system with import/export
-- JSON settings persistence in `%APPDATA%/ED_Inara_Overlay`
 
 ## Repository Layout
 
