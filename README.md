@@ -67,7 +67,7 @@ powershell -ExecutionPolicy Bypass -File Testing/QuickRegressionTest.ps1
 .\build_installer.ps1 -SkipBuild
 ```
 
-Installer output is written to `dist/`.
+Installer output is written to `Installer/`.
 
 ## Logging
 
