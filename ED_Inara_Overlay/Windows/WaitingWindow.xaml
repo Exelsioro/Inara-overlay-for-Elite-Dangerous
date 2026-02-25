@@ -27,7 +27,7 @@
         </StackPanel>
 
         <!-- Main Content -->
-        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="426" Height="246">
+        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="460" Height="246">
             <!-- Animated Loading Spinner -->
             <Grid Width="48" Height="48" Margin="0,0,0,20">
                 <!-- Background Circle -->
@@ -75,7 +75,7 @@
                        FontSize="16" 
                        HorizontalAlignment="Center" 
                        Margin="0,0,0,10"
-                       Foreground="White"/>
+                       Foreground="White" RenderTransformOrigin="0.507,-0.075"/>
 
             <!-- Target Process Name -->
             <!--<TextBlock x:Name="TargetProcessText" 
@@ -101,15 +101,7 @@
                                TextWrapping="Wrap" 
                                FontSize="12" 
                                Foreground="#D0D0D0" 
-                               LineHeight="16" Height="100">
-                        <Run Text="1. Click "/><Run x:Name="TargetAppName" Text="Start Overlay" Foreground="#00FF00"/><Run Text=" button to begin monitoring"/><LineBreak/>
-                        <Run Text="2. The overlay will attach to Elite Dangerous when detected"/><LineBreak/>
-                        <Run Text="3. Change themes using the "/><Run x:Name="Settings" Text="Settings" Foreground="#0078D7"/><Run Text=" button"/><LineBreak/>
-                        <Run Text="4. After Start Overlay, the app runs in system tray"/><LineBreak/>
-                        <Run Text="5. Use tray icon menu (Exit) to close the overlay"/><LineBreak/>
-                        <LineBreak/>
-                        <Run Text="You can use Ctrl+5 to open trade routes search pannel in game"/><LineBreak/>
-                    </TextBlock>
+                               LineHeight="16" Height="100"><Run Text="1. Click "/><Run x:Name="TargetAppName" Foreground="Lime" Text="Start Overlay"/><Run Text=" button to begin monitoring"/><LineBreak/><Run Text="2. The overlay will attach to Elite Dangerous when detected"/><LineBreak/><Run Text="3. Change themes using the "/><Run x:Name="Settings" Foreground="#FF0078D7" Text="Settings"/><Run Text=" button"/><LineBreak/><Run Text="4. After Start Overlay, the app runs in system tray"/><LineBreak/><Run Text="5. Use tray icon menu (Exit) to close the overlay"/></TextBlock>
                 </StackPanel>
             </Border>
 
