@@ -5,7 +5,6 @@ A .NET 8 WPF overlay for Elite Dangerous that displays trade routes sourced from
 ## Requirements
 
 - Windows 10 (1607+) or Windows 11
-- .NET 8 Desktop Runtime
 - Elite Dangerous (`EliteDangerous64.exe`)
 
 ## Features
