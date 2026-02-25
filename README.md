@@ -71,7 +71,7 @@ Installer output is written to `Installer/`.
 
 ## Logging
 
-Runtime logs are written to `ED_Inara_Overlay/bin/<Configuration>/net8.0-windows/logs/`.
+Runtime logs are written to `...\Elite Dangerous Inara Overlay\logs/`.
 
 ## License
 
