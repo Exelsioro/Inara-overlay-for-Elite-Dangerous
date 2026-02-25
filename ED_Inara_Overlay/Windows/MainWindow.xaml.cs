@@ -31,21 +31,39 @@ namespace ED_Inara_Overlay
         private bool isToggleActive = false;
         private bool isResultsActive = false;
         private bool isPinnedRouteActive = false;
+        private bool overlaysSuppressedByHotkey = false;
+        private bool restoreTradeVisible = false;
+        private bool restoreResultsVisible = false;
+        private bool restorePinnedVisible = false;
         private bool forceVisible = false; // Flag to ensure visibility after target detection
         private OverlayState currentState = OverlayState.Waiting;
-        private const int HOTKEY_ID = 9001; // Unique ID for our global hotkey
+        private const int HOTKEY_ID_TOGGLE = 9001;
+        private const int HOTKEY_ID_INTERACTIVE = 9002;
+        private const int HOTKEY_ID_UNPIN = 9003;
         private HwndSource? hwndSource; // For handling Windows messages
+        private uint toggleHotkeyModifiers = WindowsAPI.MOD_CONTROL;
+        private uint toggleHotkeyVirtualKey = WindowsAPI.VK_5;
+        private uint interactiveHotkeyModifiers = WindowsAPI.MOD_CONTROL;
+        private uint interactiveHotkeyVirtualKey = WindowsAPI.VK_6;
+        private uint unpinHotkeyModifiers = WindowsAPI.MOD_CONTROL;
+        private uint unpinHotkeyVirtualKey = WindowsAPI.VK_7;
+        private bool interactionModeEnabled = true;
+        private bool interactiveModeActive;
+        private bool returnOnFocusLoss = true;
+        private bool showCursorWhenInteractive = true;
+        private int autoReturnTimeoutSeconds = 8;
+        private DateTime interactiveModeEnteredAtUtc;
+        private DateTime interactiveFocusLossGraceUntilUtc;
+        private static readonly TimeSpan InteractiveFocusLossGracePeriod = TimeSpan.FromMilliseconds(1500);
+        private readonly double baseWindowWidth;
+        private readonly double baseWindowHeight;
+        private double lastAppliedScale = 1.0;
 
         public MainWindow(string processName = "notepad", Process? foundProcess = null)
         {
             InitializeComponent();
-
-            // Enable DPI awareness
-            try
-            {
-// Removed invalid assignment to TransformToDevice since DPI awareness is now declared in app.manifest
-            }
-            catch { /* Handle exceptions if needed */ }
+            baseWindowWidth = Width;
+            baseWindowHeight = Height;
             
             // Start hidden - only show when target has focus
             this.Visibility = Visibility.Hidden;
@@ -64,9 +82,13 @@ namespace ED_Inara_Overlay
             }
             SetupOverlay();
             SetupUpdateTimer();
+            LoadConfiguredSettings();
+            UpdateOverlayInteractionModes();
+            UpdateInteractionStatusUi();
             
             // Listen for theme changes
             ThemeManager.Instance.ThemeApplied += OnThemeApplied;
+            SettingsService.Instance.SettingsChanged += OnSettingsChanged;
             
             Logger.Logger.Info("MainWindow initialization complete - starting hidden");
         }
@@ -164,21 +186,21 @@ namespace ED_Inara_Overlay
                     WindowsAPI.SetupOverlayWindow(this);
                     WindowsAPI.SetClickThrough(this, false); // Allow interaction with toggle button
                     
-                    // Position at a safe location initially
-                    var screenWidth = System.Windows.SystemParameters.WorkArea.Width;
-                    var screenHeight = System.Windows.SystemParameters.WorkArea.Height;
+                    // Position at a safe location initially on the target monitor (or primary monitor fallback)
+                    var workArea = WindowsAPI.GetMonitorWorkArea(targetWindow);
                     
                     // Default safe position (bottom-left of screen)
-                    this.Left = 50;
-                    this.Top = screenHeight - this.Height - 50;
+                    this.Left = workArea.Left + 50;
+                    this.Top = workArea.Bottom - this.Height - 50;
                     
-                    Logger.Logger.Info($"MainWindow positioned at safe location: Left={this.Left}, Top={this.Top}, Screen={screenWidth}x{screenHeight}");
+                    Logger.Logger.Info($"MainWindow positioned at safe location: Left={this.Left}, Top={this.Top}, WorkArea={workArea.Width}x{workArea.Height}");
                     
                     // If target is set, try relative positioning with bounds checking
                     if (targetWindow != IntPtr.Zero)
                     {
                         try
                         {
+                            ApplyAdaptiveSizeForTarget();
                             // Use new WindowInteropHelper positioning method
                             WindowsAPI.PositionWindowRelativeToTarget(this, targetWindow, RelativePosition.BottomLeft);
                             Logger.Logger.Info($"MainWindow repositioned relative to target: Left={this.Left}, Top={this.Top}");
@@ -189,8 +211,8 @@ namespace ED_Inara_Overlay
                         }
                     }
                     
-                    // Set up global hotkey after window is loaded
-                    SetupGlobalHotkey();
+                    // Set up global hotkeys after window is loaded
+                    SetupGlobalHotkeys();
                 }
                 catch (Exception ex)
                 {
@@ -203,7 +225,7 @@ namespace ED_Inara_Overlay
         {
             updateTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromMilliseconds(16) // ~60 FPS
+                Interval = TimeSpan.FromMilliseconds(33) // ~30 FPS
             };
             updateTimer.Tick += UpdateTimer_Tick;
             updateTimer.Start();
@@ -243,6 +265,7 @@ namespace ED_Inara_Overlay
                 // Update position to follow target window with bounds checking
                 try
                 {
+                    ApplyAdaptiveSizeForTarget();
                     // Use new WindowInteropHelper positioning method
                     WindowsAPI.PositionWindowRelativeToTarget(this, targetWindow, RelativePosition.BottomLeft);
                 }
@@ -250,13 +273,14 @@ namespace ED_Inara_Overlay
                 {
                     Logger.Logger.Error($"Error updating MainWindow position: {ex.Message}");
                 }
-                
+
                 // Check target window focus and visibility state
                 IntPtr foregroundWindow = WindowsAPI.GetForegroundWindow();
                 bool targetHasFocus = (foregroundWindow == targetWindow);
                 bool overlayHasFocus = WindowsAPI.IsOverlayWindow(foregroundWindow);
                 bool targetMinimized = WindowsAPI.IsIconic(targetWindow);
                 bool targetVisible = WindowsAPI.IsWindowVisible(targetWindow);
+                EvaluateInteractiveAutoReturn(foregroundWindow);
                 
                 // Determine if main overlay should be visible based on state machine
                 bool shouldBeVisible = targetVisible && !targetMinimized;
@@ -336,489 +360,268 @@ namespace ED_Inara_Overlay
             }
         }
 
-        private void ToggleButton_Click(object sender, RoutedEventArgs e)
+        private void ApplyAdaptiveSizeForTarget()
         {
-            PerformToggleAction();
+            if (targetWindow == IntPtr.Zero || !WindowsAPI.GetWindowRect(targetWindow, out WindowsAPI.RECT targetRect))
+            {
+                return;
+            }
+
+            double targetWidth = targetRect.Right - targetRect.Left;
+            double targetHeight = targetRect.Bottom - targetRect.Top;
+            OverlayLayoutHelper.TryApplyAdaptiveSize(
+                this,
+                baseWindowWidth,
+                baseWindowHeight,
+                targetWidth,
+                targetHeight,
+                OverlayLayoutSettings.MainMinScale,
+                OverlayLayoutSettings.MainMaxScale,
+                ref lastAppliedScale);
         }
-        
-        /// <summary>
-        /// Sets up global hotkey registration for Ctrl+5
-        /// </summary>
-        private void SetupGlobalHotkey()
+
+        private void LoadConfiguredSettings()
         {
-            try
+            var settings = SettingsService.Instance.Settings;
+            interactionModeEnabled = settings.EnableInteractionMode;
+            autoReturnTimeoutSeconds = NormalizeAutoReturnTimeout(settings.AutoReturnTimeoutSeconds);
+            returnOnFocusLoss = settings.ReturnOnFocusLoss;
+            showCursorWhenInteractive = settings.ShowCursorWhenInteractive;
+
+            if (TryResolveHotkey(settings.ToggleHotkeyModifiers, settings.ToggleHotkeyKey, out var resolvedToggleModifiers, out var resolvedToggleKey))
             {
-                var helper = new WindowInteropHelper(this);
-                if (helper.Handle != IntPtr.Zero)
-                {
-                    // Register Ctrl+5 as a global hotkey
-                    bool registered = WindowsAPI.RegisterHotKey(helper.Handle, HOTKEY_ID, 
-                        WindowsAPI.MOD_CONTROL, WindowsAPI.VK_5);
-                    
-                    if (registered)
-                    {
-                        Logger.Logger.Info("Global hotkey Ctrl+5 registered successfully");
-                        
-                        // Set up message handler for hotkey messages
-                        hwndSource = HwndSource.FromHwnd(helper.Handle);
-                        hwndSource?.AddHook(HwndHook);
-                    }
-                    else
-                    {
-                        Logger.Logger.Warning("Failed to register global hotkey Ctrl+5 - it may already be in use");
-                    }
-                }
-                else
-                {
-                    Logger.Logger.Warning("Cannot register global hotkey - window handle not available");
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Logger.Error($"Error setting up global hotkey: {ex.Message}");
-            }
-        }
-        
-        /// <summary>
-        /// Handles Windows messages, specifically for hotkey events
-        /// </summary>
-        private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-        {
-            if (msg == WindowsAPI.WM_HOTKEY)
-            {
-                int hotkeyId = wParam.ToInt32();
-                if (hotkeyId == HOTKEY_ID)
-                {
-                    Logger.Logger.Info("Global Ctrl+5 hotkey detected - triggering toggle action");
-                    
-                    // Use Dispatcher to ensure we're on the UI thread
-                    this.Dispatcher.BeginInvoke(new Action(() =>
-                    {
-                        PerformToggleAction();
-                    }));
-                    
-                    handled = true;
-                }
-            }
-            return IntPtr.Zero;
-        }
-        
-        /// <summary>
-        /// Unregisters the global hotkey
-        /// </summary>
-        private void UnregisterGlobalHotkey()
-        {
-            try
-            {
-                var helper = new WindowInteropHelper(this);
-                if (helper.Handle != IntPtr.Zero)
-                {
-                    bool unregistered = WindowsAPI.UnregisterHotKey(helper.Handle, HOTKEY_ID);
-                    if (unregistered)
-                    {
-                        Logger.Logger.Info("Global hotkey Ctrl+5 unregistered successfully");
-                    }
-                    else
-                    {
-                        Logger.Logger.Warning("Failed to unregister global hotkey Ctrl+5");
-                    }
-                }
-                
-                // Remove the message hook
-                hwndSource?.RemoveHook(HwndHook);
-                hwndSource = null;
-            }
-            catch (Exception ex)
-            {
-                Logger.Logger.Error($"Error unregistering global hotkey: {ex.Message}");
-            }
-        }
-        
-        /// <summary>
-        /// Performs the toggle action - extracted from ToggleButton_Click for reuse with hotkey
-        /// </summary>
-        private void PerformToggleAction()
-        {
-            isToggleActive = !isToggleActive;
-            UpdateToggleButtonState();
-            
-            Logger.Logger.Info($"Toggle state changed: {(isToggleActive ? "Active" : "Inactive")}");
-            Logger.Logger.LogUserAction($"Toggle action performed", new { IsActive = isToggleActive });
-            
-            if (isToggleActive)
-            {
-                // Show trade route window
-                if (tradeRouteWindow == null || !tradeRouteWindow.IsLoaded)
-                {
-                    Logger.Logger.Info("Creating new TradeRouteWindow instance");
-                    tradeRouteWindow = new TradeRouteWindow(this);
-                    Logger.Logger.Info($"TradeRouteWindow created, IsLoaded: {tradeRouteWindow.IsLoaded}");
-                    
-                    // Set target window for positioning
-                    tradeRouteWindow.SetTargetWindow(targetWindow, targetProcessId);
-                    Logger.Logger.Info($"TradeRouteWindow target set, IsLoaded: {tradeRouteWindow.IsLoaded}");
-                }
-                
-                if (!tradeRouteWindow.IsVisible)
-                {
-                    Logger.Logger.Info($"Showing TradeRouteWindow, targetWindow: {targetWindow}, targetProcessId: {targetProcessId}");
-                    tradeRouteWindow.SetTargetWindow(targetWindow, targetProcessId);
-                    tradeRouteWindow.Show();
-                    Logger.Logger.Info($"TradeRouteWindow.Show() called, IsVisible: {tradeRouteWindow.IsVisible}");
-                }
+                toggleHotkeyModifiers = resolvedToggleModifiers;
+                toggleHotkeyVirtualKey = resolvedToggleKey;
             }
             else
             {
-                // Hide trade route window
-                if (tradeRouteWindow != null && tradeRouteWindow.IsVisible)
-                {
-                    Logger.Logger.Info("Hiding TradeRouteWindow");
-                    tradeRouteWindow.StopUpdateTimer();
-                    tradeRouteWindow.Hide();
-                }
+                toggleHotkeyModifiers = WindowsAPI.MOD_CONTROL;
+                toggleHotkeyVirtualKey = WindowsAPI.VK_5;
+                Logger.Logger.Warning($"Invalid toggle hotkey ({settings.ToggleHotkeyModifiers}+{settings.ToggleHotkeyKey}). Falling back to Ctrl+D5.");
             }
-        }
 
-        private void UpdateToggleButtonState()
-        {
-            ToggleButton.Background = isToggleActive ?
-                new SolidColorBrush(Color.FromArgb(20, 128, 128, 128)) : 
-                new SolidColorBrush(Color.FromArgb(20, 20, 20, 0)); 
-        }
-
-        public void OnTradeRouteWindowClosed()
-        {
-            isToggleActive = false;
-            UpdateToggleButtonState();
-        }
-        
-        public void OnResultsWindowClosed()
-        {
-            isResultsActive = false;
-            Logger.Logger.Info("Results overlay window closed");
-        }
-        
-        public void OnPinRouteRequested(TradeRoute tradeRoute)
-        {
-            Logger.Logger.Info($"Pin route requested from MainWindow: {tradeRoute.CardHeader.FromStation.System} -> {tradeRoute.CardHeader.ToStation.System}");
-            
-            // Create pinned route overlay if it doesn't exist
-            if (pinnedRouteOverlay == null || !pinnedRouteOverlay.IsLoaded)
+            if (TryResolveHotkey(settings.InteractiveHotkeyModifiers, settings.InteractiveHotkeyKey, out var resolvedInteractiveModifiers, out var resolvedInteractiveKey))
             {
-                Logger.Logger.Info("Creating new PinnedRouteOverlay instance");
-                pinnedRouteOverlay = new PinnedRouteOverlay(this);
-            }
-            
-            // Set target window for positioning
-            pinnedRouteOverlay.SetTargetWindow(targetWindow, targetProcessId);
-            
-            // Pin the route
-            pinnedRouteOverlay.PinTradeRoute(tradeRoute);
-            
-            isPinnedRouteActive = true;
-            
-            // Close other overlay windows as requested
-            CloseOverlayWindows();
-            
-            Logger.Logger.Info($"Route pinned successfully, closing other overlays");
-        }
-        
-        /// <summary>
-        /// Unpins any currently pinned route overlay
-        /// </summary>
-        public void UnpinRouteOverlay()
-        {
-            if (pinnedRouteOverlay != null && isPinnedRouteActive)
-            {
-                Logger.Logger.Info("Unpinning current pinned route overlay");
-                
-                try
-                {
-                    pinnedRouteOverlay.Close();
-                }
-                catch (Exception ex)
-                {
-                    Logger.Logger.Warning($"Error closing pinned route overlay: {ex.Message}");
-                }
-                
-                pinnedRouteOverlay = null;
-                isPinnedRouteActive = false;
-                
-                Logger.Logger.Info("Pinned route overlay unpinned successfully");
-            }
-        }
-        
-        private void CloseOverlayWindows()
-        {
-            Logger.Logger.Info("Closing overlay windows for pin route functionality");
-            
-            // Hide and close trade route window
-            if (tradeRouteWindow != null && tradeRouteWindow.IsVisible)
-            {
-                Logger.Logger.Info("Closing TradeRouteWindow");
-                tradeRouteWindow.StopUpdateTimer();
-                tradeRouteWindow.Hide();
-                isToggleActive = false;
-                UpdateToggleButtonState();
-            }
-            
-            // Properly close results overlay window
-            if (resultsOverlayWindow != null && resultsOverlayWindow.IsVisible)
-            {
-                Logger.Logger.Info("Closing ResultsOverlayWindow");
-                
-                // Stop the update timer properly
-                resultsOverlayWindow.StopUpdateTimer();
-                
-                // Clear trade route controls and events
-                resultsOverlayWindow.Dispose();
-                
-                // Hide and reset state
-                resultsOverlayWindow.Hide();
-                isResultsActive = false;
-                
-                // Nullify the reference so a new instance will be created next time
-                resultsOverlayWindow = null;
-                
-                Logger.Logger.Info("ResultsOverlayWindow closed and state reset");
-            }
-            
-            Logger.Logger.Info("All overlay windows closed");
-        }
-        
-        /// <summary>
-        /// Checks if the target process is still running
-        /// </summary>
-        private bool IsTargetProcessRunning()
-        {
-            try
-            {
-                if (targetProcessId == 0)
-                    return false;
-                    
-                var process = Process.GetProcessById((int)targetProcessId);
-                return !process.HasExited;
-            }
-            catch (ArgumentException)
-            {
-                // Process not found
-                return false;
-            }
-            catch (Exception ex)
-            {
-                Logger.Logger.Warning($"Error checking target process status: {ex.Message}");
-                return false;
-            }
-        }
-        
-        /// <summary>
-        /// Initiates application shutdown with proper cleanup
-        /// </summary>
-        private void ShutdownApplication(string reason)
-        {
-            Logger.Logger.Info($"Initiating application shutdown: {reason}");
-            
-            isToggleActive = false;
-            UpdateToggleButtonState();
-            
-            // Close all overlay windows first
-            CloseAllOverlayWindows();
-            
-            // Schedule application shutdown on the UI thread
-            this.Dispatcher.BeginInvoke(new Action(() => 
-            {
-                Logger.Logger.Info($"Application shutdown initiated: {reason}");
-                Application.Current.Shutdown();
-            }));
-        }
-        
-        /// <summary>
-        /// Closes all overlay windows when target window is closed
-        /// </summary>
-        private void CloseAllOverlayWindows()
-        {
-            Logger.Logger.Info("Closing all overlay windows due to target window closure");
-            
-            try
-            {
-                // Stop the main update timer first to prevent further updates
-                if (updateTimer != null)
-                {
-                    updateTimer.Stop();
-                    Logger.Logger.Info("Main update timer stopped");
-                }
-                
-                // Close trade route window
-                if (tradeRouteWindow != null)
-                {
-                    Logger.Logger.Info("Closing TradeRouteWindow");
-                    try
-                    {
-                        tradeRouteWindow.StopUpdateTimer();
-                        tradeRouteWindow.Close();
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Logger.Warning($"Error closing TradeRouteWindow: {ex.Message}");
-                    }
-                    tradeRouteWindow = null;
-                }
-                
-                // Close results overlay window
-                if (resultsOverlayWindow != null)
-                {
-                    Logger.Logger.Info("Closing ResultsOverlayWindow");
-                    try
-                    {
-                        resultsOverlayWindow.StopUpdateTimer();
-                        resultsOverlayWindow.Close();
-                        resultsOverlayWindow.Dispose();
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Logger.Warning($"Error closing ResultsOverlayWindow: {ex.Message}");
-                    }
-                    resultsOverlayWindow = null;
-                }
-                
-                // Close pinned route overlay
-                if (pinnedRouteOverlay != null)
-                {
-                    Logger.Logger.Info("Closing PinnedRouteOverlay");
-                    try
-                    {
-                        pinnedRouteOverlay.Close();
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Logger.Warning($"Error closing PinnedRouteOverlay: {ex.Message}");
-                    }
-                    pinnedRouteOverlay = null;
-                }
-                
-                // Reset all state flags
-                isToggleActive = false;
-                isResultsActive = false;
-                isPinnedRouteActive = false;
-                
-                Logger.Logger.Info("All overlay windows closed successfully");
-            }
-            catch (Exception ex)
-            {
-                Logger.Logger.Error($"Error during overlay windows cleanup: {ex.Message}");
-            }
-        }
-        
-        public void ShowResultsOverlay(List<TradeRoute> tradeRoutes)
-        {
-            // Check if we need to create a new instance (first time or after disposal)
-            bool needNewInstance = resultsOverlayWindow == null || 
-                                   !resultsOverlayWindow.IsLoaded || 
-                                   (resultsOverlayWindow.Tag?.ToString() == "disposed");
-            
-            if (needNewInstance)
-            {
-                Logger.Logger.Info("Creating new ResultsOverlayWindow instance");
-                resultsOverlayWindow = new ResultsOverlayWindow(this);
-            }
-            
-            // Ensure we have a valid window instance before proceeding
-            if (resultsOverlayWindow != null)
-            {
-                resultsOverlayWindow.SetTargetWindow(targetWindow, targetProcessId);
-                resultsOverlayWindow.DisplayTradeRoutes(tradeRoutes);
-                
-                if (!resultsOverlayWindow.IsVisible)
-                {
-                    Logger.Logger.Info("Showing ResultsOverlayWindow");
-                    resultsOverlayWindow.Show();
-                }
-                
-                isResultsActive = true;
-                Logger.Logger.Info($"Results overlay active: {isResultsActive}");
+                interactiveHotkeyModifiers = resolvedInteractiveModifiers;
+                interactiveHotkeyVirtualKey = resolvedInteractiveKey;
             }
             else
             {
-                Logger.Logger.Error("Failed to create or access ResultsOverlayWindow instance");
+                interactiveHotkeyModifiers = WindowsAPI.MOD_CONTROL;
+                interactiveHotkeyVirtualKey = WindowsAPI.VK_6;
+                Logger.Logger.Warning($"Invalid interactive hotkey ({settings.InteractiveHotkeyModifiers}+{settings.InteractiveHotkeyKey}). Falling back to Ctrl+D6.");
             }
         }
 
-        /// <summary>
-        /// Ensures the main window is visible after target detection (called from App.xaml.cs)
-        /// </summary>
-        public void EnsureVisibleAfterTargetDetection()
+        private bool TryResolveHotkey(string modifiersText, string keyText, out uint modifiers, out uint virtualKey)
         {
-            Logger.Logger.Info("Setting forceVisible flag and transitioning to ForceShow state for target detection");
-            forceVisible = true;
-            
-            // Force state transition to ForceShow if we're still waiting
-            if (currentState == OverlayState.Waiting)
-            {
-                currentState = OverlayState.ForceShow;
+            modifiers = 0;
+            virtualKey = 0;
 
-                Logger.Logger.Info("State transition: Waiting -> ForceShow (triggered by target detection)");
-            }
-            
-            // If the window is already loaded and target is available, try to show immediately
-            if (this.IsLoaded && targetWindow != IntPtr.Zero)
+            modifiers = modifiersText switch
             {
-                bool targetVisible = WindowsAPI.IsWindowVisible(targetWindow);
-                bool targetMinimized = WindowsAPI.IsIconic(targetWindow);
-                
-                if (targetVisible && !targetMinimized && !this.IsVisible)
+                "Ctrl" => WindowsAPI.MOD_CONTROL,
+                "Shift" => WindowsAPI.MOD_SHIFT,
+                "Alt" => WindowsAPI.MOD_ALT,
+                "Ctrl+Shift" => WindowsAPI.MOD_CONTROL | WindowsAPI.MOD_SHIFT,
+                "Ctrl+Alt" => WindowsAPI.MOD_CONTROL | WindowsAPI.MOD_ALT,
+                "Alt+Shift" => WindowsAPI.MOD_ALT | WindowsAPI.MOD_SHIFT,
+                _ => 0
+            };
+
+            if (modifiers == 0)
+            {
+                return false;
+            }
+
+            if (!Enum.TryParse<Key>(keyText, true, out var key))
+            {
+                return false;
+            }
+
+            int vk = KeyInterop.VirtualKeyFromKey(key);
+            if (vk <= 0)
+            {
+                return false;
+            }
+
+            virtualKey = (uint)vk;
+            return true;
+        }
+
+        private void OnSettingsChanged(object? sender, SettingsChangedEventArgs e)
+        {
+            bool hotkeysChanged = false;
+
+            if (TryResolveHotkey(e.Settings.ToggleHotkeyModifiers, e.Settings.ToggleHotkeyKey, out var newToggleModifiers, out var newToggleVirtualKey)
+                && (newToggleModifiers != toggleHotkeyModifiers || newToggleVirtualKey != toggleHotkeyVirtualKey))
+            {
+                toggleHotkeyModifiers = newToggleModifiers;
+                toggleHotkeyVirtualKey = newToggleVirtualKey;
+                hotkeysChanged = true;
+            }
+
+            if (TryResolveHotkey(e.Settings.InteractiveHotkeyModifiers, e.Settings.InteractiveHotkeyKey, out var newInteractiveModifiers, out var newInteractiveVirtualKey)
+                && (newInteractiveModifiers != interactiveHotkeyModifiers || newInteractiveVirtualKey != interactiveHotkeyVirtualKey))
+            {
+                interactiveHotkeyModifiers = newInteractiveModifiers;
+                interactiveHotkeyVirtualKey = newInteractiveVirtualKey;
+                hotkeysChanged = true;
+            }
+
+            interactionModeEnabled = e.Settings.EnableInteractionMode;
+            autoReturnTimeoutSeconds = NormalizeAutoReturnTimeout(e.Settings.AutoReturnTimeoutSeconds);
+            returnOnFocusLoss = e.Settings.ReturnOnFocusLoss;
+            showCursorWhenInteractive = e.Settings.ShowCursorWhenInteractive;
+
+            if (!interactionModeEnabled && interactiveModeActive)
+            {
+                SetInteractiveMode(false, "disabled from settings");
+            }
+
+            UpdateOverlayInteractionModes();
+            UpdateInteractionStatusUi();
+
+            if (hotkeysChanged)
+            {
+                UnregisterGlobalHotkeys();
+                SetupGlobalHotkeys();
+                Logger.Logger.Info("Global hotkeys reconfigured from settings");
+            }
+        }
+
+        private int NormalizeAutoReturnTimeout(int value)
+        {
+            return value switch
+            {
+                0 or 5 or 8 or 10 or 15 => value,
+                _ => 8
+            };
+        }
+
+        private void SetInteractiveMode(bool isActive, string reason)
+        {
+            if (interactiveModeActive == isActive)
+            {
+                return;
+            }
+
+            interactiveModeActive = isActive;
+            if (interactiveModeActive)
+            {
+                interactiveModeEnteredAtUtc = DateTime.UtcNow;
+                interactiveFocusLossGraceUntilUtc = interactiveModeEnteredAtUtc + InteractiveFocusLossGracePeriod;
+                FocusInteractiveOverlayWindow();
+            }
+
+            UpdateOverlayInteractionModes();
+            UpdateInteractionStatusUi();
+            Logger.Logger.Info($"Interactive mode {(interactiveModeActive ? "ENABLED" : "DISABLED")} ({reason})");
+        }
+
+        private void UpdateOverlayInteractionModes()
+        {
+            bool canInteract = interactionModeEnabled && interactiveModeActive;
+
+            tradeRouteWindow?.ApplyInteractionMode(canInteract, showCursorWhenInteractive);
+            resultsOverlayWindow?.ApplyInteractionMode(canInteract, showCursorWhenInteractive);
+            if (pinnedRouteOverlay != null)
+            {
+                WindowsAPI.SetClickThrough(pinnedRouteOverlay, true);
+            }
+            if (canInteract == false)
+            {
+                WindowsAPI.TryActivateWindow(targetWindow);
+            }
+        }
+
+        private void UpdateInteractionStatusUi()
+        {
+            if (InteractionStatusBadge == null || InteractionHintText == null)
+            {
+                return;
+            }
+
+            bool canInteract = interactionModeEnabled && interactiveModeActive;
+            string stateText = canInteract ? "INTERACTIVE: ON" : "INTERACTIVE: OFF";
+            InteractionStatusBadge.Text = stateText;
+
+            InteractionStatusBadge.Background = canInteract
+                ? new SolidColorBrush(Color.FromArgb(180, 180, 95, 0))
+                : new SolidColorBrush(Color.FromArgb(120, 70, 25, 0));
+
+            string interactionHotkeyText = FormatHotkeyDisplay(SettingsService.Instance.Settings.InteractiveHotkeyModifiers, SettingsService.Instance.Settings.InteractiveHotkeyKey);
+            string toggleHotkeyText = FormatHotkeyDisplay(SettingsService.Instance.Settings.ToggleHotkeyModifiers, SettingsService.Instance.Settings.ToggleHotkeyKey);
+            string overlaysStateText = overlaysSuppressedByHotkey ? "hidden" : "visible";
+            InteractionHintText.Text =
+                $"Overlays: {overlaysStateText} | Show/Hide: {toggleHotkeyText} | Interactive: {interactionHotkeyText} | Unpin: Ctrl+7";
+        }
+
+        private static string FormatHotkeyDisplay(string modifiers, string key)
+        {
+            if (key.StartsWith("D", StringComparison.OrdinalIgnoreCase) && key.Length == 2 && char.IsDigit(key[1]))
+            {
+                return $"{modifiers}+{key[1]}";
+            }
+
+            return $"{modifiers}+{key}";
+        }
+
+        private void EvaluateInteractiveAutoReturn(IntPtr foregroundWindow)
+        {
+            if (!interactiveModeActive)
+            {
+                return;
+            }
+
+            bool focusIsOnInteractiveOverlay = IsWindowFocused(tradeRouteWindow, foregroundWindow)
+                || IsWindowFocused(resultsOverlayWindow, foregroundWindow);
+
+            bool gracePeriodActive = DateTime.UtcNow < interactiveFocusLossGraceUntilUtc;
+            if (returnOnFocusLoss && !gracePeriodActive && !focusIsOnInteractiveOverlay)
+            {
+                SetInteractiveMode(false, "focus loss");
+                return;
+            }
+
+            if (autoReturnTimeoutSeconds > 0
+                && (DateTime.UtcNow - interactiveModeEnteredAtUtc).TotalSeconds >= autoReturnTimeoutSeconds)
+            {
+                SetInteractiveMode(false, $"timeout {autoReturnTimeoutSeconds}s");
+            }
+        }
+
+        private static bool IsWindowFocused(Window? window, IntPtr foregroundWindow)
+        {
+            if (window == null || !window.IsLoaded)
+            {
+                return false;
+            }
+
+            var handle = new WindowInteropHelper(window).Handle;
+            return handle != IntPtr.Zero && handle == foregroundWindow;
+        }
+
+        private void FocusInteractiveOverlayWindow()
+        {
+            try
+            {
+                if (resultsOverlayWindow?.IsVisible == true)
                 {
-                    Logger.Logger.Info("Showing MainWindow immediately after target detection");
-                    this.Show();
+                    resultsOverlayWindow.Activate();
+                    return;
+                }
+
+                if (tradeRouteWindow?.IsVisible == true)
+                {
+                    tradeRouteWindow.Activate();
                 }
             }
+            catch (Exception ex)
+            {
+                Logger.Logger.Warning($"Failed to focus interactive overlay window: {ex.Message}");
+            }
         }
 
-        protected override void OnClosed(EventArgs e)
-        {
-            Logger.Logger.Info("MainWindow is closing - cleaning up resources");
-            
-            disposed = true;
-            
-            // Stop the update timer first
-            if (updateTimer != null)
-            {
-                updateTimer.Stop();
-                updateTimer = null;
-            }
-            
-            // Stop the retry timer if it's running
-            if (retryTimer != null)
-            {
-                retryTimer.Stop();
-                retryTimer = null;
-            }
-            
-            // Unregister global hotkey
-            UnregisterGlobalHotkey();
-            
-            // Close all child windows properly
-            CloseAllOverlayWindows();
-            
-            // Unsubscribe from theme changes
-            ThemeManager.Instance.ThemeApplied -= OnThemeApplied;
-            
-            Logger.Logger.Info("MainWindow closed and all resources cleaned up");
-            base.OnClosed(e);
-        }
-
-        /// <summary>
-        /// Handles theme change events
-        /// </summary>
-        private void OnThemeApplied(object? sender, ThemeAppliedEventArgs e)
-        {
-            Logger.Logger.Info($"Theme changed to: {e.Theme.Name}");
-            
-            // Update toggle button colors based on the new theme
-            UpdateToggleButtonState();
-            
-            // The UI should update automatically through DynamicResource bindings
-            // but we can force a refresh here if needed
-            this.InvalidateVisual();
-        }
     }
 }

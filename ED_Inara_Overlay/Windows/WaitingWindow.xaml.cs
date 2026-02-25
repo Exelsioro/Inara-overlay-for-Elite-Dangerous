@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Runtime.Versioning;
 using System.Windows;
 using System.Windows.Navigation;
 using System.Windows.Threading;
@@ -10,6 +11,7 @@ namespace ED_Inara_Overlay.Windows
     /// <summary>
     /// Waiting window that shows while target application is not running
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class WaitingWindow : Window
     {
         private readonly string targetProcessName;
@@ -17,6 +19,8 @@ namespace ED_Inara_Overlay.Windows
         private bool shouldClose = false;
         private bool targetFound = false; // Track if closure is due to target being found
         private bool targetProcessRunning = false; // Track if target process is currently running
+        private bool startRequested = false;
+        private bool overlayStartTriggered = false;
 
         public event EventHandler<string>? TargetProcessFound;
 
@@ -89,9 +93,11 @@ namespace ED_Inara_Overlay.Windows
                         // Update UI to show target is available
                         UpdateStatusTargetFound();
                     }
-                    
-                    // Continue monitoring but don't auto-start overlay
-                    // User must click "Start Overlay" button to proceed
+
+                    if (startRequested && !overlayStartTriggered)
+                    {
+                        TriggerOverlayStart();
+                    }
                 }
                 else
                 {
@@ -145,8 +151,14 @@ namespace ED_Inara_Overlay.Windows
         
         private void UpdateStatusTargetFound()
         {
-            // Update status to show target is available
-            StatusText.Text = "Target application found! Click 'Start Overlay' to proceed.";
+            if (startRequested)
+            {
+                StatusText.Text = "Target application found! Starting overlay...";
+            }
+            else
+            {
+                StatusText.Text = "Target application found! Click 'Start Overlay' to proceed.";
+            }
             StatusText.Foreground = new System.Windows.Media.SolidColorBrush(
                 System.Windows.Media.Color.FromRgb(0, 255, 0)); // Green
         }
@@ -201,24 +213,44 @@ namespace ED_Inara_Overlay.Windows
         {
             Logger.Logger.Info("User clicked Start Overlay button in WaitingWindow");
             Logger.Logger.LogUserAction("Start Overlay button clicked in waiting window", new { TargetProcess = targetProcessName });
-            
+            startRequested = true;
+
+            if (targetProcessRunning)
+            {
+                TriggerOverlayStart();
+                return;
+            }
+
+            StatusText.Text = "Waiting for target process. Overlay will start automatically.";
+            StatusText.Foreground = new System.Windows.Media.SolidColorBrush(
+                System.Windows.Media.Color.FromRgb(255, 255, 255));
+
+            if (Application.Current is App app)
+            {
+                app.ShowTrayWaitingHint();
+            }
+            this.Hide();
+        }
+
+        private void TriggerOverlayStart()
+        {
+            if (overlayStartTriggered)
+            {
+                return;
+            }
+
+            overlayStartTriggered = true;
             shouldClose = true;
-            
-            // Stop monitoring
+
             if (checkTimer != null)
             {
                 checkTimer.Stop();
                 checkTimer = null;
             }
-            
-            // Mark that overlay was manually started (not due to target being found)
-            targetFound = false;
-            
-            // Notify parent that overlay should start manually
+
+            Logger.Logger.Info("Auto-start conditions met. Triggering overlay startup.");
             TargetProcessFound?.Invoke(this, targetProcessName);
-            
-            // Close this waiting window
-            this.Close();
+            this.Hide();
         }
 
         protected override void OnClosed(EventArgs e)

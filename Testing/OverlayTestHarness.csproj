@@ -5,6 +5,8 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     <Nullable>enable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     <AssemblyName>OverlayTestHarness</AssemblyName>
@@ -22,10 +24,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="ED_Inara_Overlay.LayoutTests\**\*.cs" />
     <Compile Remove="MinimalTestHarness.cs" />
-    <Compile Remove="MockTargetApp.cs" />
     <Compile Remove="MainWindow.xaml.cs" />
-    <Compile Remove="SimpleTestHarness\**" />
     <Compile Remove="MockTargetApp\**" />
   </ItemGroup>
 

@@ -82,7 +82,22 @@ namespace ED_Inara_Overlay.Utils
         public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
         [DllImport("user32.dll")]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
         public static extern bool SetLayeredWindowAttributes(IntPtr hwnd, uint crKey, byte bAlpha, uint dwFlags);
+
+        [DllImport("user32.dll")]
+        public static extern int ShowCursor(bool bShow);
+
+        [DllImport("user32.dll")]
+        public static extern bool SetCursorPos(int X, int Y);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
 
         // Global hotkey API functions
         [DllImport("user32.dll")]
@@ -122,6 +137,17 @@ namespace ED_Inara_Overlay.Utils
             public int Right;
             public int Bottom;
         }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct MONITORINFO
+        {
+            public int cbSize;
+            public RECT rcMonitor;
+            public RECT rcWork;
+            public uint dwFlags;
+        }
+
+        public const uint MONITOR_DEFAULTTONEAREST = 0x00000002;
 
         #endregion
 
@@ -191,6 +217,73 @@ namespace ED_Inara_Overlay.Utils
         }
 
         /// <summary>
+        /// Gets working area for the monitor containing the target window.
+        /// Falls back to primary working area if monitor detection fails.
+        /// </summary>
+        public static Rect GetMonitorWorkArea(IntPtr targetWindow)
+        {
+            try
+            {
+                if (targetWindow != IntPtr.Zero)
+                {
+                    IntPtr monitor = MonitorFromWindow(targetWindow, MONITOR_DEFAULTTONEAREST);
+                    if (monitor != IntPtr.Zero)
+                    {
+                        var monitorInfo = new MONITORINFO
+                        {
+                            cbSize = Marshal.SizeOf<MONITORINFO>()
+                        };
+
+                        if (GetMonitorInfo(monitor, ref monitorInfo))
+                        {
+                            return new Rect(
+                                monitorInfo.rcWork.Left,
+                                monitorInfo.rcWork.Top,
+                                monitorInfo.rcWork.Right - monitorInfo.rcWork.Left,
+                                monitorInfo.rcWork.Bottom - monitorInfo.rcWork.Top);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Logger.Warning($"WindowsAPI.GetMonitorWorkArea: fallback to primary work area due to error: {ex.Message}");
+            }
+
+            return SystemParameters.WorkArea;
+        }
+
+        /// <summary>
+        /// Attempts to activate and focus a target window.
+        /// </summary>
+        public static bool TryActivateWindow(IntPtr hWnd)
+        {
+            if (hWnd == IntPtr.Zero || !IsWindow(hWnd))
+            {
+                return false;
+            }
+
+            try
+            {
+                if (IsIconic(hWnd))
+                {
+                    ShowWindow(hWnd, SW_RESTORE);
+                }
+                else
+                {
+                    ShowWindow(hWnd, SW_SHOW);
+                }
+
+                return SetForegroundWindow(hWnd);
+            }
+            catch (Exception ex)
+            {
+                Logger.Logger.Warning($"WindowsAPI.TryActivateWindow failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Sets up a WPF window for overlay behavior without global topmost
         /// </summary>
         public static void SetupOverlayWindow(Window window)
@@ -233,46 +326,9 @@ namespace ED_Inara_Overlay.Utils
             if (helper.Handle == IntPtr.Zero)
                 return;
 
-            // Calculate position based on target window and desired relative position
-            int newX = targetRect.Left;
-            int newY = targetRect.Top;
-            
-            switch (position)
-            {
-                case RelativePosition.TopLeft:
-                    newX = targetRect.Left;
-                    newY = targetRect.Top;
-                    break;
-                case RelativePosition.TopRight:
-                    newX = targetRect.Right - (int)window.Width;
-                    newY = targetRect.Top;
-                    break;
-                case RelativePosition.BottomLeft:
-                    newX = targetRect.Left;
-                    newY = targetRect.Bottom - (int)window.Height;
-                    break;
-                case RelativePosition.BottomRight:
-                    newX = targetRect.Right - (int)window.Width;
-                    newY = targetRect.Bottom - (int)window.Height;
-                    break;
-                case RelativePosition.Center:
-                    newX = targetRect.Left + ((targetRect.Right - targetRect.Left) - (int)window.Width) / 2;
-                    newY = targetRect.Top + ((targetRect.Bottom - targetRect.Top) - (int)window.Height) / 2;
-                    break;
-                case RelativePosition.RightCenter:
-                    newX = targetRect.Right + 10;
-                    newY = targetRect.Top + ((targetRect.Bottom - targetRect.Top) - (int)window.Height) / 2;
-                    break;
-            }
-
-            // Ensure window stays within screen bounds
-            var screenWidth = System.Windows.SystemParameters.WorkArea.Width;
-            var screenHeight = System.Windows.SystemParameters.WorkArea.Height;
-            
-            if (newX < 0) newX = 0;
-            if (newY < 0) newY = 0;
-            if (newX + window.Width > screenWidth) newX = (int)(screenWidth - window.Width);
-            if (newY + window.Height > screenHeight) newY = (int)(screenHeight - window.Height);
+            var (newX, newY) = OverlayLayoutHelper.GetRelativePosition(targetRect, window.Width, window.Height, position);
+            Rect workArea = GetMonitorWorkArea(targetWindow);
+            OverlayLayoutHelper.ClampPosition(ref newX, ref newY, window.Width, window.Height, workArea, 0, 0);
 
             window.Left = newX;
             window.Top = newY;
@@ -311,6 +367,39 @@ namespace ED_Inara_Overlay.Utils
             
             uint currentProcessId = (uint)System.Diagnostics.Process.GetCurrentProcess().Id;
             return windowProcessId == currentProcessId;
+        }
+
+        /// <summary>
+        /// Ensures cursor is visible and positioned at center of the specified window.
+        /// Useful when showing a newly opened interactive overlay window.
+        /// </summary>
+        public static void EnsureCursorVisibleOnWindow(Window window)
+        {
+            try
+            {
+                if (window == null || !window.IsVisible)
+                {
+                    return;
+                }
+
+                var helper = new WindowInteropHelper(window);
+                if (helper.Handle == IntPtr.Zero)
+                {
+                    return;
+                }
+
+                while (ShowCursor(true) < 0)
+                {
+                }
+
+                int centerX = (int)(window.Left + window.Width / 2);
+                int centerY = (int)(window.Top + window.Height / 2);
+                SetCursorPos(centerX, centerY);
+            }
+            catch (Exception ex)
+            {
+                Logger.Logger.Warning($"WindowsAPI.EnsureCursorVisibleOnWindow failed: {ex.Message}");
+            }
         }
         
         /// <summary>

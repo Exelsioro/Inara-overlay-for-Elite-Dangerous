@@ -110,6 +110,12 @@ The overlay connects to INARA through:
 3. **Results Overlay Window**: Displays trade route results in an overlay format
 4. **INARA Communication Layer**: Handles web requests and data parsing
 5. **Windows API Integration**: Manages overlay behavior and window interactions
+6. **Overlay Layout Settings**: Centralized sizing/positioning constants in `ED_Inara_Overlay/Utils/OverlayLayoutSettings.cs`
+
+### Adaptive Layout Model
+- Overlay scaling is based on a 1920x1080 baseline and clamped ranges per window type.
+- Overlay position is always clamped to the target monitor work area (not global desktop bounds).
+- Window-specific limits (width/height ratios, max sizes, margins, offsets) are centralized in `OverlayLayoutSettings`.
 
 ### Key Technologies
 - **WPF (.NET 8)**: Modern Windows application framework

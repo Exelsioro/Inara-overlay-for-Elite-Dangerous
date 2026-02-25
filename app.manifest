@@ -22,13 +22,12 @@
     </application>
   </compatibility>
 
-  <!-- DPI Awareness -->
+  <!-- DPI settings -->
   <application xmlns="urn:schemas-microsoft-com:asm.v3">
     <windowsSettings>
-      <!-- Per-monitor DPI awareness for Windows 10 version 1607 and later -->
-      <dpiAwareness xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">PerMonitorV2</dpiAwareness>
-      <!-- System DPI awareness for Windows Vista and later -->
-      <dpiAware xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">true</dpiAware>
+      <!-- Disable DPI-aware mode so window geometry is independent from OS scale factor -->
+      <dpiAwareness xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">Unaware</dpiAwareness>
+      <dpiAware xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">false</dpiAware>
     </windowsSettings>
   </application>
 

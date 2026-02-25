@@ -1,6 +1,8 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using System.Net;
+using System.Net.Http;
 using InaraTools;
 using ED_Inara_Overlay.Utils;
 using System.Windows.Interop;
@@ -17,15 +19,33 @@ namespace ED_Inara_Overlay.Windows
         private bool disposed;
         private IntPtr targetWindow;
         private uint targetProcessId;
-        private bool _isReopeningDropdown = false;
+        private readonly double baseWindowWidth;
+        private double lastAppliedScale = 1.0;
+        private bool isSearchInProgress;
+        private bool interactiveModeEnabled;
+        private bool showCursorWhenInteractive;
 
         public TradeRouteWindow(Window owner)
         {
             Owner = owner;
             InitializeComponent();
+            baseWindowWidth = Width;
+
+#if DEBUG
+            TestDataButton.Visibility = Visibility.Visible;
+#else
+            Grid.SetColumnSpan(SearchButton, 3);
+#endif
 
             SetupOverlay();
             SetupUpdateTimer();
+            IsVisibleChanged += (s, e) =>
+            {
+                if (IsVisible)
+                {
+                    WindowsAPI.EnsureCursorVisibleOnWindow(this);
+                }
+            };
             
             Logger.Logger.Info("TradeRouteWindow constructor completed");
         }
@@ -36,17 +56,28 @@ namespace ED_Inara_Overlay.Windows
             this.Loaded += (s, e) =>
             {
                 WindowsAPI.SetupOverlayWindow(this);
-                WindowsAPI.SetClickThrough(this, false); // Allow interaction with controls
-                
+                ApplyInteractionMode(interactiveModeEnabled, showCursorWhenInteractive);
                 Logger.Logger.Info("TradeRouteWindow overlay setup completed");
             };
+        }
+
+        public void ApplyInteractionMode(bool interactive, bool showCursor)
+        {
+            interactiveModeEnabled = interactive;
+            showCursorWhenInteractive = showCursor;
+            WindowsAPI.SetClickThrough(this, !interactiveModeEnabled);
+
+            if (interactiveModeEnabled && showCursorWhenInteractive && IsVisible)
+            {
+                WindowsAPI.EnsureCursorVisibleOnWindow(this);
+            }
         }
 
         private void SetupUpdateTimer()
         {
             updateTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromMilliseconds(16) // ~60 FPS for smooth positioning
+                Interval = TimeSpan.FromMilliseconds(33) // ~30 FPS for smoother CPU usage
             };
             updateTimer.Tick += UpdateTimer_Tick;
             updateTimer.Start();
@@ -56,6 +87,15 @@ namespace ED_Inara_Overlay.Windows
         {
             if (disposed || updateTimer == null)
                 return;
+
+            if (OverlayVisibilityState.SuppressAll)
+            {
+                if (this.IsVisible)
+                {
+                    this.Hide();
+                }
+                return;
+            }
 
             // Update window position to stay relative to target window
             if (targetWindow != IntPtr.Zero)
@@ -72,45 +112,9 @@ namespace ED_Inara_Overlay.Windows
                 {
                     if (WindowsAPI.GetWindowRect(targetWindow, out WindowsAPI.RECT targetRect))
                     {
-                        var screenWidth = System.Windows.SystemParameters.WorkArea.Width;
-                        var screenHeight = System.Windows.SystemParameters.WorkArea.Height;
-                        
-                        // Calculate target window dimensions and center
-                        double targetHeight = targetRect.Bottom - targetRect.Top;
-                        double targetCenterY = targetRect.Top + (targetHeight / 2);
-                        
-                        // Calculate right center position with gap
-                        double gapSize = 10;
-                        double newLeft = targetRect.Right - gapSize - this.Width; // Right edge + gap
-                        double newTop = targetCenterY - (this.Height / 2); // Vertically centered
-                        
-                        // Check if window fits on the right side
-                        //bool fitsOnRight = (newLeft + this.Width) <= screenWidth;
-                        
-                        //if (!fitsOnRight)
-                        //{
-                        //    // Position to the left of target if right doesn't fit
-                        //    newLeft = targetRect.Left - this.Width - gapSize;
-                        //}
-                        
-                        //if (newLeft < 0)
-                        //{
-                        //    newLeft = 10; // Screen edge fallback
-                        //}
-                        
-                        // Vertical bounds checking
-                        if (newTop < 0)
-                        {
-                            newTop = 10;
-                        }
-                        
-                        if (newTop + this.Height > screenHeight)
-                        {
-                            newTop = screenHeight - this.Height - 10;
-                        }
-                        
-                        this.Left = newLeft;
-                        this.Top = newTop;
+                        ApplyAdaptiveSizeForTarget(targetRect);
+                        var workArea = WindowsAPI.GetMonitorWorkArea(targetWindow);
+                        PositionAtTargetRightCenter(targetRect, workArea, allowLeftFallbackWhenOverflow: false, logDetails: false);
                     }
                 }
                 catch (Exception ex)
@@ -153,6 +157,20 @@ namespace ED_Inara_Overlay.Windows
 
         private async void SearchButton_Click(object sender, RoutedEventArgs e)
         {
+            if (isSearchInProgress)
+            {
+                return;
+            }
+
+            if (!int.TryParse(CargoCapacityTextBox.Text, out int cargoCapacity) || cargoCapacity <= 0)
+            {
+                StatusText.Text = "Cargo capacity must be a positive integer.";
+                Logger.Logger.Warning($"Invalid cargo capacity input: '{CargoCapacityTextBox.Text}'");
+                return;
+            }
+
+            isSearchInProgress = true;
+            SetSearchControlsEnabled(false);
             StatusText.Text = "Searching...";
             Logger.Logger.Info("Initiating trade route search...");
 
@@ -163,10 +181,10 @@ namespace ED_Inara_Overlay.Windows
                 Logger.Logger.Info("Unpinned existing route overlay before search");
             }
 
-            var searchParams = new TradeRouteSearchParams
+                var searchParams = new TradeRouteSearchParams
             {
                 NearStarSystem = NearStarSystemTextBox.Text,
-                CargoCapacity = int.Parse(CargoCapacityTextBox.Text),
+                CargoCapacity = cargoCapacity,
                 MaxRouteDistance = MaxRouteDistanceComboBox.Text,
                 MaxPriceAge = MaxPriceAgeComboBox.Text,
                 IncludeRoundTrips = IncludeRoundTripsCheckBox.IsChecked == true,
@@ -196,13 +214,37 @@ namespace ED_Inara_Overlay.Windows
             }
             catch (Exception ex)
             {
-                StatusText.Text = "Error during search.";
+                if (ex is HttpRequestException httpEx && httpEx.StatusCode == HttpStatusCode.ServiceUnavailable)
+                {
+                    if (httpEx.Message.Contains("Retry-After", StringComparison.OrdinalIgnoreCase))
+                    {
+                        StatusText.Text = "INARA rate-limited requests. Retry later (up to ~1 hour).";
+                    }
+                    else
+                    {
+                        StatusText.Text = "INARA temporarily unavailable (503). Try again in 1-2 minutes.";
+                    }
+                }
+                else
+                {
+                    StatusText.Text = "Error during search.";
+                }
                 Logger.Logger.Error($"Error searching trade routes: {ex.Message}");
+            }
+            finally
+            {
+                isSearchInProgress = false;
+                SetSearchControlsEnabled(true);
             }
         }
         
         private void TestDataButton_Click(object sender, RoutedEventArgs e)
         {
+            if (isSearchInProgress)
+            {
+                return;
+            }
+
             StatusText.Text = "Loading test data...";
             Logger.Logger.Info("Loading test data for trade routes...");
 
@@ -229,19 +271,25 @@ namespace ED_Inara_Overlay.Windows
             }
         }
 
+        private void SetSearchControlsEnabled(bool enabled)
+        {
+            SearchButton.IsEnabled = enabled;
+            TestDataButton.IsEnabled = enabled;
+        }
+
         private void ShowFiltersButton_Click(object sender, RoutedEventArgs e)
         {
             // Toggle visibility of additional filters
             if (AdditionalFiltersGroupBox.Visibility == Visibility.Collapsed)
             {
                 AdditionalFiltersGroupBox.Visibility = Visibility.Visible;
-                ShowFiltersButton.Content = "▲ Hide Additional Filters";
+                ShowFiltersButton.Content = "Hide Additional Filters";
                 Logger.Logger.Info("Additional filters shown");
             }
             else
             {
                 AdditionalFiltersGroupBox.Visibility = Visibility.Collapsed;
-                ShowFiltersButton.Content = "▼ Show Additional Filters";
+                ShowFiltersButton.Content = "Show Additional Filters";
                 Logger.Logger.Info("Additional filters hidden");
             }
         }
@@ -269,14 +317,13 @@ namespace ED_Inara_Overlay.Windows
             try
             {
                 // Get screen working area to ensure window is visible
-                var screenWidth = System.Windows.SystemParameters.WorkArea.Width;
-                var screenHeight = System.Windows.SystemParameters.WorkArea.Height;
+                var workArea = WindowsAPI.GetMonitorWorkArea(targetWindow);
                 
                 // Position at right side of screen initially (for testing)
-                this.Left = screenWidth - this.Width - 50; // Right side with margin
-                this.Top = Math.Max(50, (screenHeight - this.Height) / 2);
+                this.Left = workArea.Right - this.Width - 50; // Right side with margin
+                this.Top = Math.Max(workArea.Top + 50, workArea.Top + ((workArea.Height - this.Height) / 2));
                 
-                Logger.Logger.Info($"TradeRouteWindow positioned at screen right: Left={this.Left}, Top={this.Top}, Screen={screenWidth}x{screenHeight}");
+                Logger.Logger.Info($"TradeRouteWindow positioned at screen right: Left={this.Left}, Top={this.Top}, WorkArea={workArea.Width}x{workArea.Height}");
                 
                 // If we have a target window, calculate right center position
                 if (targetWindow != IntPtr.Zero)
@@ -294,54 +341,8 @@ namespace ED_Inara_Overlay.Windows
                     {
                         if (WindowsAPI.GetWindowRect(targetWindow, out WindowsAPI.RECT targetRect))
                         {
-                            // Calculate target window dimensions
-                            double targetWidth = targetRect.Right - targetRect.Left;
-                            double targetHeight = targetRect.Bottom - targetRect.Top;
-                            double targetCenterY = targetRect.Top + (targetHeight / 2);
-                            
-                            // Calculate right center position
-                            // Position at right edge of target window with small gap, vertically centered
-                            double gapSize = 10; // Small gap between target and TradeRouteWindow
-                            double newLeft = targetRect.Right - this.Width - gapSize;
-                            double newTop = targetCenterY - (this.Height / 2);
-                            
-                            Logger.Logger.Info($"Calculated right center position: Target=({targetRect.Left},{targetRect.Top},{targetRect.Right},{targetRect.Bottom}), TargetSize={targetWidth}x{targetHeight}, TargetCenter={targetCenterY}, Calculated=({newLeft},{newTop}), WindowSize=({this.Width}x{this.Height})");
-                            
-                            // Check if window fits on the right side
-                            bool fitsOnRight = (newLeft + this.Width) <= screenWidth;
-                            Logger.Logger.Info($"Right side fit check: newLeft={newLeft}, windowWidth={this.Width}, total={newLeft + this.Width}, screenWidth={screenWidth}, fitsOnRight={fitsOnRight}");
-                            
-                            if (!fitsOnRight)
-                            {
-                                // If right side doesn't fit, try positioning to the left of target
-                                newLeft = targetRect.Left - this.Width - gapSize;
-                                Logger.Logger.Info($"Right side doesn't fit, trying left side: newLeft={newLeft}");
-                            }
-                            
-                            if (newLeft < 0)
-                            {
-                                // If left side also doesn't fit, position at screen edge
-                                newLeft = 10;
-                                Logger.Logger.Info($"Left side doesn't fit either, using screen edge: newLeft={newLeft}");
-                            }
-                            
-                            // Ensure vertical position is on screen
-                            if (newTop < 0)
-                            {
-                                newTop = 10;
-                                Logger.Logger.Info($"Top position adjusted to screen: newTop={newTop}");
-                            }
-                            
-                            if (newTop + this.Height > screenHeight)
-                            {
-                                newTop = screenHeight - this.Height - 10;
-                                Logger.Logger.Info($"Bottom position adjusted to screen: newTop={newTop}");
-                            }
-                            
-                            this.Left = newLeft;
-                            this.Top = newTop;
-                            
-                            Logger.Logger.Info($"TradeRouteWindow positioned at right center: Final=({this.Left},{this.Top}), WindowSize=({this.Width},{this.Height}), Screen=({screenWidth},{screenHeight})");
+                            ApplyAdaptiveSizeForTarget(targetRect);
+                            PositionAtTargetRightCenter(targetRect, workArea, allowLeftFallbackWhenOverflow: true, logDetails: true);
                         }
                     }
                     catch (Exception ex)
@@ -369,6 +370,74 @@ namespace ED_Inara_Overlay.Windows
             }
             return 0;
         }
+
+        private void ApplyAdaptiveSizeForTarget(WindowsAPI.RECT targetRect)
+        {
+            double targetWidth = targetRect.Right - targetRect.Left;
+            double targetHeight = targetRect.Bottom - targetRect.Top;
+
+            OverlayLayoutHelper.TryApplyAdaptiveSize(
+                this,
+                baseWindowWidth,
+                null,
+                targetWidth,
+                targetHeight,
+                OverlayLayoutSettings.TradeWindowMinScale,
+                OverlayLayoutSettings.TradeWindowMaxScale,
+                ref lastAppliedScale);
+        }
+
+        private void PositionAtTargetRightCenter(WindowsAPI.RECT targetRect, Rect workArea, bool allowLeftFallbackWhenOverflow, bool logDetails)
+        {
+            const double gapSize = OverlayLayoutSettings.DefaultGap;
+            const double margin = OverlayLayoutSettings.DefaultMargin;
+
+            var (newLeft, newTop) = OverlayLayoutHelper.GetRightCenteredPosition(targetRect, this.Width, this.Height, gapSize);
+
+            if (logDetails)
+            {
+                double targetWidth = targetRect.Right - targetRect.Left;
+                double targetHeight = targetRect.Bottom - targetRect.Top;
+                Logger.Logger.Info($"Calculated right center position: Target=({targetRect.Left},{targetRect.Top},{targetRect.Right},{targetRect.Bottom}), TargetSize={targetWidth}x{targetHeight}, Calculated=({newLeft},{newTop}), WindowSize=({this.Width}x{this.Height})");
+            }
+
+            if (allowLeftFallbackWhenOverflow)
+            {
+                bool fitsOnRight = (newLeft + this.Width) <= workArea.Right;
+                if (logDetails)
+                {
+                    Logger.Logger.Info($"Right side fit check: newLeft={newLeft}, windowWidth={this.Width}, total={newLeft + this.Width}, workAreaRight={workArea.Right}, fitsOnRight={fitsOnRight}");
+                }
+
+                if (!fitsOnRight)
+                {
+                    newLeft = targetRect.Left - this.Width - gapSize;
+                    if (logDetails)
+                    {
+                        Logger.Logger.Info($"Right side doesn't fit, trying left side: newLeft={newLeft}");
+                    }
+                }
+
+                if (newLeft < workArea.Left)
+                {
+                    newLeft = workArea.Left + margin;
+                    if (logDetails)
+                    {
+                        Logger.Logger.Info($"Left side doesn't fit either, using screen edge: newLeft={newLeft}");
+                    }
+                }
+            }
+
+            OverlayLayoutHelper.ClampPosition(ref newLeft, ref newTop, this.Width, this.Height, workArea, margin, margin);
+            this.Left = newLeft;
+            this.Top = newTop;
+
+            if (logDetails)
+            {
+                Logger.Logger.Info($"TradeRouteWindow positioned at right center: Final=({this.Left},{this.Top}), WindowSize=({this.Width},{this.Height}), WorkArea=({workArea.Width},{workArea.Height})");
+            }
+        }
+
         protected override void OnClosed(EventArgs e)
         {
             disposed = true;
@@ -377,3 +446,6 @@ namespace ED_Inara_Overlay.Windows
         }
     }
 }
+
+
+

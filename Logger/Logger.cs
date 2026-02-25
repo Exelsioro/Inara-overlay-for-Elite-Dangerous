@@ -2,8 +2,8 @@
 {
     public static class Logger
     {
-        private static string logFilePath;
-        private static StreamWriter logWriter;
+        private static string? logFilePath;
+        private static StreamWriter? logWriter;
         private static readonly object lockObject = new object();
 
         static Logger()
@@ -115,6 +115,7 @@
                 WriteLog("INFO", "Logger shutting down");
                 logWriter?.Close();
                 logWriter?.Dispose();
+                logWriter = null;
             }
             catch (Exception ex)
             {

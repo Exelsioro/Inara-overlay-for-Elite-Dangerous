@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Logger;   
 
@@ -10,6 +13,13 @@ namespace InaraTools
 {
     public class InaraCommunicator
     {
+        private const int MaxRetryAttempts = 3;
+        private static readonly TimeSpan RequestTimeout = TimeSpan.FromSeconds(20);
+        private static readonly Uri InaraBaseUri = new("https://inara.cz/");
+        private static readonly SemaphoreSlim WarmupLock = new(1, 1);
+        private static DateTimeOffset lastWarmupAt = DateTimeOffset.MinValue;
+        private static HttpClient httpClient = CreateHttpClient();
+
         public static async Task<List<TradeRoute>> SearchInaraTradeRoutes(TradeRouteSearchParams searchParams)
         {
             // Prepare parameters to match exact INARA form structure
@@ -51,12 +61,27 @@ namespace InaraTools
             // Complete URL
             var url = $"https://inara.cz/elite/market-traderoutes/?{queryString}";
 
-            using var client = new HttpClient();
-            var response = await client.GetAsync(url);
-            response.EnsureSuccessStatusCode();
+            await EnsureWarmSessionAsync();
+            using HttpResponseMessage response = await SendWithRetryAsync(url);
+
+            string? dataFromFallbackClient = null;
+            if (!response.IsSuccessStatusCode && response.StatusCode == HttpStatusCode.ServiceUnavailable)
+            {
+                LogNonSuccessResponse(response, "primary");
+                dataFromFallbackClient = await TryFetchHtmlWithMinimalClientAsync(url);
+                if (!string.IsNullOrWhiteSpace(dataFromFallbackClient))
+                {
+                    Logger.Logger.Info("INARA fallback client succeeded after 503 from primary client.");
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(dataFromFallbackClient))
+            {
+                EnsureSuccessOrThrowWithDetails(response);
+            }
 
             // Read and parse the HTML content
-            var data = await response.Content.ReadAsStringAsync();
+            var data = dataFromFallbackClient ?? await response.Content.ReadAsStringAsync();
             var doc = new HtmlAgilityPack.HtmlDocument();
             doc.LoadHtml(data);
 
@@ -68,7 +93,7 @@ namespace InaraTools
             // If no routes found, provide fallback sample data for testing
             if (tradeRoutes.Count == 0)
             {
-                Logger.Logger.Info("Using fallback data - API returned no results");
+                Logger.Logger.Debug("INARA response parsed successfully but returned no trade routes.");
             }
 
             // Log example trade route if any found
@@ -82,6 +107,210 @@ namespace InaraTools
                 tradeRoute.CargoCapacity = searchParams.CargoCapacity;
             }
             return tradeRoutes;
+        }
+
+        private static HttpClient CreateHttpClient()
+        {
+            var handler = new SocketsHttpHandler
+            {
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate | DecompressionMethods.Brotli,
+                UseCookies = true,
+                CookieContainer = new CookieContainer(),
+                PooledConnectionLifetime = TimeSpan.FromMinutes(10)
+            };
+
+            var client = new HttpClient(handler)
+            {
+                Timeout = RequestTimeout,
+                BaseAddress = InaraBaseUri
+            };
+
+            client.DefaultRequestHeaders.UserAgent.Clear();
+            client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("ED-Inara-Overlay", "2.0"));
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/html"));
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xhtml+xml"));
+            client.DefaultRequestHeaders.AcceptLanguage.ParseAdd("en-US,en;q=0.9");
+            return client;
+        }
+
+        private static async Task EnsureWarmSessionAsync()
+        {
+            if (DateTimeOffset.UtcNow - lastWarmupAt < TimeSpan.FromMinutes(30))
+            {
+                return;
+            }
+
+            await WarmupLock.WaitAsync();
+            try
+            {
+                if (DateTimeOffset.UtcNow - lastWarmupAt < TimeSpan.FromMinutes(30))
+                {
+                    return;
+                }
+
+                using var warmupRequest = new HttpRequestMessage(HttpMethod.Get, InaraBaseUri);
+                using var warmupResponse = await httpClient.SendAsync(warmupRequest);
+                lastWarmupAt = DateTimeOffset.UtcNow;
+
+                if (!warmupResponse.IsSuccessStatusCode)
+                {
+                    Logger.Logger.Debug($"INARA warm-up returned {(int)warmupResponse.StatusCode}.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Logger.Debug($"INARA warm-up failed: {ex.Message}");
+            }
+            finally
+            {
+                WarmupLock.Release();
+            }
+        }
+
+        private static async Task<HttpResponseMessage> SendWithRetryAsync(string url)
+        {
+            HttpResponseMessage? lastResponse = null;
+            Exception? lastException = null;
+
+            for (int attempt = 1; attempt <= MaxRetryAttempts; attempt++)
+            {
+                try
+                {
+                    using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                    var response = await httpClient.SendAsync(request);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return response;
+                    }
+
+                    if (response.StatusCode == HttpStatusCode.ServiceUnavailable && attempt < MaxRetryAttempts)
+                    {
+                        await EnsureWarmSessionAsync();
+                    }
+
+                    if (!IsTransientStatusCode(response.StatusCode) || attempt == MaxRetryAttempts)
+                    {
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            LogNonSuccessResponse(response, $"attempt {attempt}");
+                        }
+                        return response;
+                    }
+
+                    lastResponse = response;
+                    var delay = GetRetryDelay(attempt);
+                    Logger.Logger.Debug($"INARA returned {(int)response.StatusCode} on attempt {attempt}/{MaxRetryAttempts}. Retrying in {delay.TotalMilliseconds} ms.");
+                    await Task.Delay(delay);
+                }
+                catch (HttpRequestException ex) when (attempt < MaxRetryAttempts)
+                {
+                    lastException = ex;
+                    var delay = GetRetryDelay(attempt);
+                    Logger.Logger.Debug($"INARA request failed on attempt {attempt}/{MaxRetryAttempts}: {ex.Message}. Retrying in {delay.TotalMilliseconds} ms.");
+                    await Task.Delay(delay);
+                }
+                catch (TaskCanceledException ex) when (attempt < MaxRetryAttempts)
+                {
+                    lastException = ex;
+                    var delay = GetRetryDelay(attempt);
+                    Logger.Logger.Debug($"INARA request timed out on attempt {attempt}/{MaxRetryAttempts}. Retrying in {delay.TotalMilliseconds} ms.");
+                    await Task.Delay(delay);
+                }
+            }
+
+            if (lastResponse != null)
+            {
+                return lastResponse;
+            }
+
+            throw lastException ?? new HttpRequestException("INARA request failed after retries.");
+        }
+
+        private static async Task<string?> TryFetchHtmlWithMinimalClientAsync(string url)
+        {
+            using var client = new HttpClient
+            {
+                Timeout = RequestTimeout
+            };
+
+            for (int attempt = 1; attempt <= 2; attempt++)
+            {
+                try
+                {
+                    using var response = await client.GetAsync(url);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return await response.Content.ReadAsStringAsync();
+                    }
+
+                    if (!IsTransientStatusCode(response.StatusCode) || attempt == 2)
+                    {
+                        LogNonSuccessResponse(response, $"fallback attempt {attempt}");
+                        return null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Logger.Debug($"INARA fallback request failed on attempt {attempt}/2: {ex.Message}");
+                    if (attempt == 2)
+                    {
+                        return null;
+                    }
+                }
+
+                await Task.Delay(TimeSpan.FromSeconds(attempt));
+            }
+
+            return null;
+        }
+
+        private static bool IsTransientStatusCode(HttpStatusCode statusCode)
+        {
+            return statusCode == HttpStatusCode.ServiceUnavailable
+                || statusCode == HttpStatusCode.BadGateway
+                || statusCode == HttpStatusCode.GatewayTimeout
+                || (int)statusCode == 429;
+        }
+
+        private static TimeSpan GetRetryDelay(int attempt)
+        {
+            // 1st retry: 1s, 2nd retry: 2s
+            return TimeSpan.FromSeconds(Math.Pow(2, attempt - 1));
+        }
+
+        private static void LogNonSuccessResponse(HttpResponseMessage response, string stage)
+        {
+            string? server = null;
+            string? cfRay = null;
+
+            if (response.Headers.TryGetValues("Server", out var serverValues))
+            {
+                server = string.Join(",", serverValues);
+            }
+
+            if (response.Headers.TryGetValues("cf-ray", out var cfValues))
+            {
+                cfRay = string.Join(",", cfValues);
+            }
+
+            Logger.Logger.Warning($"INARA non-success ({stage}): {(int)response.StatusCode} {response.StatusCode}; server={server ?? "n/a"}; cf-ray={cfRay ?? "n/a"}");
+        }
+
+        private static void EnsureSuccessOrThrowWithDetails(HttpResponseMessage response)
+        {
+            if (response.IsSuccessStatusCode)
+            {
+                return;
+            }
+
+            string retryAfter = "n/a";
+            if (response.Headers.TryGetValues("Retry-After", out var values))
+            {
+                retryAfter = string.Join(",", values);
+            }
+
+            string message = $"INARA returned {(int)response.StatusCode} ({response.StatusCode}). Retry-After: {retryAfter}.";
+            throw new HttpRequestException(message, null, response.StatusCode);
         }
 
         private static List<TradeRoute> ParseTradeRoutes(HtmlAgilityPack.HtmlDocument doc)

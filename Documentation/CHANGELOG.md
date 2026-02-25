@@ -1,4 +1,4 @@
-# Changelog
+﻿# Changelog
 
 All notable changes to this project will be documented in this file.
 
@@ -182,7 +182,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release of Elite Dangerous Inara Overlay
 - WPF-based overlay system with automatic target detection
-- State-machine based visibility management (Waiting → ForceShow → Auto)
+- State-machine based visibility management (Waiting  ForceShow  Auto)
 - Timer-based retry mechanism for target process detection
 - Comprehensive test harness for regression testing
 - Trade route overlay functionality
@@ -206,3 +206,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Test harness for manual verification
 - Mock applications for development testing
 - Coverage for both test scenarios and real Elite Dangerous integration
+
+

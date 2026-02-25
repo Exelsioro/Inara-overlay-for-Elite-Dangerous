@@ -18,9 +18,9 @@
     <!-- Main content area -->
     <Grid>
         <!-- Pinned route card container -->
-        <Border Background="#33000000" 
-                BorderBrush="Transparent" 
-                BorderThickness="0"
+        <Border Background="{DynamicResource SecondaryBackgroundColorBrush}" 
+                BorderBrush="{DynamicResource BorderColorBrush}" 
+                BorderThickness="1"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch">
 
@@ -47,9 +47,9 @@
         <Button x:Name="CloseButton"
                 Content="Unpin"
                 Margin="280,0,280,0"
-                Background="#88FF0000"
-                Foreground="White"
-                BorderBrush="Transparent"
+                Background="{DynamicResource ButtonBackgroundColorBrush}"
+                Foreground="{DynamicResource AccentColorBrush}"
+                BorderBrush="{DynamicResource BorderColorBrush}"
                 FontSize="12"
                 FontWeight="Bold"
                 Cursor="Hand"
@@ -71,7 +71,7 @@
                     </Setter>
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="#FFFF0000"/>
+                            <Setter Property="Background" Value="{DynamicResource HighlightBackgroundBrush}"/>
                         </Trigger>
                     </Style.Triggers>
                 </Style>

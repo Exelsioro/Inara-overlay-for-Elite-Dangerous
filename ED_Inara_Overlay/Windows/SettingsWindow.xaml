@@ -21,143 +21,205 @@
                    Foreground="{DynamicResource PrimaryTextColorBrush}" Margin="0,0,0,20"/>
 
         <!-- Main Content -->
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+        <TabControl Grid.Row="1" Background="{DynamicResource SecondaryBackgroundColorBrush}"
+                    BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1">
+            <TabItem Header="Themes">
+                <Grid Margin="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-            <!-- Left Panel - Theme Selection -->
-            <Border Grid.Column="0" Background="{DynamicResource SecondaryBackgroundColorBrush}" 
-                    BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" 
-                    CornerRadius="5" Padding="15" Margin="0,0,10,0">
-                <StackPanel>
-                    <TextBlock Text="Theme Selection" FontSize="18" FontWeight="Bold" 
-                               Foreground="{DynamicResource PrimaryTextColorBrush}" Margin="0,0,0,15"/>
-                    
-                    <!-- Theme ComboBox -->
-                    <TextBlock Text="Current Theme:" Foreground="{DynamicResource SecondaryTextColorBrush}" 
-                               FontSize="12" Margin="0,0,0,5"/>
-                    <ComboBox x:Name="ThemeComboBox" Height="35" Margin="0,0,0,15"
-                              SelectionChanged="ThemeComboBox_SelectionChanged"
-                              Style="{DynamicResource ComboBoxStyle}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="0,0,5,0" Foreground="{DynamicResource PrimaryTextColorBrush}"/>
-                                    <TextBlock Text="{Binding Description}" Foreground="{DynamicResource MutedTextColorBrush}" FontSize="10"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-
-                    <!-- Theme Info -->
-                    <TextBlock Text="Theme Information:" Foreground="{DynamicResource SecondaryTextColorBrush}" 
-                               FontSize="12" Margin="0,0,0,5"/>
-                    <Border Background="{DynamicResource HighlightBackgroundBrush}" 
+                    <!-- Left Panel - Theme Selection -->
+                    <Border Grid.Column="0" Background="{DynamicResource SecondaryBackgroundColorBrush}" 
                             BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" 
-                            CornerRadius="3" Padding="10" Margin="0,0,0,15">
+                            CornerRadius="5" Padding="15" Margin="0,0,10,0">
                         <StackPanel>
-                            <TextBlock x:Name="ThemeNameText" Text="Theme Name" 
-                                       Foreground="{DynamicResource PrimaryTextColorBrush}" FontWeight="Bold"/>
-                            <TextBlock x:Name="ThemeDescriptionText" Text="Theme Description" 
-                                       Foreground="{DynamicResource MutedTextColorBrush}" TextWrapping="Wrap" 
-                                       FontSize="11" Margin="0,2,0,0"/>
-                            <TextBlock x:Name="ThemeAuthorText" Text="Author" 
-                                       Foreground="{DynamicResource SecondaryTextColorBrush}" FontSize="10" 
-                                       Margin="0,5,0,0"/>
+                            <TextBlock Text="Theme Selection" FontSize="18" FontWeight="Bold" 
+                                       Foreground="{DynamicResource PrimaryTextColorBrush}" Margin="0,0,0,15"/>
+
+                            <TextBlock Text="Current Theme:" Foreground="{DynamicResource SecondaryTextColorBrush}" 
+                                       FontSize="12" Margin="0,0,0,5"/>
+                            <ComboBox x:Name="ThemeComboBox" Height="35" Margin="0,0,0,15"
+                                      SelectionChanged="ThemeComboBox_SelectionChanged"
+                                      Style="{DynamicResource ComboBoxStyle}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="0,0,5,0" Foreground="{DynamicResource PrimaryTextColorBrush}"/>
+                                            <TextBlock Text="{Binding Description}" Foreground="{DynamicResource MutedTextColorBrush}" FontSize="10"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+
+                            <TextBlock Text="Theme Information:" Foreground="{DynamicResource SecondaryTextColorBrush}" 
+                                       FontSize="12" Margin="0,0,0,5"/>
+                            <Border Background="{DynamicResource HighlightBackgroundBrush}" 
+                                    BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" 
+                                    CornerRadius="3" Padding="10" Margin="0,0,0,15">
+                                <StackPanel>
+                                    <TextBlock x:Name="ThemeNameText" Text="Theme Name" 
+                                               Foreground="{DynamicResource PrimaryTextColorBrush}" FontWeight="Bold"/>
+                                    <TextBlock x:Name="ThemeDescriptionText" Text="Theme Description" 
+                                               Foreground="{DynamicResource MutedTextColorBrush}" TextWrapping="Wrap" 
+                                               FontSize="11" Margin="0,2,0,0"/>
+                                    <TextBlock x:Name="ThemeAuthorText" Text="Author" 
+                                               Foreground="{DynamicResource SecondaryTextColorBrush}" FontSize="10" 
+                                               Margin="0,5,0,0"/>
+                                </StackPanel>
+                            </Border>
+
+                            <TextBlock Text="Theme Actions:" Foreground="{DynamicResource SecondaryTextColorBrush}" 
+                                       FontSize="12" Margin="0,0,0,5"/>
+                            <StackPanel>
+                                <Button x:Name="ImportThemeButton" Content="Import Theme" Height="30" 
+                                        Margin="0,0,0,5" Click="ImportThemeButton_Click"/>
+                                <Button x:Name="ExportThemeButton" Content="Export Theme" Height="30" 
+                                        Margin="0,0,0,5" Click="ExportThemeButton_Click"/>
+                                <Button x:Name="RefreshThemesButton" Content="Refresh Themes" Height="30" 
+                                        Margin="0,0,0,5" Click="RefreshThemesButton_Click"/>
+                            </StackPanel>
                         </StackPanel>
                     </Border>
 
-                    <!-- Theme Actions -->
-                    <TextBlock Text="Theme Actions:" Foreground="{DynamicResource SecondaryTextColorBrush}" 
-                               FontSize="12" Margin="0,0,0,5"/>
-                    <StackPanel>
-                        <Button x:Name="ImportThemeButton" Content="Import Theme" Height="30" 
-                                Margin="0,0,0,5" Click="ImportThemeButton_Click"/>
-                        <Button x:Name="ExportThemeButton" Content="Export Theme" Height="30" 
-                                Margin="0,0,0,5" Click="ExportThemeButton_Click"/>
-                        <Button x:Name="RefreshThemesButton" Content="Refresh Themes" Height="30" 
-                                Margin="0,0,0,5" Click="RefreshThemesButton_Click"/>
-                    </StackPanel>
-                </StackPanel>
-            </Border>
-
-            <!-- Right Panel - Theme Preview -->
-            <Border Grid.Column="1" Background="{DynamicResource SecondaryBackgroundColorBrush}" 
-                    BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" 
-                    CornerRadius="5" Padding="15" Margin="10,0,0,0">
-                <StackPanel>
-                    <TextBlock Text="Theme Preview" FontSize="18" FontWeight="Bold" 
-                               Foreground="{DynamicResource PrimaryTextColorBrush}" Margin="0,0,0,15"/>
-                    
-                    <!-- Preview Content -->
-                    <ScrollViewer Height="400" Style="{DynamicResource CustomScrollViewerStyle}">
+                    <!-- Right Panel - Theme Preview -->
+                    <Border Grid.Column="1" Background="{DynamicResource SecondaryBackgroundColorBrush}" 
+                            BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" 
+                            CornerRadius="5" Padding="15" Margin="10,0,0,0">
                         <StackPanel>
-                            <!-- Sample UI Elements -->
-                            <Border Background="{DynamicResource HighlightBackgroundBrush}" 
-                                    BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" 
-                                    CornerRadius="5" Padding="15" Margin="0,0,0,10">
-                                <StackPanel>
-                                    <TextBlock Text="Sample Header" FontSize="16" FontWeight="Bold" 
-                                               Foreground="{DynamicResource PrimaryTextColorBrush}" Margin="0,0,0,5"/>
-                                    <TextBlock Text="This is sample body text to show how the theme looks with different text styles." 
-                                               Foreground="{DynamicResource SecondaryTextColorBrush}" TextWrapping="Wrap" 
-                                               Margin="0,0,0,10"/>
-                                    
-                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                        <Button Content="Primary Button" Height="25" Width="100" 
-                                                Margin="0,0,10,0" Background="{DynamicResource PrimaryTextColorBrush}" 
-                                                Foreground="White" BorderThickness="0"/>
-                                        <Button Content="Secondary" Height="25" Width="80" 
-                                                Background="{DynamicResource AccentColorBrush}" 
-                                                Foreground="Black" BorderThickness="0"/>
-                                    </StackPanel>
-                                    
-                                    <TextBlock Text="Success Message" 
-                                               Foreground="{DynamicResource SuccessColorBrush}" 
-                                               FontWeight="Bold" Margin="0,0,0,2"/>
-                                    <TextBlock Text="Error Message" 
-                                               Foreground="{DynamicResource FailureColorBrush}" 
-                                               FontWeight="Bold" Margin="0,0,0,2"/>
-                                    <TextBlock Text="Muted Text" 
-                                               Foreground="{DynamicResource MutedTextColorBrush}" 
-                                               FontSize="10"/>
-                                </StackPanel>
-                            </Border>
+                            <TextBlock Text="Theme Preview" FontSize="18" FontWeight="Bold" 
+                                       Foreground="{DynamicResource PrimaryTextColorBrush}" Margin="0,0,0,15"/>
 
-                            <!-- Color Swatches -->
-                            <TextBlock Text="Color Swatches:" FontSize="14" FontWeight="Bold" 
-                                       Foreground="{DynamicResource PrimaryTextColorBrush}" Margin="0,0,0,5"/>
-                            <Grid x:Name="ColorSwatchGrid" Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <!-- Color swatches will be populated in code-behind -->
-                            </Grid>
-                            
-                            <!-- Theme Details -->
-                            <TextBlock Text="Theme Details:" FontSize="14" FontWeight="Bold" 
-                                       Foreground="{DynamicResource PrimaryTextColorBrush}" Margin="0,10,0,5"/>
-                            <Border Background="{DynamicResource PrimaryBackgroundColorBrush}" 
-                                    BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" 
-                                    CornerRadius="3" Padding="10">
-                                <StackPanel x:Name="ThemeDetailsPanel">
-                                    <!-- Theme details will be populated in code-behind -->
+                            <ScrollViewer Height="400" Style="{DynamicResource CustomScrollViewerStyle}">
+                                <StackPanel>
+                                    <Border Background="{DynamicResource ButtonBackgroundColorBrush}" 
+                                            BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" 
+                                            CornerRadius="5" Padding="15" Margin="0,0,0,10">
+                                        <StackPanel>
+                                            <TextBlock Text="Sample Header" FontSize="16" FontWeight="Bold" 
+                                                       Foreground="{DynamicResource PrimaryTextColorBrush}" Margin="0,0,0,5"/>
+                                            <TextBlock Text="This is sample body text to show how the theme looks with different text styles." 
+                                                       Foreground="{DynamicResource SecondaryTextColorBrush}" TextWrapping="Wrap" 
+                                                       Margin="0,0,0,10"/>
+
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                                <Button Content="Primary Button" Height="25" Width="100" 
+                                                        Margin="0,0,10,0" Background="{DynamicResource PrimaryTextColorBrush}" 
+                                                        Foreground="White" BorderThickness="0"/>
+                                                <Button Content="Secondary" Height="25" Width="80" 
+                                                        Background="{DynamicResource AccentColorBrush}" 
+                                                        Foreground="Black" BorderThickness="0"/>
+                                            </StackPanel>
+
+                                            <TextBlock Text="Success Message" 
+                                                       Foreground="{DynamicResource SuccessColorBrush}" 
+                                                       FontWeight="Bold" Margin="0,0,0,2"/>
+                                            <TextBlock Text="Error Message" 
+                                                       Foreground="{DynamicResource FailureColorBrush}" 
+                                                       FontWeight="Bold" Margin="0,0,0,2"/>
+                                            <TextBlock Text="Muted Text" 
+                                                       Foreground="{DynamicResource MutedTextColorBrush}" 
+                                                       FontSize="10"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <TextBlock Text="Color Swatches:" FontSize="14" FontWeight="Bold" 
+                                               Foreground="{DynamicResource PrimaryTextColorBrush}" Margin="0,0,0,5"/>
+                                    <Grid x:Name="ColorSwatchGrid" Margin="0,0,0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                    </Grid>
+
+                                    <TextBlock Text="Theme Details:" FontSize="14" FontWeight="Bold" 
+                                               Foreground="{DynamicResource PrimaryTextColorBrush}" Margin="0,10,0,5"/>
+                                    <Border Background="{DynamicResource PrimaryBackgroundColorBrush}" 
+                                            BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" 
+                                            CornerRadius="3" Padding="10">
+                                        <StackPanel x:Name="ThemeDetailsPanel">
+                                        </StackPanel>
+                                    </Border>
                                 </StackPanel>
-                            </Border>
+                            </ScrollViewer>
                         </StackPanel>
-                    </ScrollViewer>
-                </StackPanel>
-            </Border>
-        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Hotkeys">
+                <Border Margin="12" Background="{DynamicResource SecondaryBackgroundColorBrush}" 
+                        BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" 
+                        CornerRadius="5" Padding="15">
+                    <StackPanel Width="460">
+                        <TextBlock Text="Hotkeys" FontSize="18" FontWeight="Bold"
+                                   Foreground="{DynamicResource PrimaryTextColorBrush}" Margin="0,0,0,12"/>
+
+                        <TextBlock Text="Global Toggle Hotkey:" Foreground="{DynamicResource SecondaryTextColorBrush}"
+                                   FontSize="12" Margin="0,0,0,5"/>
+
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <ComboBox x:Name="HotkeyModifierComboBox" Grid.Column="0" Height="32"
+                                      Style="{DynamicResource ComboBoxStyle}"/>
+                            <ComboBox x:Name="HotkeyKeyComboBox" Grid.Column="2" Height="32"
+                                      Style="{DynamicResource ComboBoxStyle}"/>
+                        </Grid>
+
+                        <TextBlock Text="Interactive Mode Hotkey:" Foreground="{DynamicResource SecondaryTextColorBrush}"
+                                   FontSize="12" Margin="0,6,0,5"/>
+
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <ComboBox x:Name="InteractiveModifierComboBox" Grid.Column="0" Height="32"
+                                      Style="{DynamicResource ComboBoxStyle}"/>
+                            <ComboBox x:Name="InteractiveKeyComboBox" Grid.Column="2" Height="32"
+                                      Style="{DynamicResource ComboBoxStyle}"/>
+                        </Grid>
+
+                        <CheckBox x:Name="EnableInteractionModeCheckBox"
+                                  Margin="0,8,0,4"
+                                  Foreground="{DynamicResource PrimaryTextColorBrush}"
+                                  Content="Enable interaction mode"/>
+
+                        <TextBlock Text="Auto-return timeout:" Foreground="{DynamicResource SecondaryTextColorBrush}"
+                                   FontSize="12" Margin="0,4,0,5"/>
+                        <ComboBox x:Name="TimeoutComboBox" Height="32" Margin="0,0,0,8"
+                                  Style="{DynamicResource ComboBoxStyle}"/>
+
+                        <CheckBox x:Name="ReturnOnFocusLossCheckBox"
+                                  Margin="0,0,0,4"
+                                  Foreground="{DynamicResource PrimaryTextColorBrush}"
+                                  Content="Return to passive mode on focus loss"/>
+
+                        <CheckBox x:Name="ShowCursorWhenInteractiveCheckBox"
+                                  Margin="0,0,0,8"
+                                  Foreground="{DynamicResource PrimaryTextColorBrush}"
+                                  Content="Show cursor when interactive mode is enabled"/>
+
+                        <TextBlock Text="Toggle hotkey shows/hides overlays. Interactive hotkey enters/exits interaction mode. Ctrl+7 unpins route."
+                                   Foreground="{DynamicResource MutedTextColorBrush}" FontSize="10" TextWrapping="Wrap"/>
+                        <TextBlock Text="Click Apply to save."
+                                   Foreground="{DynamicResource MutedTextColorBrush}" FontSize="10" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+            </TabItem>
+        </TabControl>
 
         <!-- Bottom Panel - Action Buttons -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-            <Button x:Name="ApplyButton" Content="Apply Theme" Height="35" Width="100" 
+            <Button x:Name="ApplyButton" Content="Apply" Height="35" Width="100" 
                     Margin="0,0,10,0" Background="{DynamicResource PrimaryTextColorBrush}" 
                     Foreground="{DynamicResource SecondaryTextColorBrush}" BorderThickness="0" FontWeight="Bold" 
                     Click="ApplyButton_Click"/>

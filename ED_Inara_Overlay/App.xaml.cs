@@ -3,17 +3,21 @@ using System.Windows;
 using ED_Inara_Overlay.Windows;
 using ED_Inara_Overlay.Utils;
 using ED_Inara_Overlay.Services;
+using System.Runtime.Versioning;
+using System.Windows.Threading;
 
 namespace ED_Inara_Overlay
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class App : Application
     {
         private string targetProcessName = "EliteDangerous64";
         private WaitingWindow? waitingWindow;
         private MainWindow? mainWindow;
+        private TrayIconService? trayIconService;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -25,6 +29,7 @@ namespace ED_Inara_Overlay
             }
 
             Logger.Logger.Info($"Application starting with target process: {targetProcessName}");
+            InitializeTrayIcon();
 
             // Initialize theme system
             try
@@ -50,6 +55,16 @@ namespace ED_Inara_Overlay
 
         private void ShowWaitingWindow()
         {
+            if (waitingWindow != null)
+            {
+                if (!waitingWindow.IsVisible)
+                {
+                    waitingWindow.Show();
+                }
+                waitingWindow.Activate();
+                return;
+            }
+
             Logger.Logger.Info("Creating and showing WaitingWindow");
             
             waitingWindow = new WaitingWindow(targetProcessName);
@@ -63,12 +78,9 @@ namespace ED_Inara_Overlay
         {
             Logger.Logger.Info($"Target process found event received: {processName}");
             
-            // Close waiting window
             if (waitingWindow != null)
             {
-                waitingWindow.TargetProcessFound -= OnTargetProcessFound;
-                waitingWindow.CloseWaitingWindow();
-                waitingWindow = null;
+                waitingWindow.Hide();
             }
             
             // Start main overlay
@@ -84,6 +96,14 @@ namespace ED_Inara_Overlay
             
             try
             {
+                if (mainWindow != null)
+                {
+                    Logger.Logger.Info("Main overlay is already running. Activating existing instance.");
+                    mainWindow.EnsureVisibleAfterTargetDetection();
+                    trayIconService?.ShowWaitingHint();
+                    return;
+                }
+
                 // Create main window (starts hidden)
                 mainWindow = new MainWindow(targetProcessName);
                 
@@ -95,7 +115,6 @@ namespace ED_Inara_Overlay
                 mainWindow.EnsureVisibleAfterTargetDetection();
                 
                 // Note: MainWindow starts hidden and will show when target has focus
-                
                 Logger.Logger.Info("Main overlay window created and displayed with forced visibility");
             }
             catch (Exception ex)
@@ -116,25 +135,80 @@ namespace ED_Inara_Overlay
 
         protected override void OnExit(ExitEventArgs e)
         {
-            Logger.Logger.Info("Application is exiting");
-            
-            // Clean up waiting window
-            if (waitingWindow != null)
+            try
             {
-                waitingWindow.TargetProcessFound -= OnTargetProcessFound;
-                waitingWindow.Close();
-                waitingWindow = null;
+                Logger.Logger.Info("Application is exiting");
+                
+                // Clean up waiting window
+                if (waitingWindow != null)
+                {
+                    waitingWindow.TargetProcessFound -= OnTargetProcessFound;
+                    waitingWindow.Close();
+                    waitingWindow = null;
+                }
+                
+                // Clean up main window
+                if (mainWindow != null)
+                {
+                    mainWindow.Close();
+                    mainWindow = null;
+                }
+
+                if (trayIconService != null)
+                {
+                    trayIconService.OpenRequested -= OnTrayOpenRequested;
+                    trayIconService.SettingsRequested -= OnTraySettingsRequested;
+                    trayIconService.ExitRequested -= OnTrayExitRequested;
+                    trayIconService.Dispose();
+                    trayIconService = null;
+                }
+                
+                Logger.Logger.Info("Application exit cleanup completed");
             }
-            
-            // Clean up main window
-            if (mainWindow != null)
+            finally
             {
-                mainWindow.Close();
-                mainWindow = null;
+                Logger.Logger.Close();
+                base.OnExit(e);
             }
-            
-            Logger.Logger.Info("Application exit cleanup completed");
-            base.OnExit(e);
+        }
+
+        private void InitializeTrayIcon()
+        {
+            trayIconService = new TrayIconService();
+            trayIconService.OpenRequested += OnTrayOpenRequested;
+            trayIconService.SettingsRequested += OnTraySettingsRequested;
+            trayIconService.ExitRequested += OnTrayExitRequested;
+            trayIconService.Initialize();
+            Logger.Logger.Info("Tray icon initialized.");
+        }
+
+        private void OnTrayOpenRequested(object? sender, EventArgs e)
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+            {
+                ShowWaitingWindow();
+            }));
+        }
+
+        private void OnTrayExitRequested(object? sender, EventArgs e)
+        {
+            Logger.Logger.Info("Exit requested from tray menu.");
+            Shutdown();
+        }
+
+        private void OnTraySettingsRequested(object? sender, EventArgs e)
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+            {
+                var settingsWindow = new SettingsWindow();
+                settingsWindow.ShowDialog();
+            }));
+        }
+
+        public void ShowTrayWaitingHint()
+        {
+            trayIconService?.ShowWaitingHint();
+            Logger.Logger.Info("Displayed tray notification about tray mode and tray exit.");
         }
     }
 }

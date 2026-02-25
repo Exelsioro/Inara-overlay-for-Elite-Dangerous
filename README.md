@@ -1,314 +1,78 @@
-# Elite Dangerous Inara Overlay
+﻿# Elite Dangerous Inara Overlay
 
-A .NET 8 WPF overlay application for Elite Dangerous that provides trade route information from INARA.
+A .NET 8 WPF overlay for Elite Dangerous that displays trade routes sourced from INARA.
 
-## 🖥️ System Requirements
+## Requirements
 
-- **Operating System**: Windows 10 1607+ or Windows 11
-- **Framework**: .NET 8.0 Desktop Runtime (automatically checked by installer)
-- **Memory**: 100MB RAM (typical usage)
-- **Storage**: 50MB disk space
-- **Target Game**: Elite Dangerous (any version)
-- **Architecture**: 64-bit (x64) recommended
+- Windows 10 (1607+) or Windows 11
+- .NET 8 Desktop Runtime
+- Elite Dangerous (`EliteDangerous64.exe`)
 
-## ✨ Features
+## Features
 
-- **Smart Overlay System**: Automatically attaches to Elite Dangerous window
-- **Focus-Aware**: Shows/hides based on target window focus and state
-- **Trade Route Search**: Search for profitable trade routes using INARA data
-- **Results Overlay**: Display trade route results in a convenient overlay
-- **Non-Intrusive**: Overlay doesn't steal focus from the game
-- **Manual Overlay Control**: User-controlled overlay startup with "Start Overlay" button
-- **Global Hotkey Support**: Ctrl+5 hotkey to toggle trade route window from anywhere
-- **Comprehensive Theme System**: Advanced theming with persistence across sessions
-- **Settings Management**: JSON-based configuration system for user preferences
-- **Ko-fi Integration**: Built-in support link for project development
+- Overlay window attached to the game window
+- Focus-aware visibility (hide/show with game focus)
+- Trade route search via INARA
+- Results overlay with route cards
+- Pinned route overlay
+- Global hotkey: `Ctrl+5`
+- Theme system with import/export
+- JSON settings persistence in `%APPDATA%/ED_Inara_Overlay`
 
-## Repository Structure
+## Repository Layout
 
-**🎯 Unified Repository**: This repository has been unified to contain all components of the Elite Dangerous Inara Overlay system in a single location for easier development and maintenance.
-
-### Project Layout
-```
+```text
 ED_Inara_Overlay/
-├── ED_Inara_Overlay/              # Main WPF application
-│   ├── MainWindow.xaml.cs         # Primary overlay window
-│   ├── Windows/                   # UI windows and dialogs
-│   ├── UserControls/              # Reusable UI components
-│   ├── ViewModels/                # MVVM view models
-│   ├── Utils/                     # Utility classes
-│   └── Resources/                 # Application resources
-├── InaraTools/                    # INARA API communication library
-│   ├── InaraParserUtils.cs        # HTML parsing utilities
-│   ├── InaraCommunicator.cs       # API communication
-│   └── TradeRouteModels.cs        # Data models
-├── Logger/                        # Logging infrastructure
-│   └── Logger.cs                  # Centralized logging
-├── MockTargetApp/                 # Test application for development
-│   └── Program.cs                 # Mock Elite Dangerous window
-├── Inara_Parser/                  # Legacy parser (being phased out)
-└── OverlayTestHarness.csproj     # Test harness for overlay testing
+|- ED_Inara_Overlay/                # Main WPF app
+|- InaraTools/                      # INARA communication and parsing
+|- Logger/                          # Shared logging library
+|- Testing/                         # Test harnesses and scripts
+|- Documentation/                   # Project documentation
+|- build_installer.ps1              # Build + installer automation
+|- installer.iss                    # Inno Setup script
 ```
 
-### Architecture
+## Build
 
-#### Technology Stack
-- **.NET 8.0** - Target framework
-- **WPF** - Windows Presentation Foundation for UI
-- **Windows API (P/Invoke)** - Window management and overlay functionality
-- **HtmlAgilityPack** - HTML parsing for web requests
-
-#### Component Responsibilities
-- **ED_Inara_Overlay** - Main application with overlay UI
-- **InaraTools** - Shared library for INARA API communication
-- **Logger** - Centralized logging across all components
-- **MockTargetApp** - Development testing utility
-- **OverlayTestHarness** - Integration testing framework
-
-### Architecture Diagram
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│                 │    │                 │    │                 │
-│ .NET 8 WPF      │◄──►│ InaraTools      │◄──►│ INARA API       │
-│ Front-End       │    │ Helper Library  │    │ (External)      │
-│ UI Components   │    └─────────────────┘    └─────────────────┘
-│                 │                                      │
-└─────────────────┘                                      │
-    │   ▲                                                ▼
-    │   │          ┌─────────────────┐    ┌─────────────────┐
-    │   │          │                 │    │                 │
-    │   └─────────►│ Logger          │    │ Windows API     │
-    │              │ Logging         │    │ P/Invoke        │
-    └─────────────►│                 │    │                 │
-                   └─────────────────┘    └─────────────────┘
-```
-
-## Key Features
-
-### Overlay Management
-- **Target Window Attachment**: Automatically finds and attaches to Elite Dangerous
-- **Focus Detection**: Uses Windows API to monitor window focus states
-- **Position Tracking**: Maintains relative position to target window
-- **State Preservation**: Remembers overlay state when focus changes
-
-### Focus Handling
-- **Non-Activating Windows**: Overlay windows don't steal focus using `WS_EX_NOACTIVATE`
-- **Smart Visibility**: Shows when target window is focused and visible
-- **Seamless Integration**: Overlay windows are considered part of the target application
-
-### Theme System
-- **XML-Based Themes**: Complete theme definitions with colors, fonts, and dimensions
-- **Theme Persistence**: Automatically saves and restores selected themes
-- **Built-in Themes**: Default Elite Dangerous-inspired theme included
-- **Custom Theme Support**: Import/export custom themes
-- **Real-time Preview**: Theme changes apply immediately
-
-### Global Hotkey System
-- **Ctrl+5 Hotkey**: System-wide hotkey registration using Windows API
-- **Background Operation**: Works even when Elite Dangerous is in focus
-- **Toggle Functionality**: Same action as clicking the toggle button
-- **Automatic Registration**: Hotkey is registered when the overlay starts
-- **Conflict Handling**: Graceful fallback if hotkey is already in use
-- **Thread Safety**: Hotkey events are properly marshaled to the UI thread
-
-### User Experience Enhancements
-- **Waiting Window**: Enhanced UI while target application is not running
-- **Manual Control**: User must explicitly click "Start Overlay" button
-- **Visual Feedback**: Animated status messages and progress indicators
-- **Settings Window**: Centralized configuration with theme selection
-- **Ko-fi Integration**: Built-in support link with custom coffee cup icon
-- **Application Icon**: Custom app icon for taskbar and system UI
-
-### Settings Management
-- **JSON Configuration**: Persistent settings stored in `%APPDATA%/ED_Inara_Overlay/settings.json`
-- **Theme Preferences**: Automatically restore selected theme on startup
-- **Version Tracking**: Settings include version and timestamp information
-- **Fallback Handling**: Graceful degradation when settings are unavailable
-
-## Installation
-
-### 🚀 Quick Install (Recommended)
-
-1. **Download the Installer**: Get the latest `ED_Inara_Overlay_Setup.exe` from the [Releases](../../releases) page
-2. **Run the Installer**: Double-click the installer and follow the setup wizard
-3. **Launch the Application**: Find "Elite Dangerous Inara Overlay" in your Start Menu
-
-**The installer will:**
-- ✅ Check for .NET 8.0 Desktop Runtime (and prompt to install if missing)
-- ✅ Install the application to Program Files
-- ✅ Create Start Menu and Desktop shortcuts
-- ✅ Set up file associations
-- ✅ Create user data directory for settings
-
-### 🛠️ Manual Build & Install
-
-1. Clone the repository
-2. Open the solution in Visual Studio 2022
-3. Build the solution
-4. Run the application
-
-## Usage
-
-1. Launch Elite Dangerous (or your target application)
-2. Run the overlay application
-3. The waiting window will appear, monitoring for the target application
-4. When the target is detected, status changes to "Target application found!"
-5. Click the "Start Overlay" button to activate the overlay system
-6. The overlay will attach to the target window and become available
-7. Use the toggle button to show/hide the trade route search window
-8. **Global Hotkey**: Press **Ctrl+5** from anywhere to toggle the trade route window
-9. Search for trade routes and view results in the overlay
-10. Access Settings to customize themes and other preferences
-11. Use the Ko-fi link to support development (optional)
-
-## Development
-
-### Prerequisites
-- Visual Studio 2022 or Visual Studio Code
-- .NET 8.0 SDK
-- Windows 10/11
-
-### Building the Solution
-
-#### Option 1: Build Everything
 ```bash
-# Build all projects in the unified solution
 dotnet build ED_Inara_Overlay/ED_Inara_Overlay.sln
 ```
 
-#### Option 2: Build Individual Projects
-```bash
-# Build main application
-dotnet build ED_Inara_Overlay/ED_Inara_Overlay.csproj
+## Run
 
-# Build supporting libraries
-dotnet build InaraTools/InaraTools.csproj
-dotnet build Logger/Logger.csproj
-```
-
-### Running the Application
 ```bash
-# Run the main overlay application
 dotnet run --project ED_Inara_Overlay/ED_Inara_Overlay.csproj
 ```
 
-### Testing
-```bash
-# Run the test harness
-dotnet run --project OverlayTestHarness.csproj
+## Test Utilities
 
-# Run mock target app for development
-dotnet run --project MockTargetApp/MockTargetApp.csproj
+```bash
+# Build mock target app
+dotnet build Testing/MockTargetApp/MockTargetApp.csproj
+
+# Run quick regression script
+powershell -ExecutionPolicy Bypass -File Testing/QuickRegressionTest.ps1
 ```
 
-### 📦 Creating Installers
+## Installer
 
-This project includes a complete installer build system using Inno Setup:
-
-#### Prerequisites for Building Installers
-1. **Install Inno Setup 6**: Download from [https://jrsoftware.org/isdl.php](https://jrsoftware.org/isdl.php)
-2. **Build the Application**: Ensure the application is built in Release mode
-
-#### Automated Installer Creation
 ```powershell
-# Build application and create installer (recommended)
+# Build app + installer
 .\build_installer.ps1
 
-# Or skip build if already built
-.\build_installer.ps1 -SkipBuild
-
-# Or only build the application
+# Build app only
 .\build_installer.ps1 -SkipInstaller
+
+# Build installer only (if binaries already built)
+.\build_installer.ps1 -SkipBuild
 ```
 
-#### Manual Installer Creation
-1. Open Inno Setup Compiler
-2. Open `installer.iss`
-3. Click Build (F9) or Compile → Compile
-4. Installer will be created in `dist/` folder
+Installer output is written to `dist/`.
 
-#### Installer Features
-- **Automatic .NET 8 Detection**: Checks for required runtime and prompts for download
-- **Complete File Packaging**: Includes all executables, libraries, themes, and documentation
-- **Registry Integration**: Sets up file associations and Windows integration
-- **Start Menu & Desktop Icons**: Creates shortcuts for easy access
-- **Clean Uninstaller**: Removes all files and user data when uninstalling
-- **Version Management**: Supports upgrades and maintains user settings
+## Logging
 
-#### Build Output
-- **Location**: `dist/ED_Inara_Overlay_Setup_1.0.0.exe`
-- **Size**: ~5-10 MB (depending on dependencies)
-- **Compatibility**: Windows 10 1607+ (required for .NET 8)
-
-### 🏗️ Build System
-
-The project includes multiple build methods:
-
-#### PowerShell Build Scripts
-```powershell
-# Main build script (builds app + creates installer)
-.\build_installer.ps1
-
-# Legacy build script (app only)
-.\build.ps1
-
-# Batch file alternative
-.\build.bat
-```
-
-#### Manual dotnet Commands
-```bash
-# Clean build
-dotnet clean ED_Inara_Overlay/ED_Inara_Overlay.sln
-dotnet build ED_Inara_Overlay/ED_Inara_Overlay.sln --configuration Release
-
-# Publish self-contained (optional)
-dotnet publish ED_Inara_Overlay/ED_Inara_Overlay.csproj -c Release --self-contained
-```
-
-#### Build Artifacts
-- **Application**: `ED_Inara_Overlay/bin/Release/net8.0-windows/`
-- **Installer**: `dist/ED_Inara_Overlay_Setup_*.exe`
-- **Build Logs**: Console output with detailed progress
-
-### Repository Migration Notes
-
-This repository was unified from multiple separate repositories to improve:
-- **Dependency Management**: All components now share the same dependency versions
-- **Build Consistency**: Single solution file manages all projects
-- **Development Workflow**: Easier to develop and test cross-component features
-- **Version Control**: Unified versioning and release management
-- **Installer Integration**: Complete build-to-distribution pipeline
-
-**Previous Structure**: Components were in separate repositories with individual build processes
-**Current Structure**: All components unified under a single repository with shared build infrastructure
-
-## Contributing
-
-We welcome contributions to the Elite Dangerous Inara Overlay project! This is a unified repository containing all components of the overlay system.
-
-**📋 Please read our [Contributing Guide](CONTRIBUTING.md) for detailed information about:**
-- Repository structure and unified development workflow
-- Setting up your development environment
-- Code style guidelines and best practices
-- Testing procedures and tools
-- Pull request process
-
-### Quick Start for Contributors
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature-name`
-3. Make your changes following our [coding guidelines](CONTRIBUTING.md#code-style-guidelines)
-4. Test thoroughly using the provided test tools
-5. Submit a pull request with a clear description
-
-**🔍 New to the unified repository?** Check out the [Repository Migration Notes](CONTRIBUTING.md#migration-from-separate-repositories) to understand how the project structure has evolved.
+Runtime logs are written to `ED_Inara_Overlay/bin/<Configuration>/net8.0-windows/logs/`.
 
 ## License
 
-This project is licensed under the MIT License.
-
----
-
-**Last Updated**: July 18, 2025
-**Framework**: .NET 8.0
+MIT

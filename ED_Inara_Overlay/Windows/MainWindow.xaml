@@ -3,88 +3,54 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ED_Inara_Overlay"
         mc:Ignorable="d"
-        Title="ED Inara Overlay" 
-        Height="150" Width="220"
-        WindowStyle="None" 
-        AllowsTransparency="True" 
+        Title="ED Inara Overlay"
+        Height="120"
+        Width="124"
+        WindowStyle="None"
+        AllowsTransparency="True"
         Background="Transparent"
         Topmost="True"
         ShowInTaskbar="False"
         ResizeMode="NoResize">
-
-    <!-- Main overlay container with semi-transparent background -->
-    <Border Background="#00000000" CornerRadius="5" Margin="5">
-        <Grid Margin="0,22,0,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" MinHeight="20" />
-                <RowDefinition Height="Auto" MinHeight="67" />
-            </Grid.RowDefinitions>
-            <!-- Toggle Button -->
-            <Button x:Name="ToggleButton" 
-                    Width="190" Height="67"
-                    HorizontalAlignment="Center" 
-                    VerticalAlignment="Center"
-                    Background="#30000000"
-                    Foreground="{DynamicResource PrimaryTextColorBrush}" 
-                    Content="Trade Routes"
-                    FontWeight="Bold"
-                    FontSize="30"
-                    BorderThickness="2"
-                    BorderBrush="{DynamicResource PrimaryTextColorBrush}" 
-                    Grid.Row="1"
-                    Click="ToggleButton_Click" RenderTransformOrigin="0.5,0.5">
-                <Button.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="-7.5"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </Button.RenderTransform>
-                <Button.Style>
-                    <Style TargetType="Button">
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="Button">
-                                    <Border Background="{TemplateBinding Background}" 
-                                            BorderBrush="{TemplateBinding BorderBrush}"
-                                            BorderThickness="0,2,0,2"
-                                            CornerRadius="0">
-                                        <ContentPresenter HorizontalAlignment="Center" 
-                                                        VerticalAlignment="Center"/>
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#FF4CAF50"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-            </Button>
-
-            <Border
-                BorderThickness="0, 0, 0, 2"
-                RenderTransformOrigin="0.5,0.5"
-                BorderBrush="{DynamicResource PrimaryTextColorBrush}" 
-                Grid.Row="1" Margin="17,67,6,-20" >
-                <Border.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="-7.5"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </Border.RenderTransform>
-                <TextBlock
-                       Foreground="{DynamicResource PrimaryTextColorBrush}" Margin="10,0,10,0"  TextAlignment="Center">     
-                   Ctrl+5
-                </TextBlock>
+    <Border Margin="6"
+            BorderThickness="1"
+            BorderBrush="{DynamicResource PrimaryTextColorBrush}"
+            Background="#550B0400">
+        <StackPanel Margin="8,6,8,6">
+            <TextBlock Text="Overlay Control"
+                       FontWeight="Bold"
+                       FontSize="12"
+                       Foreground="{DynamicResource PrimaryTextColorBrush}"/>
+            <Border Background="#78491900" Padding="4,1,4,1" Margin="0,6,0,0" HorizontalAlignment="Left">
+                <TextBlock x:Name="InteractionStatusBadge"
+                           Foreground="{DynamicResource PrimaryTextColorBrush}"
+                           FontSize="10"
+                           FontWeight="Bold"
+                           Text="INTERACTIVE: OFF"/>
             </Border>
-        </Grid>
+            <TextBlock x:Name="InteractionHintText"
+                       FontSize="10"
+                       TextWrapping="Wrap"
+                       Foreground="{DynamicResource PrimaryTextColorBrush}" Height="13"
+                       Text="Overlays: visible"
+                       />
+            <TextBlock x:Name="InteractionHintText_Copy"
+                FontSize="10"
+                TextWrapping="Wrap"
+                Foreground="{DynamicResource PrimaryTextColorBrush}" Height="15"
+                       ><Run Text="Show/Hide: Ctrl+5"/><LineBreak/></TextBlock>
+            <TextBlock x:Name="InteractionHintText_Copy2"
+                FontSize="10"
+                TextWrapping="Wrap"
+                Foreground="{DynamicResource PrimaryTextColorBrush}" Height="15"
+                       ><Run Text="Interactive: Ctrl+6"/><LineBreak/><Run/></TextBlock>
+            <TextBlock x:Name="InteractionHintText_Copy1"
+                FontSize="10"
+                TextWrapping="Wrap"
+                Foreground="{DynamicResource PrimaryTextColorBrush}" Height="15"
+                       Text="Unpin: Ctrl+7"
+                       />
+        </StackPanel>
     </Border>
 </Window>

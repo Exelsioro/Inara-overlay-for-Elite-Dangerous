@@ -84,14 +84,82 @@ Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#MyAppName}}
 [Code]
 function GetDotNetVersion(): string;
 var
-  Version: string;
+  FindRec: TFindRec;
+  DesktopRuntimePath: string;
+  CoreRuntimePath: string;
+  DotNetBasePath: string;
 begin
-  if RegQueryStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\WOW6432Node\dotnet\Setup\InstalledVersions\x64\sharedframework\Microsoft.NETCore.App', '8.0.0', Version) then
-    Result := Version
-  else if RegQueryStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\dotnet\Setup\InstalledVersions\x64\sharedframework\Microsoft.NETCore.App', '8.0.0', Version) then
-    Result := Version
-  else
-    Result := '';
+  Result := '';
+  
+  // Check common .NET installation paths
+  DotNetBasePath := ExpandConstant('{pf}\dotnet\shared');
+  
+  // First, check for Windows Desktop Runtime (required for WPF apps)
+  DesktopRuntimePath := DotNetBasePath + '\Microsoft.WindowsDesktop.App';
+  if DirExists(DesktopRuntimePath) then
+  begin
+    if FindFirst(DesktopRuntimePath + '\8.0.*', FindRec) then
+    begin
+      try
+        repeat
+          if (FindRec.Attributes and FILE_ATTRIBUTE_DIRECTORY) <> 0 then
+          begin
+            Result := FindRec.Name;
+            Exit;
+          end;
+        until not FindNext(FindRec);
+      finally
+        FindClose(FindRec);
+      end;
+    end;
+  end;
+  
+  // Fallback: Check for .NET Core Runtime
+  if Result = '' then
+  begin
+    CoreRuntimePath := DotNetBasePath + '\Microsoft.NETCore.App';
+    if DirExists(CoreRuntimePath) then
+    begin
+      if FindFirst(CoreRuntimePath + '\8.0.*', FindRec) then
+      begin
+        try
+          repeat
+            if (FindRec.Attributes and FILE_ATTRIBUTE_DIRECTORY) <> 0 then
+            begin
+              Result := FindRec.Name;
+              Exit;
+            end;
+          until not FindNext(FindRec);
+        finally
+          FindClose(FindRec);
+        end;
+      end;
+    end;
+  end;
+  
+  // Also check x86 dotnet location if x64 not found
+  if Result = '' then
+  begin
+    DotNetBasePath := ExpandConstant('{pf32}\dotnet\shared');
+    DesktopRuntimePath := DotNetBasePath + '\Microsoft.WindowsDesktop.App';
+    if DirExists(DesktopRuntimePath) then
+    begin
+      if FindFirst(DesktopRuntimePath + '\8.0.*', FindRec) then
+      begin
+        try
+          repeat
+            if (FindRec.Attributes and FILE_ATTRIBUTE_DIRECTORY) <> 0 then
+            begin
+              Result := FindRec.Name;
+              Exit;
+            end;
+          until not FindNext(FindRec);
+        finally
+          FindClose(FindRec);
+        end;
+      end;
+    end;
+  end;
 end;
 
 function InitializeSetup(): Boolean;

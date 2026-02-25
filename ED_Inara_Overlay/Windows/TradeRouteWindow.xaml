@@ -16,9 +16,9 @@
         ShowInTaskbar="False"
         ShowActivated="False"
         ResizeMode="NoResize">
-    
+
     <!-- Main container with dark background -->
-    
+
     <Border Style="{DynamicResource WindowBorderStyle}" >
         <Grid Margin="10">
             <Grid.RowDefinitions>
@@ -32,22 +32,26 @@
 
             <!-- Title Bar -->
             <Grid Grid.Row="0" Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="304*"/>
+                    <ColumnDefinition Width="71*"/>
+                </Grid.ColumnDefinitions>
                 <TextBlock Text="Elite Dangerous Trade Route Search" 
                           Style="{DynamicResource HeaderTextStyle}"
                           HorizontalAlignment="Left"/>
                 <Button x:Name="CloseButton" 
                        Content="✕" 
                        Width="30" Height="30"
-                       HorizontalAlignment="Right"
+                       HorizontalAlignment="Left"
                        Background="#FFCC4444" 
                        Foreground="White"
                        BorderThickness="0"
                        FontWeight="Bold"
-                       Click="CloseButton_Click"/>
+                       Click="CloseButton_Click" Grid.Column="1" Margin="41,0,0,0"/>
             </Grid>
 
             <!-- Basic Search Parameters -->
-            <GroupBox Grid.Row="1" Header="Basic Parameters" Foreground="{DynamicResource AccentColorBrush}" BorderBrush="#FF404040" Margin="0,0,0,10">
+            <GroupBox Grid.Row="1" Header="Basic Parameters" Foreground="{DynamicResource AccentColorBrush}" BorderBrush="{DynamicResource BorderColorBrush}" Margin="0,0,0,10">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -127,8 +131,7 @@
             <!-- Show Additional Filters Button -->
             <Button x:Name="ShowFiltersButton" Grid.Row="2" 
                    Content="Show Additional Filters" 
-                   Background="{DynamicResource ButtonBackgroundColorBrush}" 
-                   Foreground="{DynamicResource PrimaryTextColorBrush}"
+                   Style="{StaticResource InvertHoverButtonStyle}"
                    FontWeight="Bold" 
                    Padding="10,5" 
                    Margin="0,0,0,10"
@@ -172,32 +175,32 @@
 
                         <!-- Max Station Distance -->
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="Max. station distance:" Foreground="White" VerticalAlignment="Center" Margin="0,5,10,5"/>
-<ComboBox x:Name="MaxStationDistanceComboBox" Grid.Row="1" Grid.Column="1" 
+                        <ComboBox x:Name="MaxStationDistanceComboBox" Grid.Row="1" Grid.Column="1" 
                                  Style="{StaticResource ComboBoxStyle}"
                                  SelectedIndex="0" Margin="0,5,0,5">
-                        <ComboBoxItem Content="Any" Style="{StaticResource ComboBoxItemStyle}"/>
-                        <ComboBoxItem Content="100 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
-                        <ComboBoxItem Content="500 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
-                        <ComboBoxItem Content="1000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
-                        <ComboBoxItem Content="2000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
-                        <ComboBoxItem Content="5000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
-                        <ComboBoxItem Content="10000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
-                        <ComboBoxItem Content="15000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
-                        <ComboBoxItem Content="20000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
-                        <ComboBoxItem Content="25000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
-                        <ComboBoxItem Content="50000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
-                        <ComboBoxItem Content="100000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Any" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="100 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="500 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="1000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="2000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="5000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="10000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="15000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="20000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="25000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="50000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="100000 Ls" Style="{StaticResource ComboBoxItemStyle}"/>
                         </ComboBox>
 
                         <!-- Use Surface Stations -->
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="Use surface stations:" Foreground="White" VerticalAlignment="Center" Margin="0,5,10,5"/>
-                                <ComboBox x:Name="UseSurfaceStationsComboBox" Grid.Row="2" Grid.Column="1" 
+                        <ComboBox x:Name="UseSurfaceStationsComboBox" Grid.Row="2" Grid.Column="1" 
                                  Style="{StaticResource ComboBoxStyle}"
                                  SelectedIndex="0" Margin="0,5,0,5">
-                                <ComboBoxItem Content="Yes (with Odyssey stations)" Style="{StaticResource ComboBoxItemStyle}"/>
-                                <ComboBoxItem Content="Yes (with Odyssey stations)" Style="{StaticResource ComboBoxItemStyle}"/>
-                                <ComboBoxItem Content="Yes (exclude Odyssey stations)" Style="{StaticResource ComboBoxItemStyle}"/>
-                                <ComboBoxItem Content="No" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Yes (with Odyssey stations)" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Yes (with Odyssey stations)" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="Yes (exclude Odyssey stations)" Style="{StaticResource ComboBoxItemStyle}"/>
+                            <ComboBoxItem Content="No" Style="{StaticResource ComboBoxItemStyle}"/>
                         </ComboBox>
 
                         <!-- Source Station Power -->
@@ -293,20 +296,20 @@
                     <ColumnDefinition Width="10"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                
+
                 <Button x:Name="SearchButton" Grid.Column="0" 
                        Content="Search Trade Routes" 
-                       Background="{DynamicResource ButtonBackgroundColorBrush}" 
-                       Foreground="{DynamicResource PrimaryTextColorBrush}" 
+                       Style="{StaticResource InvertHoverButtonStyle}"
                        FontWeight="Bold" 
                        Padding="10,5" 
-                       Click="SearchButton_Click"/>
-                       
+                       Click="SearchButton_Click">
+                </Button>
+
                 <Button x:Name="TestDataButton" Grid.Column="2" 
                        Content="Load Test Data" 
-                       Background="{DynamicResource ButtonBackgroundColorBrush}" 
-                       Foreground="{DynamicResource PrimaryTextColorBrush}" 
+                       Style="{StaticResource InvertHoverButtonStyle}"
                        FontWeight="Bold" 
+                       Visibility="Collapsed"
                        Padding="10,5" 
                        Click="TestDataButton_Click"/>
             </Grid>

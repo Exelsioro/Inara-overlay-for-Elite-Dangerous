@@ -14,11 +14,10 @@
             BorderThickness="2"
             CornerRadius="0"
             HorizontalAlignment="Stretch"
-            Padding="0"
-            Effect="{DynamicResource CardShadowEffect}">
+            Padding="0">
 
         <!-- Inner highlight border -->
-        <Border BorderBrush="#FF606060" 
+        <Border BorderBrush="{DynamicResource BorderColorBrush}" 
                 BorderThickness="1" 
                 CornerRadius="0" 
                 Opacity="0.7"
@@ -33,8 +32,8 @@
 
                 <!-- Header strip -->
                 <Border Grid.Row="0" 
-                        Background="#882D2D2D"
-                        BorderBrush="#FF505050"
+                        Background="{DynamicResource HighlightBackgroundBrush}"
+                        BorderBrush="{DynamicResource BorderColorBrush}"
                         BorderThickness="0,0,0,1"
                         Padding="8,6">
                     <Grid>
@@ -59,7 +58,7 @@
                                   Orientation="Horizontal" 
                                   VerticalAlignment="Center"
                                   Margin="0,0,8,0">
-                            <TextBlock Text="📍" 
+                            <TextBlock Text="*" 
                                      Foreground="{DynamicResource AccentColorBrush}" 
                                      FontSize="10" 
                                      Margin="0,0,4,0"/>
@@ -74,7 +73,7 @@
                         <!-- Pin Route Button -->
                         <Button x:Name="PinRouteButton"
                               Grid.Column="1"
-                              Content="📌 PIN"
+                              Content="PIN"
                               Foreground="{DynamicResource AccentColorBrush}" 
                               Background="Transparent"
                               BorderBrush="{DynamicResource AccentColorBrush}"
@@ -94,7 +93,7 @@
                                                 <Border Background="{TemplateBinding Background}"
                                                         BorderBrush="{TemplateBinding BorderBrush}"
                                                         BorderThickness="{TemplateBinding BorderThickness}"
-                                                        CornerRadius="2">
+                                                        CornerRadius="0">
                                                     <ContentPresenter HorizontalAlignment="Center" 
                                                                       VerticalAlignment="Center"/>
                                                 </Border>
@@ -103,8 +102,8 @@
                                     </Setter>
                                     <Style.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="#FF00B4FF"/>
-                                            <Setter Property="Foreground" Value="#FF000000"/>
+                                            <Setter Property="Background" Value="{DynamicResource AccentColorBrush}"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryBackgroundColorBrush}"/>
                                         </Trigger>
                                     </Style.Triggers>
                                 </Style>
@@ -126,8 +125,8 @@
 
                 <!-- Footer strip -->
                 <Border Grid.Row="2" 
-                        Background="#882D2D2D"
-                        BorderBrush="#FF505050"
+                        Background="{DynamicResource HighlightBackgroundBrush}"
+                        BorderBrush="{DynamicResource BorderColorBrush}"
                         BorderThickness="0,1,0,0"
                         Padding="8,6">
                     <Grid>

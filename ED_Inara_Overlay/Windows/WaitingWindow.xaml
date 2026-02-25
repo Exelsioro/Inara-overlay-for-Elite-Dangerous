@@ -105,7 +105,8 @@
                         <Run Text="1. Click "/><Run x:Name="TargetAppName" Text="Start Overlay" Foreground="#00FF00"/><Run Text=" button to begin monitoring"/><LineBreak/>
                         <Run Text="2. The overlay will attach to Elite Dangerous when detected"/><LineBreak/>
                         <Run Text="3. Change themes using the "/><Run x:Name="Settings" Text="Settings" Foreground="#0078D7"/><Run Text=" button"/><LineBreak/>
-                        <Run Text="4. Close this window to exit the overlay application"/><LineBreak/>
+                        <Run Text="4. After Start Overlay, the app runs in system tray"/><LineBreak/>
+                        <Run Text="5. Use tray icon menu (Exit) to close the overlay"/><LineBreak/>
                         <LineBreak/>
                         <Run Text="You can use Ctrl+5 to open trade routes search pannel in game"/><LineBreak/>
                     </TextBlock>

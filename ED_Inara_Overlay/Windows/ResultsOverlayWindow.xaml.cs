@@ -22,6 +22,8 @@ namespace ED_Inara_Overlay.Windows
         private bool disposed = false;
         private MainWindow? parentMainWindow;
         private List<UserControl> tradeRouteControls = new List<UserControl>();
+        private bool interactiveModeEnabled;
+        private bool showCursorWhenInteractive;
 
         public ResultsOverlayWindow(MainWindow? parentWindow = null)
         {
@@ -29,15 +31,15 @@ namespace ED_Inara_Overlay.Windows
             Logger.Logger.Info("Initializing ResultsOverlayWindow");
             
             InitializeComponent();
-
-            // Enable DPI awareness
-            try
-            {
-// Removed invalid assignment to TransformToDevice since DPI awareness is now declared in app.manifest
-            }
-            catch { /* Handle exceptions if needed */ }
             SetupOverlay();
             SetupUpdateTimer();
+            IsVisibleChanged += (s, e) =>
+            {
+                if (IsVisible)
+                {
+                    WindowsAPI.EnsureCursorVisibleOnWindow(this);
+                }
+            };
             
             Logger.Logger.Info("ResultsOverlayWindow initialization complete");
         }
@@ -48,16 +50,27 @@ namespace ED_Inara_Overlay.Windows
             this.Loaded += (s, e) =>
             {
                 WindowsAPI.SetupOverlayWindow(this);
-                WindowsAPI.SetClickThrough(this, false); // Allow interaction with controls
-                
+                ApplyInteractionMode(interactiveModeEnabled, showCursorWhenInteractive);
             };
+        }
+
+        public void ApplyInteractionMode(bool interactive, bool showCursor)
+        {
+            interactiveModeEnabled = interactive;
+            showCursorWhenInteractive = showCursor;
+            WindowsAPI.SetClickThrough(this, !interactiveModeEnabled);
+
+            if (interactiveModeEnabled && showCursorWhenInteractive && IsVisible)
+            {
+                WindowsAPI.EnsureCursorVisibleOnWindow(this);
+            }
         }
 
         private void SetupUpdateTimer()
         {
             updateTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromMilliseconds(16) // ~60 FPS
+                Interval = TimeSpan.FromMilliseconds(33) // ~30 FPS
             };
             updateTimer.Tick += UpdateTimer_Tick;
             updateTimer.Start();
@@ -67,6 +80,15 @@ namespace ED_Inara_Overlay.Windows
         {
             if (disposed || updateTimer == null)
                 return;
+
+            if (OverlayVisibilityState.SuppressAll)
+            {
+                if (this.IsVisible)
+                {
+                    this.Hide();
+                }
+                return;
+            }
 
             // If form is not visible, we still need to update position for when it becomes visible
             if (targetWindow != IntPtr.Zero)
@@ -127,15 +149,28 @@ namespace ED_Inara_Overlay.Windows
             if (!WindowsAPI.GetWindowRect(targetWindow, out WindowsAPI.RECT rect))
                 return;
 
+            Rect workArea = WindowsAPI.GetMonitorWorkArea(targetWindow);
+
             // Position results overlay at middle top of the target window
             int targetHeight = rect.Bottom - rect.Top;
             int targetWidth = rect.Right - rect.Left;
-            int overlayWidth = Math.Min(800, (int)(targetWidth * 0.8)); // 80% of target width
-            int overlayHeight = Math.Min(400, targetHeight / 3); // Upper third of target height
+            int overlayWidth = Math.Min(
+                (int)(workArea.Width * OverlayLayoutSettings.ResultsWidthByMonitor),
+                Math.Min(OverlayLayoutSettings.ResultsMaxWidth, (int)(targetWidth * OverlayLayoutSettings.ResultsWidthByTarget)));
+            int overlayHeight = Math.Min(
+                (int)(workArea.Height * OverlayLayoutSettings.ResultsHeightByMonitor),
+                Math.Min(OverlayLayoutSettings.ResultsMaxHeight, targetHeight / OverlayLayoutSettings.ResultsHeightByTargetDivisor));
 
             // Center horizontally, position in upper portion of window
-            int centerX = rect.Left + (targetWidth - overlayWidth) / 2;
-            int topY = rect.Top + 10;
+            var (centerX, topY) = OverlayLayoutHelper.GetTopCenteredPosition(rect, overlayWidth, OverlayLayoutSettings.ResultsTopOffset);
+            OverlayLayoutHelper.ClampPosition(
+                ref centerX,
+                ref topY,
+                overlayWidth,
+                overlayHeight,
+                workArea,
+                OverlayLayoutSettings.DefaultMargin,
+                OverlayLayoutSettings.DefaultMargin);
             
             this.Left = centerX;
             this.Top = topY;

@@ -18,13 +18,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="MockTargetApp.cs" />
+    <Compile Remove="ED_Inara_Overlay.LayoutTests\**\*.cs" />
     <Compile Remove="MockTargetApp\Program.cs" />
     <Compile Remove="MockTargetApp\**\*.cs" />
     <Compile Remove="TestHarnessApp.xaml.cs" />
     <Compile Remove="TestHarnessMainWindow.xaml.cs" />
     <Compile Remove="MainWindow.xaml.cs" />
-    <Compile Remove="SimpleTestHarness\**\*.cs" />
   </ItemGroup>
   
   <ItemGroup>

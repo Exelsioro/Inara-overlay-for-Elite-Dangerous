@@ -27,13 +27,6 @@ namespace ED_Inara_Overlay.Windows
             Logger.Logger.Info("Initializing PinnedRouteOverlay");
             
             InitializeComponent();
-
-            // Enable DPI awareness
-            try
-            {
-// Removed invalid assignment to TransformToDevice since DPI awareness is now declared in app.manifest
-            }
-            catch { /* Handle exceptions if needed */ }
             SetupOverlay();
             SetupUpdateTimer();
             
@@ -46,7 +39,7 @@ namespace ED_Inara_Overlay.Windows
             this.Loaded += (s, e) =>
             {
                 WindowsAPI.SetupOverlayWindow(this);
-                WindowsAPI.SetClickThrough(this, false); // Allow interaction with controls
+                WindowsAPI.SetClickThrough(this, true);
                 
                 // Position at top center of screen initially
                 PositionOverlay();
@@ -57,7 +50,7 @@ namespace ED_Inara_Overlay.Windows
         {
             updateTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromMilliseconds(16) // ~60 FPS
+                Interval = TimeSpan.FromMilliseconds(33) // ~30 FPS
             };
             updateTimer.Tick += UpdateTimer_Tick;
             updateTimer.Start();
@@ -67,6 +60,15 @@ namespace ED_Inara_Overlay.Windows
         {
             if (disposed || updateTimer == null)
                 return;
+
+            if (OverlayVisibilityState.SuppressAll)
+            {
+                if (this.IsVisible)
+                {
+                    this.Hide();
+                }
+                return;
+            }
 
             // If form is not visible, we still need to update position for when it becomes visible
             if (targetWindow != IntPtr.Zero)
@@ -126,16 +128,27 @@ namespace ED_Inara_Overlay.Windows
         {
             if (targetWindow != IntPtr.Zero && WindowsAPI.GetWindowRect(targetWindow, out WindowsAPI.RECT rect))
             {
+                Rect workArea = WindowsAPI.GetMonitorWorkArea(targetWindow);
+
                 // Position pinned overlay at top center of the target window
                 int targetWidth = rect.Right - rect.Left;
-                int overlayWidth = Math.Min(600, (int)(targetWidth * 0.7)); // 70% of target width, max 600px
+                int overlayWidth = Math.Min(
+                    (int)(workArea.Width * OverlayLayoutSettings.PinnedWidthByMonitor),
+                    Math.Min(OverlayLayoutSettings.PinnedMaxWidth, (int)(targetWidth * OverlayLayoutSettings.PinnedWidthByTarget)));
                 
                 // Calculate dynamic height based on content, with minimum and maximum bounds
                 int overlayHeight = CalculateRequiredHeight();
 
                 // Center horizontally, position at very top of window
-                int centerX = rect.Left + (targetWidth - overlayWidth) / 2;
-                int topY = rect.Top + 5; // Just inside the top edge
+                var (centerX, topY) = OverlayLayoutHelper.GetTopCenteredPosition(rect, overlayWidth, OverlayLayoutSettings.PinnedTopOffset);
+                OverlayLayoutHelper.ClampPosition(
+                    ref centerX,
+                    ref topY,
+                    overlayWidth,
+                    overlayHeight,
+                    workArea,
+                    OverlayLayoutSettings.DefaultMargin,
+                    OverlayLayoutSettings.PinnedClampMarginY);
                 
                 this.Left = centerX;
                 this.Top = topY;
@@ -145,11 +158,10 @@ namespace ED_Inara_Overlay.Windows
             else
             {
                 // Fallback to screen center top if no target window
-                var screenWidth = System.Windows.SystemParameters.WorkArea.Width;
-                var screenHeight = System.Windows.SystemParameters.WorkArea.Height;
+                var workArea = WindowsAPI.GetMonitorWorkArea(targetWindow);
                 
-                this.Left = (screenWidth - this.Width) / 2;
-                this.Top = 10;
+                this.Left = workArea.Left + ((workArea.Width - this.Width) / 2);
+                this.Top = workArea.Top + OverlayLayoutSettings.PinnedFallbackTopOffset;
             }
         }
 
@@ -169,11 +181,6 @@ namespace ED_Inara_Overlay.Windows
 
         private int CalculateRequiredHeight()
         {
-            // Default minimum height when no content
-            int minHeight = 120;
-            int maxHeight = 250; // Reasonable maximum to prevent overlay from being too large
-            int margin = 40; // Extra space for close button and padding
-            
             if (currentPinnedCard != null && PinnedRouteContainer.Children.Count > 0)
             {
                 // Force a layout update to get accurate measurements
@@ -183,12 +190,12 @@ namespace ED_Inara_Overlay.Windows
                 double cardHeight = currentPinnedCard.DesiredSize.Height;
                 if (cardHeight > 0)
                 {
-                    int requiredHeight = (int)Math.Ceiling(cardHeight + margin);
-                    return Math.Max(minHeight, Math.Min(maxHeight, requiredHeight));
+                    int requiredHeight = (int)Math.Ceiling(cardHeight + OverlayLayoutSettings.PinnedContentMargin);
+                    return Math.Max(OverlayLayoutSettings.PinnedMinHeight, Math.Min(OverlayLayoutSettings.PinnedMaxHeight, requiredHeight));
                 }
             }
             
-            return minHeight;
+            return OverlayLayoutSettings.PinnedMinHeight;
         }
 
         public void PinTradeRoute(TradeRoute tradeRoute)
